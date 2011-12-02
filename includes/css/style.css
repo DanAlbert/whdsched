@@ -1,0 +1,272 @@
+/* ----------- Main Style Information ----------- */
+	body{
+		padding: 20px;
+		background: #2A2A2A;
+		color: #FFFFFF;
+		font: 85%/1.45 "Lucida Sans Unicode","Lucida Grande",Arial,sans-serif;
+		text-align: center;	
+	}
+	
+	h1,h2,p{
+		margin: 0;
+		padding: 0 10px;
+	}
+	p{
+		padding: 0 10px 1em;
+		color: #FFF;
+	}
+	h1,h2{
+		letter-spacing: -1px;
+		font-weight:100;
+		color: #111;
+	}
+	h1{
+		font-size: 200%;
+		color: #FFF;
+	}
+	h2{
+		font-size: 140%;
+		line-height: 1.05;
+		color: #FFF;
+	}
+	
+/* ----------- Header Style Information ----------- */
+	div#header {
+		width: 700px;
+		background: #666666;
+		color: #FFFFFF;
+		padding-top: 10px;
+		padding-bottom: 10px;
+		padding-right: 10px;
+		padding-left: 10px;
+		text-align: center;
+		margin-left: auto;
+		margin-right: auto;
+	}
+
+/* ----------- Navigation Style Information ----------- */
+	div#nav{
+		width: 700px;
+		background: #666666;
+		color: #FFFFFF;
+		padding-top: 10px;
+		padding-bottom: 10px;
+		padding-right: 10px;
+		padding-left: 10px;
+		text-align: center;
+		margin-left: auto;
+		margin-right: auto;
+	}
+	#sddm {	
+		margin: 0;
+		padding: 0;
+		z-index: 30;
+		text-align: center;
+	}
+
+	#sddm li {	
+		margin: 0;
+		padding: 0;
+		list-style: none;
+		float: left;
+		font: bold 11px arial;
+		margin-left: auto;
+		margin-right: auto;
+	}
+
+	#sddm li a {	
+		display: block;
+		margin: 0 1px 0 0;
+		padding: 4px 10px;
+		width: 115px;
+		background: #2A2A2A;
+		color: #FFF;
+		text-align: center;
+		vertical-align: middle;
+		text-decoration: none;
+	}
+	
+	#sddm li a:hover {	
+		background: #e94;
+	}
+
+	#sddm div {	
+		position: absolute;
+		visibility: hidden;
+		background: #2A2A2A;
+		margin-top: 3px;
+	}
+
+	#sddm div a {	
+		/*width: 148px;*/
+		width: 113px;
+		text-align: center;
+		text-decoration: none;
+		background: #2A2A2A;
+		color: #FFF;
+		font: 11px arial;
+		font-weight: bold;
+	}
+
+	#sddm div a:hover {
+		background: #e94;
+		color: #FFF;
+	}
+/* ----------- Content Style Information ----------- */	
+	div#content{
+		width: 700px;
+		padding: 10px 0;
+		background: #666666;
+		color: #FFFFFF;
+		padding-top: 10px;
+		padding-bottom: 10px;
+		padding-right: 10px;
+		padding-left: 10px;
+		text-align: center;
+		margin-left: auto;
+		margin-right: auto;
+	}
+/* ----------- Footer Style Information ----------- */	
+	div#footer{
+		width: 700px;
+		background: #666666;
+		color: #FFFFFF;
+		padding-top: 10px;
+		padding-bottom: 10px;
+		padding-right: 10px;
+		padding-left: 10px;
+		text-align: center;
+		vertical-align: middle;
+		margin-left: auto;
+		margin-right: auto;
+	}
+/* ----------- Calendar CSS Properties ----------- */	
+	div.dayofweek {
+		color: #000000; 
+		background: #FFCC66;
+		text-align: center;
+		vertical-align: middle;
+		padding-top: 10px;
+		padding-bottom: 10px;
+		padding-right: 10px;
+		padding-left: 10px;
+		font-size:18px;
+		font-weight: bold;
+		font-family:Arial, Helvetica, sans-serif;
+	}
+	div.day {
+		background: #FFCC66;
+		text-align: center;
+		vertical-align: middle;
+		font-size:18px;
+		text-decoration: none;
+		padding-top: 10px;
+		padding-bottom: 10px;
+		padding-right: 10px;
+		padding-left: 10px;
+		font-family:Arial, Helvetica, sans-serif;
+	}
+	div.day a:link {
+		color: #000000; 
+		text-decoration: none;
+		font-size:25px;
+		font-family:Arial, Helvetica, sans-serif;
+	}
+	div.day a:active {
+		color: #000000; 
+		text-decoration: none;
+		font-size:25px; 
+		font-family:Arial, Helvetica, sans-serif;
+	}
+	div.day a:visited {
+		color: #000000; 
+		text-decoration: none; 
+		font-size:25px;
+		font-family:Arial, Helvetica, sans-serif;
+	}
+	a.arrow {
+		font-family:Arial, Helvetica, sans-serif;
+		background: #FFCC66;
+		color: #000000;
+		text-align: center;
+		vertical-align: middle;
+		text-decoration: none;
+		padding-top: 10px;
+		padding-bottom: 10px;
+		padding-right: 10px;
+		padding-left: 10px;
+		font-size:18px;
+		font-weight: bold;
+	}
+	
+/* ----------- Login Page ----------- */
+
+	div#loginpage{
+		width: 300px;
+		background: #666666;
+		padding-top: 10px;
+		padding-bottom: 10px;
+		padding-right: 10px;
+		padding-left: 10px;
+		text-align: center;
+	}
+	div#errorpage{
+		width: 300px;
+		background: #666666;
+		padding-top: 10px;
+		padding-bottom: 10px;
+		padding-right: 10px;
+		padding-left: 10px;
+		text-align: center;
+		margin-left: auto;
+		margin-right: auto;
+	}
+	div#error{
+		color:#FF0000;
+		font-weight: bold;
+	}
+	
+/* ----------- Schedule CSS ----------- */
+	
+	table#schedule{
+		width: 95%;
+	}
+	
+	th#time{
+		width: 110px;
+		text-align: center;
+	}
+	
+	th#consultant1{
+		width: 185px;
+		text-align: center;
+	}
+	
+	th#consultant2{
+		width: 185px;
+		text-align: center;
+	}
+	
+	td#temped{
+		width: 185px;
+		text-align: center;
+		background: #FFFF00;
+	}
+	td#lookingForTemp{
+		width: 185px;
+		text-align: center;
+		background:#FF0000;
+	}
+	td#notTemped{
+		width: 185px;
+		text-align: center;
+	}
+	td#temped a:link, a:active, a:visited, a:hover{
+		color: #000000;
+	}
+	td#lookingForTemp a:link, a:active, a:visited, a:hover{
+		color: #000000;
+	}
+	td#notTemped a:link, a:active, a:visited, a:hover{
+		color: #000000;
+	}
