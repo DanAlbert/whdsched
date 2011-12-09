@@ -3,7 +3,7 @@
 	//include '../../config.php';
 	$dbhost = "mysql.gingerhq.net";
 	$dbuser = "helpdesk";
-	$dbpass = "zjVDw3VMS9rA2EAV";
+	$dbpass = "";
 	$dbname = "helpdesk";
 	
 	
