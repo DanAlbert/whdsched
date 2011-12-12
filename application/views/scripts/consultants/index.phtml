@@ -1,0 +1,22 @@
+<br /><br />
+<div id="view-content">
+	Consultants:
+	<table>
+		<thead>
+			<tr>
+				<td>Name</td>
+				<td>Email</td>
+				<td>Phone</td>
+			</tr>
+		</thead>
+		<tbody>
+			<?php foreach ($this->consultants as $consultant): ?>
+			<tr>
+				<td><?php print $consultant->getName() ?></td>
+				<td><?php print $consultant->getEmail() ?></td>
+				<td><?php print $consultant->getPhoneFormatted() ?></td>
+			</tr>
+			<?php endforeach ?>
+		</tbody>
+	</table>
+</div>
