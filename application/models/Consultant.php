@@ -15,6 +15,10 @@ class Application_Model_Consultant
 		{
 			$this->setData($data);
 		}
+		else
+		{
+			$this->setId(null);
+		}
 	}
 	
 	public function setData(array $data)

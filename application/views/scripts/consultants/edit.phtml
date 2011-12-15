@@ -1,0 +1,21 @@
+<br /><br />
+<div id="view-content">
+	<?php
+	
+	if (isset($this->error))
+	{
+		print $this->error;
+		print '<br />';
+		print '<a href="' . $this->url(array(
+			'controller' => 'consultants',
+			'action'     => 'index',
+		)) . '">Return to list</a>';
+	}
+	else
+	{
+		$this->form->setAction($this->url());
+		print $this->form;
+	}
+	
+	?>
+</div>

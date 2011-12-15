@@ -3,6 +3,7 @@
 class Application_Model_ConsultantMapper
 {
 	protected $_dbTable;
+	protected $_sequence = true; // Primary key autoincrements
 	
 	public function setDbTable($dbTable)
 	{
@@ -43,16 +44,23 @@ class Application_Model_ConsultantMapper
 			'phone'      => $consultant->getPhone(),
 		);
 		
-		$id = $guestbook->getId();
-		if ($id === null)
+		$id = $consultant->getId();
+		if ($id == null)
 		{
 			unset($data['id']);
-			$this->getDbTable()->insert($data);
+			return $this->getDbTable()->insert($data);
 		}
 		else
 		{
-			$this->getDbTable()->update($data, array('id = ?' => $id));
+			return $this->getDbTable()->update($data, array('id = ?' => $id));
 		}
+		
+		return true;
+	}
+	
+	public function delete(Application_Model_Consultant $consultant)
+	{
+		$this->getDbTable()->delete(array('id = ?' => $consultant->getId()));
 	}
 	
 	public function find($id)

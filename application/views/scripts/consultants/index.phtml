@@ -1,5 +1,10 @@
 <br /><br />
 <div id="view-content">
+	<a href="<?php print $this->url(array(
+			'controller' => 'consultants',
+			'action'     => 'create',
+		)); ?>">Create a new consultant</a>
+	<br />
 	Consultants:
 	<table>
 		<thead>
@@ -7,6 +12,8 @@
 				<td>Name</td>
 				<td>Email</td>
 				<td>Phone</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
 			</tr>
 		</thead>
 		<tbody>
@@ -15,6 +22,16 @@
 				<td><?php print $consultant->getName() ?></td>
 				<td><?php print $consultant->getEmail() ?></td>
 				<td><?php print $consultant->getPhoneFormatted() ?></td>
+				<td><a href="<?php print $this->url(array(
+						'controller' => 'consultants',
+						'action'     => 'edit',
+						'id'         => $consultant->getId(),
+					)); ?>">Edit</a></td>
+				<td><a href="<?php print $this->url(array(
+						'controller' => 'consultants',
+						'action'     => 'delete',
+						'id'         => $consultant->getId(),
+					)); ?>">Delete</a></td>
 			</tr>
 			<?php endforeach ?>
 		</tbody>
