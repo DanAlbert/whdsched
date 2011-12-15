@@ -23,6 +23,7 @@ CREATE TABLE shifts
 
 CREATE TABLE temp_shifts
 (
+	id INT NOT NULL AUTO_INCREMENT,
 	shift_id INT NOT NULL,
 	temp_consultant_id INT NOT NULL,
 	post_time TIMESTAMP,
@@ -31,7 +32,8 @@ CREATE TABLE temp_shifts
 		'12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23'),
 	assigned_to INT,
 	timeout INT,
-	PRIMARY KEY (shift_id, temp_consultant_id),
+	PRIMARY KEY (id),
+	UNIQUE (shift_id, temp_consultant_id),
 	FOREIGN KEY (shift_id) REFERENCES shifts (id),
 	FOREIGN KEY (temp_consultant_id) REFERENCES consultants (id),
 	FOREIGN KEY (assigned_to) REFERENCES consultants (id)

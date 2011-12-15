@@ -29,9 +29,15 @@
       <modelsDirectory>
         <dbTableDirectory>
           <dbTableFile dbTableName="Consultants"/>
+          <dbTableFile dbTableName="Shifts"/>
+          <dbTableFile dbTableName="TempShifts"/>
         </dbTableDirectory>
         <modelFile modelName="ConsultantMapper"/>
         <modelFile modelName="Consultant"/>
+        <modelFile modelName="ShiftMapper"/>
+        <modelFile modelName="TempShiftMapper"/>
+        <modelFile modelName="Shift"/>
+        <modelFile modelName="TempShift"/>
       </modelsDirectory>
       <modulesDirectory enabled="false"/>
       <viewsDirectory>
