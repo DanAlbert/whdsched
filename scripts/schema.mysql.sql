@@ -38,3 +38,14 @@ CREATE TABLE temp_shifts
 	FOREIGN KEY (temp_consultant_id) REFERENCES consultants (id),
 	FOREIGN KEY (assigned_to) REFERENCES consultants (id)
 ) ENGINE=InnoDB;
+
+CREATE TABLE terms
+(
+	id INT NOT NULL,
+	term ENUM('Summer', 'Fall', 'Winter', 'Spring') NOT NULL,
+	year INT NOT NULL,
+	start_date DATE NOT NULL,
+	end_date DATE NOT NULL,
+	PRIMARY KEY (id),
+	UNIQUE (term, year)
+) ENGINE=InnoDB;

@@ -7,7 +7,7 @@ class Application_Model_Shift
 	protected $_endTime;
 	protected $_location;
 	protected $_date;
-	protected $_consultantId;
+	protected $_consultant;
 	
 	public function __construct(array $data = null)
 	{
@@ -42,8 +42,8 @@ class Application_Model_Shift
 			case 'date':
 				$this->setDate($value);
 				break;
-			case 'consultant_id':
-				$this->setConsultantId($value);
+			case 'consultant':
+				$this->setConsultant($value);
 				break;
 			default:
 				throw new Exception("Invalid parameter: {$key}");
@@ -108,14 +108,14 @@ class Application_Model_Shift
 		$this->_date = $date;
 	}
 	
-	public function getConsultantId()
+	public function getConsultant()
 	{
-		return $this->_consultantId;
+		return $this->_consultant;
 	}
 	
-	public function setConsultantId($consultantId)
+	public function setConsultant($consultant)
 	{
-		$this->_consultantId = $consultantId;
+		$this->_consultant = $consultant;
 	}
 }
 

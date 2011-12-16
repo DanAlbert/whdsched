@@ -1,12 +1,34 @@
 <?php
 
-class Application_Form_Shift extends Zend_Form
+class Application_Form_Assign extends Zend_Form
 {
     public function init()
     {
+		$consultantMapper = new Application_Model_ConsultantMapper();
 		$termMapper = new Application_Model_TermMapper();
 		
-        $this->setMethod('post');
+		$this->setMethod('post');
+		
+		$consultant = $this->createElement('select', 'consultant');
+		$consultant->setLabel('Consulant');
+		foreach ($consultantMapper->fetchAll() as $c)
+		{
+			$consultant->addMultiOption($c->getId(), $c->getName());
+		}
+		
+		$this->addElement($consultant);
+		
+		$day = $this->createElement('select', 'day');
+		$day->setLabel('Day');
+		$day->addMultiOption(0, 'Sunday');
+		$day->addMultiOption(1, 'Monday');
+		$day->addMultiOption(2, 'Tuesday');
+		$day->addMultiOption(3, 'Wednesday');
+		$day->addMultiOption(4, 'Thursday');
+		$day->addMultiOption(5, 'Friday');
+		$day->addMultiOption(6, 'Saturday');
+		
+		$this->addElement($day);
 		
 		$this->addElement('text', 'startTime', array(
 			'label'      => 'Start Time',
@@ -32,28 +54,12 @@ class Application_Form_Shift extends Zend_Form
 			)
 		));
 		
-		$days = $this->createElement('multiCheckbox', 'days');
-		$days->setLabel('Days');
-		$days->addMultiOptions(array(
-			0 => 'Sunday',
-			1  => 'Monday',
-			2  => 'Tuesday',
-			3 => 'Wednesday',
-			4 => 'Thursday',
-			5 => 'Friday',
-			6 => 'Saturday',
-		));
-		
-		$this->addElement($days);
-		
-		$location = $this->createElement('multiCheckbox', 'location');
+		$location = $this->createElement('select', 'location');
 		$location->setLabel('Location');
-		$location->addMultiOptions(array(
-			'WHD'  => 'Helpdesk',
-			'Lab'  => 'Labs',
-			'KEC'  => 'KEC 1130',
-			'Owen' => 'Owen 237',
-		));
+		$location->addMultiOption('WHD', 'Helpdesk');
+		$location->addMultiOption('Lab', 'Labs');
+		$location->addMultiOption('KEC', 'KEC 1130');
+		$location->addMultiOption('Owen', 'Owen 237');
 		
 		$this->addElement($location);
 		

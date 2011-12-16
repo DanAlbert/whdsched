@@ -22,13 +22,13 @@
 				<td><?php print $shift->getTimeString() ?></td>
 				<td><?php print $shift->getLocation() ?></td>
 				<td><?php
-				if ($shift->getConsultantId() == null)
+				if ($shift->getConsultant() == null)
 				{
 					print "No consultant assigned";
 				}
 				else
 				{
-					print $shift->getConsultantId();
+					print $shift->getConsultant()->getName();
 				}
 				?></td>
 			</tr>

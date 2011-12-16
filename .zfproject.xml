@@ -23,11 +23,13 @@
         <controllerFile controllerName="Shift">
           <actionMethod actionName="index"/>
           <actionMethod actionName="create"/>
+          <actionMethod actionName="assign"/>
         </controllerFile>
       </controllersDirectory>
       <formsDirectory enabled="false">
         <formFile formName="Consultant"/>
         <formFile formName="Shift"/>
+        <formFile formName="Assign"/>
       </formsDirectory>
       <layoutsDirectory>
         <layoutScriptsDirectory>
@@ -39,6 +41,7 @@
           <dbTableFile dbTableName="Consultants"/>
           <dbTableFile dbTableName="Shifts"/>
           <dbTableFile dbTableName="TempShifts"/>
+          <dbTableFile dbTableName="Terms"/>
         </dbTableDirectory>
         <modelFile modelName="ConsultantMapper"/>
         <modelFile modelName="Consultant"/>
@@ -46,6 +49,8 @@
         <modelFile modelName="TempShiftMapper"/>
         <modelFile modelName="Shift"/>
         <modelFile modelName="TempShift"/>
+        <modelFile modelName="TermMapper"/>
+        <modelFile modelName="Term"/>
       </modelsDirectory>
       <modulesDirectory enabled="false"/>
       <viewsDirectory>
@@ -73,6 +78,9 @@
           </viewControllerScriptsDirectory>
           <viewControllerScriptsDirectory forControllerName="Shift">
             <viewScriptFile forActionName="create"/>
+          </viewControllerScriptsDirectory>
+          <viewControllerScriptsDirectory forControllerName="Shift">
+            <viewScriptFile forActionName="assign"/>
           </viewControllerScriptsDirectory>
         </viewScriptsDirectory>
         <viewHelpersDirectory/>
@@ -122,6 +130,7 @@
           <testApplicationControllerFile forControllerName="Shift">
             <testApplicationActionMethod forActionName="index"/>
             <testApplicationActionMethod forActionName="create"/>
+            <testApplicationActionMethod forActionName="assign"/>
           </testApplicationControllerFile>
         </testApplicationControllerDirectory>
       </testApplicationDirectory>

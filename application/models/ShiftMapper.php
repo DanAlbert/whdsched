@@ -5,6 +5,13 @@ class Application_Model_ShiftMapper
 	protected $_dbTable;
 	protected $_sequence = true; // Primary key autoincrements
 	
+	protected $consultantMapper;
+	
+	public function __construct()
+	{
+		$this->consultantMapper = new Application_Model_ConsultantMapper();
+	}
+	
 	public function setDbTable($dbTable)
 	{
 		// If the DbTable class name was passed as a string
@@ -37,12 +44,21 @@ class Application_Model_ShiftMapper
 	
 	public function save(Application_Model_Shift $shift)
 	{
+		if ($shift->getConsultant() !== null)
+		{
+			$consultantId = $shift->getConsultant()->getId();
+		}
+		else
+		{
+			$consultantId = null;
+		}
+		
 		$data = array(
 			'start_time'    => $shift->getStartTime(),
 			'end_time'      => $shift->getEndTime(),
 			'location'      => $shift->getLocation(),
 			'day'           => $shift->getDate(),
-			'consultant_id' => $shift->getConsultantId(),
+			'consultant_id' => $consultantId,
 		);
 		
 		$id = $shift->getId();
@@ -80,7 +96,8 @@ class Application_Model_ShiftMapper
 		$shift->setEndTime($row->end_time);
 		$shift->setLocation($row->location);
 		$shift->setDate($row->day);
-		$shift->setConsultantId($row->consultant_id);
+		$shift->setConsultant(
+				$this->consultantMapper->find($row->consultant_id));
 		
 		return $shift;
 	}
@@ -98,7 +115,8 @@ class Application_Model_ShiftMapper
 			$shift->setEndTime($row->end_time);
 			$shift->setLocation($row->location);
 			$shift->setDate($row->day);
-			$shift->setConsultantId($row->consultant_id);
+			$shift->setConsultant(
+					$this->consultantMapper->find($row->consultant_id));
 			
 			$shifts[] = $shift;
 		}
@@ -124,7 +142,37 @@ class Application_Model_ShiftMapper
 			$shift->setEndTime($row->end_time);
 			$shift->setLocation($row->location);
 			$shift->setDate($row->day);
-			$shift->setConsultantId($row->consultant_id);
+			$shift->setConsultant(
+					$this->consultantMapper->find($row->consultant_id));
+			
+			$shifts[] = $shift;
+		}
+		
+		return $shifts;
+	}
+	
+	public function fetchAllByTerm(Application_Model_Term $term)
+	{
+		$select = $this->getDbTable()->select();
+		$select->where('day >= :start AND day <= :end')->bind(array(
+			':start' => $term->getStartDate(),
+			':end'   => $term->getEndDate(),
+		));
+		
+		$resultSet = $this->getDbTable()->fetchAll($select);
+		
+		$shifts = array();
+		
+		foreach ($resultSet as $row)
+		{
+			$shift = new Application_Model_Shift();
+			$shift->setId($row->id);
+			$shift->setStartTime($row->start_time);
+			$shift->setEndTime($row->end_time);
+			$shift->setLocation($row->location);
+			$shift->setDate($row->day);
+			$shift->setConsultant(
+					$this->consultantMapper->find($row->consultant_id));
 			
 			$shifts[] = $shift;
 		}
