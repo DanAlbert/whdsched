@@ -10,7 +10,17 @@ class IndexController extends Zend_Controller_Action
 
     public function indexAction()
     {
-        // action body
+        $this->view->month = $this->getRequest()->getParam('month');
+		if ($this->view->month == null)
+		{
+			$this->view->month = date('n');
+		}
+		
+		$this->view->year = $this->getRequest()->getParam('year');
+		if ($this->view->year == null)
+		{
+			$this->view->year = date('Y');
+		}
     }
 
 

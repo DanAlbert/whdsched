@@ -17,6 +17,9 @@
           <actionMethod actionName="delete"/>
           <actionMethod actionName="create"/>
         </controllerFile>
+        <controllerFile controllerName="Schedule">
+          <actionMethod actionName="index"/>
+        </controllerFile>
       </controllersDirectory>
       <formsDirectory enabled="false">
         <formFile formName="Consultant"/>
@@ -56,6 +59,9 @@
           </viewControllerScriptsDirectory>
           <viewControllerScriptsDirectory forControllerName="Consultants">
             <viewScriptFile forActionName="create"/>
+          </viewControllerScriptsDirectory>
+          <viewControllerScriptsDirectory forControllerName="Schedule">
+            <viewScriptFile forActionName="index"/>
           </viewControllerScriptsDirectory>
         </viewScriptsDirectory>
         <viewHelpersDirectory/>
@@ -98,6 +104,9 @@
             <testApplicationActionMethod forActionName="index"/>
             <testApplicationActionMethod forActionName="delete"/>
             <testApplicationActionMethod forActionName="create"/>
+          </testApplicationControllerFile>
+          <testApplicationControllerFile forControllerName="Schedule">
+            <testApplicationActionMethod forActionName="index"/>
           </testApplicationControllerFile>
         </testApplicationControllerDirectory>
       </testApplicationDirectory>

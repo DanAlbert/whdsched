@@ -1,0 +1,18 @@
+/* 
+    Document   : global
+    Created on : Dec 15, 2011, 2:50:42 PM
+    Author     : Dan Albert
+    Description:
+        Defines site wide styles
+*/
+
+table.calendar, table.calendar td
+{
+	border: 1px solid black;
+}
+
+table.calendar td
+{
+	text-align: center;
+	padding: 5px;
+}
