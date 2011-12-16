@@ -1,4 +1,40 @@
 <br /><br />
 <div id="view-content">
-	<p>View script for controller <b>Schedule</b> and script/action name <b>index</b></p>
+	<?php
+	
+	if (isset($this->error)):
+		print $this->error;
+	else:
+	?>
+	Schedule for <?php print date('l, F j, Y', $this->timestamp) ?>
+	<table class="schedule">
+		<thead>
+			<tr>
+				<td>Time</td>
+				<td>Location</td>
+				<td>Consultant</td>
+			</tr>
+		</thead>
+		<tbody>
+			<?php foreach ($this->schedule as $shift): ?>
+			
+			<tr>
+				<td><?php print $shift->getTimeString() ?></td>
+				<td><?php print $shift->getLocation() ?></td>
+				<td><?php
+				if ($shift->getConsultantId() == null)
+				{
+					print "No consultant assigned";
+				}
+				else
+				{
+					print $shift->getConsultantId();
+				}
+				?></td>
+			</tr>
+			
+			<?php endforeach ?>
+		</tbody>
+	</table>
+	<?php endif ?>
 </div>

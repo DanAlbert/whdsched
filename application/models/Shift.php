@@ -82,6 +82,12 @@ class Application_Model_Shift
 		$this->_endTime = $endTime;
 	}
 	
+	public function getTimeString()
+	{
+		return substr($this->getStartTime(), 0, 5) . ' - ' .
+				substr($this->getEndTime(), 0, 5);
+	}
+	
 	public function getLocation()
 	{
 		return $this->_location;

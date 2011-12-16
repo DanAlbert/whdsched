@@ -16,6 +16,7 @@ class ConsultantsController extends Zend_Controller_Action
 
     public function editAction()
     {
+		$form = new Application_Form_Consultant();
 		$consultantMapper = new Application_Model_ConsultantMapper();
 		
 		$request = $this->getRequest();
@@ -29,9 +30,7 @@ class ConsultantsController extends Zend_Controller_Action
 		else
 		{
 			if ($request->isPost())
-			{			
-				$form = new Application_Form_Consultant();
-
+			{
 				if ($form->isValid($request->getPost()))
 				{
 					$values = $form->getValues();
@@ -57,8 +56,7 @@ class ConsultantsController extends Zend_Controller_Action
 					'engr'      => $consultant->getEngr(),
 					'phone'     => $consultant->getPhone(),
 				);
-
-				$form = new Application_Form_Consultant();
+				
 				$form->populate($defaults);
 
 				$this->view->form = $form;
@@ -88,16 +86,14 @@ class ConsultantsController extends Zend_Controller_Action
 
     public function createAction()
     {
-        $consultantMapper = new Application_Model_ConsultantMapper();
-		
+		$form = new Application_Form_Consultant();
 		$request = $this->getRequest();
 		
 		if ($request->isPost())
-		{			
-			$form = new Application_Form_Consultant();
-
+		{
 			if ($form->isValid($request->getPost()))
 			{
+				$consultantMapper = new Application_Model_ConsultantMapper();
 				$consultant = new Application_Model_Consultant();
 				
 				$values = $form->getValues();
@@ -124,8 +120,6 @@ class ConsultantsController extends Zend_Controller_Action
 		}
 		else
 		{
-			$form = new Application_Form_Consultant();
-
 			$this->view->form = $form;
 		}
     }

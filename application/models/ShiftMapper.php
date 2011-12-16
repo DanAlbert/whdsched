@@ -105,5 +105,31 @@ class Application_Model_ShiftMapper
 		
 		return $shifts;
 	}
+	
+	public function fetchAllByDate($timestamp)
+	{
+		$dateString = date('Y-m-d', $timestamp);
+		
+		$resultSet = $this->getDbTable()->fetchAll(
+				array('day = ?' => $dateString),
+				array('start_time', 'location'));
+		
+		$shifts = array();
+		
+		foreach ($resultSet as $row)
+		{
+			$shift = new Application_Model_Shift();
+			$shift->setId($row->id);
+			$shift->setStartTime($row->start_time);
+			$shift->setEndTime($row->end_time);
+			$shift->setLocation($row->location);
+			$shift->setDate($row->day);
+			$shift->setConsultantId($row->consultant_id);
+			
+			$shifts[] = $shift;
+		}
+		
+		return $shifts;
+	}
 }
 
