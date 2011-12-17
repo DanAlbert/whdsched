@@ -1,10 +1,12 @@
 <br /><br />
 <div id="view-content">
+	<?php if ($this->user->isAdmin()): ?>
 	<a href="<?php print $this->url(array(
 			'controller' => 'consultants',
 			'action'     => 'create',
 		)); ?>">Create a new consultant</a>
 	<br />
+	<?php endif; ?>
 	Consultants:
 	<table>
 		<thead>
@@ -26,7 +28,7 @@
 				
 				// If the row refers to the current user
 				// Allow them to edit their information
-				if ($this->user->getId() == $consultant->getId())
+				if (($this->user->getId() == $consultant->getId()) or ($this->user->isAdmin()))
 				{
 				?>
 				
@@ -34,7 +36,7 @@
 					'controller' => 'consultants',
 					'action'     => 'edit',
 					'id'         => $consultant->getId(),
-				)); ?>">Edit</a></td>
+				), null, true); ?>">Edit</a></td>
 				
 				<?php
 				}
@@ -45,11 +47,15 @@
 				}
 				?>
 				
+				<?php if ($this->user->isAdmin()): ?>
 				<td><a href="<?php print $this->url(array(
 						'controller' => 'consultants',
 						'action'     => 'delete',
 						'id'         => $consultant->getId(),
-					)); ?>">Delete</a></td>
+					), null, true); ?>">Delete</a></td>
+				<?php else: ?>
+				<td>&nbsp;</td>
+				<?php endif; ?>
 				
 			</tr>
 			<?php endforeach ?>

@@ -5,7 +5,9 @@ CREATE TABLE consultants
 	last_name VARCHAR(40) NOT NULL,
 	engr VARCHAR(20) NOT NULL,
 	phone VARCHAR(10) NOT NULL,
-	PRIMARY KEY (id)
+	admin BOOLEAN NOT NULL DEFAULT 0,
+	PRIMARY KEY (id),
+	UNIQUE (engr)
 ) ENGINE=InnoDB;
 
 CREATE TABLE shifts
@@ -18,7 +20,7 @@ CREATE TABLE shifts
 	consultant_id INT,
 	PRIMARY KEY (id),
 	UNIQUE (start_time, end_time, location, day),
-	FOREIGN KEY (consultant_id) REFERENCES consultants (id)
+	FOREIGN KEY (consultant_id) REFERENCES consultants (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 CREATE TABLE temp_shifts
@@ -34,9 +36,9 @@ CREATE TABLE temp_shifts
 	timeout INT,
 	PRIMARY KEY (id),
 	UNIQUE (shift_id, temp_consultant_id),
-	FOREIGN KEY (shift_id) REFERENCES shifts (id),
-	FOREIGN KEY (temp_consultant_id) REFERENCES consultants (id),
-	FOREIGN KEY (assigned_to) REFERENCES consultants (id)
+	FOREIGN KEY (shift_id) REFERENCES shifts (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY (temp_consultant_id) REFERENCES consultants (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY (assigned_to) REFERENCES consultants (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 CREATE TABLE terms

@@ -35,7 +35,7 @@ class ConsultantsController extends Zend_Controller_Action
 		}
 		else
 		{
-			if ($consultant->getId() == $user->getId())
+			if (($consultant->getId() == $user->getId()) or ($user->isAdmin()))
 			{
 				if ($request->isPost())
 				{
@@ -72,58 +72,78 @@ class ConsultantsController extends Zend_Controller_Action
 			}
 			else
 			{
-				$this->view->messages[] = "You are forbidden from editting this user's information.";
+				$this->view->messages[] = "You are forbidden from editing this user's information.";
 			}
 		}
     }
 
     public function deleteAction()
     {
-		$consultantMapper = new Application_Model_ConsultantMapper();
-		
-		$request = $this->getRequest();
-		$id = $request->getParam('id');
-		$consultant = $consultantMapper->find($id);
-		
-		if ($consultant === null)
-		{
-			$this->view->error = "No such consultant";
-		}
-		else
-		{
-			$consultantMapper->delete($consultant);
+    	$this->view->messages = array();
+    	$user = Zend_Auth::getInstance()->getIdentity();
+    	
+    	if ($user->isAdmin())
+    	{
+			$consultantMapper = new Application_Model_ConsultantMapper();
 			
-			return $this->_helper->redirector('index');
-		}
+			$request = $this->getRequest();
+			$id = $request->getParam('id');
+			$consultant = $consultantMapper->find($id);
+			
+			if ($consultant === null)
+			{
+				$this->view->messages[] = "No such consultant";
+			}
+			else
+			{
+				$consultantMapper->delete($consultant);
+				
+				return $this->_helper->redirector('index');
+			}
+    	}
+    	else
+    	{
+    		$this->view->messages[] = "You are forbidden from deleting users.";
+    	}
     }
 
     public function createAction()
     {
+    	$this->view->messages = array();
+    	$user = Zend_Auth::getInstance()->getIdentity();
+    	
 		$form = new Application_Form_Consultant();
 		$request = $this->getRequest();
 		
-		if ($request->isPost())
+		if ($user->isAdmin())
 		{
-			if ($form->isValid($request->getPost()))
+			if ($request->isPost())
 			{
-				$consultantMapper = new Application_Model_ConsultantMapper();
-				$consultant = new Application_Model_Consultant();
-				
-				$values = $form->getValues();
-				$consultant->setFirstName($values['firstName']);
-				$consultant->setLastName($values['lastName']);
-				$consultant->setEngr($values['engr']);
-				$consultant->setPhone($values['phone']);
-
-				$consultant->setId(null);
-				
-				if ($consultantMapper->save($consultant) > 0)
+				if ($form->isValid($request->getPost()))
 				{
-					return $this->_helper->redirector('index');
+					$consultantMapper = new Application_Model_ConsultantMapper();
+					$consultant = new Application_Model_Consultant();
+					
+					$values = $form->getValues();
+					$consultant->setFirstName($values['firstName']);
+					$consultant->setLastName($values['lastName']);
+					$consultant->setEngr($values['engr']);
+					$consultant->setPhone($values['phone']);
+	
+					$consultant->setId(null);
+					
+					if ($consultantMapper->save($consultant) > 0)
+					{
+						return $this->_helper->redirector('index');
+					}
+					else
+					{
+						$this->view->messages[] = "Could not insert consultant";
+					}
 				}
 				else
 				{
-					$this->view->error = "Could not insert consultant";
+					$this->view->form = $form;
 				}
 			}
 			else
@@ -133,7 +153,7 @@ class ConsultantsController extends Zend_Controller_Action
 		}
 		else
 		{
-			$this->view->form = $form;
+    		$this->view->messages[] = "You are forbidden from creating users.";
 		}
     }
 

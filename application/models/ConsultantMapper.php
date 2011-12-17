@@ -42,6 +42,7 @@ class Application_Model_ConsultantMapper
 			'last_name'  => $consultant->getLastName(),
 			'engr'       => $consultant->getEngr(),
 			'phone'      => $consultant->getPhone(),
+			'admin'      => $consultant->isAdmin(),
 		);
 		
 		$id = $consultant->getId();
@@ -79,6 +80,7 @@ class Application_Model_ConsultantMapper
 		$consultant->setLastName($row->last_name);
 		$consultant->setEngr($row->engr);
 		$consultant->setPhone($row->phone);
+		$consultant->setAdmin($row->admin);
 		
 		return $consultant;
 	}
@@ -99,6 +101,7 @@ class Application_Model_ConsultantMapper
 		$consultant->setLastName($row->last_name);
 		$consultant->setEngr($row->engr);
 		$consultant->setPhone($row->phone);
+		$consultant->setAdmin($row->admin);
 		
 		return $consultant;
 	}
@@ -116,6 +119,7 @@ class Application_Model_ConsultantMapper
 			$consultant->setLastName($row->last_name);
 			$consultant->setEngr($row->engr);
 			$consultant->setPhone($row->phone);
+			$consultant->setAdmin($row->admin);
 			
 			$consultants[] = $consultant;
 		}

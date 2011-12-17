@@ -1,11 +1,7 @@
 <br /><br />
 <div id="view-content">
-	<?php
-	
-	print '<a href="' . $this->url(array(
+	<a href="<?php print $this->url(array(
 			'controller' => 'index',
 			'action' => 'index'
-		)) . '">Return to main page</a>';
-		
-	?>
+		), null, true) ?>">Return to main page</a>
 </div>

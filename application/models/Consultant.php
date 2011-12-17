@@ -8,6 +8,7 @@ class Application_Model_Consultant
 	protected $_lastName;
 	protected $_engr;
 	protected $_phone;
+	protected $_admin;
 	
 	public function __construct(array $data = null)
 	{
@@ -41,6 +42,9 @@ class Application_Model_Consultant
 				break;
 			case 'phone':
 				$this->setPhone($value);
+				break;
+			case 'admin':
+				$this->setAdmin($value);
 				break;
 			default:
 				throw new Exception("Invalid parameter: {$key}");
@@ -116,6 +120,16 @@ class Application_Model_Consultant
 		$last = substr($this->getPhone(), 6, 4);
 		
 		return "({$area}) {$first}-{$last}";
+	}
+	
+	public function isAdmin()
+	{
+		return ($this->_admin != 0);
+	}
+	
+	public function setAdmin($admin)
+	{
+		$this->_admin = $admin;
 	}
 }
 

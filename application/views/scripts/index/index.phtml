@@ -1,3 +1,4 @@
+<br /><br />
 <div id="welcome">
 	<?php
 	
@@ -45,7 +46,7 @@
 					'action'     => 'index',
 					'month'      => $month,
 					'year'       => $year,
-				)) . '">&rarr;</a></td>';
+				), null, true) . '">&rarr;</a></td>';
 				
 				?>
 			</tr>
@@ -88,7 +89,7 @@
 							'day'        => $day,
 							'month'      => $this->month,
 							'year'       => $this->year,
-						)) . '">' . $day . '</a></td>';
+						), null, true) . '">' . $day . '</a></td>';
 					}
 					$day++;
 				}

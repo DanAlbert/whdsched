@@ -1,14 +1,12 @@
 <br /><br />
 <div id="view-content">
+	<a href="<?php print $this->url(array(
+			'controller' => 'consultants',
+			'action'     => 'index',
+		), null, true) ?>">Return to list</a>
 	<?php
 	
-	if (isset($this->error))
-	{
-		print $this->error;
-		print '<br />';
-		print '<a href="' . $this->url() . '">Return to form</a>';
-	}
-	else
+	if (isset($this->form))
 	{
 		$this->form->setAction($this->url());
 		print $this->form;

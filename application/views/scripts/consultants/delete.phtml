@@ -1,16 +1,7 @@
 <br /><br />
 <div id="view-content">
-	<?php
-	
-	if (isset($this->error))
-	{
-		print $this->error;
-		print '<br />';
-		print '<a href="' . $this->url(array(
+	<a href="<?php print $this->url(array(
 			'controller' => 'consultants',
 			'action'     => 'index',
-		)) . '">Return to list</a>';
-	}
-	
-	?>
+		), null, true) ?>">Return to list</a>
 </div>

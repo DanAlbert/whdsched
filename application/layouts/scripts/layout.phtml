@@ -10,14 +10,47 @@
 <body>
 <?php
 
+$menuLinks = array();
+
+$menuLinks[] = '<a href="' . $this->url(array(
+		'controller' => 'index',
+		'action' => 'index'),
+		null, true) . '">Calendar</a>';
+
+$menuLinks[] = '<a href="' . $this->url(array(
+		'controller' => 'schedule',
+		'action' => 'index'),
+		null, true) . '">Today\'s schedule</a>';
+
+$menuLinks[] = '<a href="' . $this->url(array(
+		'controller' => 'consultants',
+		'action' => 'index'),
+		null, true) . '">View roster</a>';
+
 if (Zend_Auth::getInstance()->hasIdentity())
 {
-	print '<a href="' . $this->url(array(
+	if (Zend_Auth::getInstance()->getIdentity()->isAdmin())
+	{
+		$menuLinks[] = '<a href="' . $this->url(array(
+				'controller' => 'shift',
+				'action' => 'create'),
+				null, true) . '">Create shifts</a>';
+		
+		$menuLinks[] = '<a href="' . $this->url(array(
+				'controller' => 'shift',
+				'action' => 'assign'),
+				null, true) . '">Assign shifts</a>';
+	}
+	
+	$menuLinks[] = '<a href="' . $this->url(array(
 				'controller' => 'index',
 				'action' => 'logout'
 			),
 			null, true) . '">Logout</a>';
 }
+
+// Print all menu links with a separator
+print implode(' | ', $menuLinks);
 
 // Print any messages sent from the controller
 if (isset($this->messages))
