@@ -8,6 +8,30 @@
 	<?php print $this->headScript() ?>
 </head>
 <body>
-	<?php print $this->layout()->content; ?>
+<?php
+
+if (Zend_Auth::getInstance()->hasIdentity())
+{
+	print '<a href="' . $this->url(array(
+				'controller' => 'index',
+				'action' => 'logout'
+			),
+			null, true) . '">Logout</a>';
+}
+
+// Print any messages sent from the controller
+if (isset($this->messages))
+{
+	print '<ul>';
+	foreach ($this->messages as $message)
+	{
+		print '<li>' . $message . '</li>';
+	}
+	print '</ul>';
+}
+
+print $this->layout()->content;
+
+?>
 </body>
 </html>

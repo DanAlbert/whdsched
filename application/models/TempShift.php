@@ -135,7 +135,7 @@ class Application_Model_TempShift
 		return $this->_timeout;
 	}
 	
-	public function setHours($timeout)
+	public function setTimeout($timeout)
 	{
 		$this->_timeout = $timeout;
 	}

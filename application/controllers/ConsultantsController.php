@@ -10,12 +10,18 @@ class ConsultantsController extends Zend_Controller_Action
 
     public function indexAction()
     {
-        $consultantMapper = new Application_Model_ConsultantMapper();
+    	$this->view->messages = array();
+    	$this->view->user = Zend_Auth::getInstance()->getIdentity();
+    	
+		$consultantMapper = new Application_Model_ConsultantMapper();
 		$this->view->consultants = $consultantMapper->fetchAll();
     }
 
     public function editAction()
     {
+    	$this->view->messages = array();
+    	$user = Zend_Auth::getInstance()->getIdentity();
+    	
 		$form = new Application_Form_Consultant();
 		$consultantMapper = new Application_Model_ConsultantMapper();
 		
@@ -29,37 +35,44 @@ class ConsultantsController extends Zend_Controller_Action
 		}
 		else
 		{
-			if ($request->isPost())
+			if ($consultant->getId() == $user->getId())
 			{
-				if ($form->isValid($request->getPost()))
+				if ($request->isPost())
 				{
-					$values = $form->getValues();
-					$consultant->setFirstName($values['firstName']);
-					$consultant->setLastName($values['lastName']);
-					$consultant->setEngr($values['engr']);
-					$consultant->setPhone($values['phone']);
-
-					$consultantMapper->save($consultant);
-
-					return $this->_helper->redirector('index');
+					if ($form->isValid($request->getPost()))
+					{
+						$values = $form->getValues();
+						$consultant->setFirstName($values['firstName']);
+						$consultant->setLastName($values['lastName']);
+						$consultant->setEngr($values['engr']);
+						$consultant->setPhone($values['phone']);
+	
+						$consultantMapper->save($consultant);
+	
+						return $this->_helper->redirector('index');
+					}
+					else
+					{
+						$this->view->form = $form;
+					}
 				}
 				else
 				{
+					$defaults = array(
+						'firstName' => $consultant->getFirstName(),
+						'lastName'  => $consultant->getLastName(),
+						'engr'      => $consultant->getEngr(),
+						'phone'     => $consultant->getPhone(),
+					);
+					
+					$form->populate($defaults);
+	
 					$this->view->form = $form;
 				}
 			}
 			else
 			{
-				$defaults = array(
-					'firstName' => $consultant->getFirstName(),
-					'lastName'  => $consultant->getLastName(),
-					'engr'      => $consultant->getEngr(),
-					'phone'     => $consultant->getPhone(),
-				);
-				
-				$form->populate($defaults);
-
-				$this->view->form = $form;
+				$this->view->messages[] = "You are forbidden from editting this user's information.";
 			}
 		}
     }

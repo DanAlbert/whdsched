@@ -83,6 +83,26 @@ class Application_Model_ConsultantMapper
 		return $consultant;
 	}
 	
+	public function findByEngr($engr)
+	{
+		$result = $this->getDbTable()->fetchAll(array('engr = ?' => $engr));
+		if (count($result) == 0)
+		{
+			return null;
+		}
+		
+		$row = $result->current();
+		
+		$consultant = new Application_Model_Consultant();
+		$consultant->setId($row->id);
+		$consultant->setFirstName($row->first_name);
+		$consultant->setLastName($row->last_name);
+		$consultant->setEngr($row->engr);
+		$consultant->setPhone($row->phone);
+		
+		return $consultant;
+	}
+	
 	public function fetchAll()
 	{
 		$resultSet = $this->getDbTable()->fetchAll();

@@ -22,16 +22,35 @@
 				<td><?php print $consultant->getName() ?></td>
 				<td><?php print $consultant->getEmail() ?></td>
 				<td><?php print $consultant->getPhoneFormatted() ?></td>
+				<?php
+				
+				// If the row refers to the current user
+				// Allow them to edit their information
+				if ($this->user->getId() == $consultant->getId())
+				{
+				?>
+				
 				<td><a href="<?php print $this->url(array(
-						'controller' => 'consultants',
-						'action'     => 'edit',
-						'id'         => $consultant->getId(),
-					)); ?>">Edit</a></td>
+					'controller' => 'consultants',
+					'action'     => 'edit',
+					'id'         => $consultant->getId(),
+				)); ?>">Edit</a></td>
+				
+				<?php
+				}
+				else
+				{
+					// Otherwise print an empty cell
+					print '<td>&nbsp;</td>';
+				}
+				?>
+				
 				<td><a href="<?php print $this->url(array(
 						'controller' => 'consultants',
 						'action'     => 'delete',
 						'id'         => $consultant->getId(),
 					)); ?>">Delete</a></td>
+				
 			</tr>
 			<?php endforeach ?>
 		</tbody>

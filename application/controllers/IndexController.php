@@ -10,7 +10,7 @@ class IndexController extends Zend_Controller_Action
 
     public function indexAction()
     {
-        $this->view->month = $this->getRequest()->getParam('month');
+		$this->view->month = $this->getRequest()->getParam('month');
 		if ($this->view->month == null)
 		{
 			$this->view->month = date('n');
@@ -23,6 +23,22 @@ class IndexController extends Zend_Controller_Action
 		}
     }
 
+    public function authenticateAction()
+    {
+    }
 
+    public function logoutAction()
+    {
+    	$this->view->messages = array();
+    	
+        Zend_Auth::getInstance()->clearIdentity();
+        if (Zend_Auth::getInstance()->hasIdentity())
+        {
+        	$this->view->messages[] = 'You have been logged out';
+        }
+        else
+        {
+        	$this->view->messages[] = 'Unable to log out';
+        }
+    }
 }
-
