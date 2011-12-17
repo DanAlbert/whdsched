@@ -8,6 +8,7 @@
 	<?php print $this->headScript() ?>
 </head>
 <body>
+<div id="container">
 <?php
 
 $menuLinks = array();
@@ -66,5 +67,6 @@ if (isset($this->messages))
 print $this->layout()->content;
 
 ?>
+</div> <!-- End container -->
 </body>
 </html>

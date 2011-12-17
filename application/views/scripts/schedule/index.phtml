@@ -17,22 +17,78 @@
 		</thead>
 		<tbody>
 			<?php foreach ($this->schedule as $shift): ?>
+			<?php if ($shift instanceof Application_Model_TempShift) { $temp = $shift; $shift = $temp->getShift(); } ?>
 			
 			<tr>
 				<td><?php print $shift->getTimeString() ?></td>
 				<td><?php print $shift->getLocation() ?></td>
 				<td><?php
-				if ($shift->getConsultant() == null)
+				// Is the shift assigned or able to be claimed?
+				if (($shift->getConsultant() != null) or (isset($temp)))
 				{
-					print "No consultant assigned";
+					// Is there a temp shift posted?
+					if (isset($temp))
+					{
+						// Has someone taken the shift?
+						if ($temp->getTempConsultant())
+						{
+							if ($temp->getTempConsultant()->getId() == $this->user->getId())
+							{
+								print 'You are covering this shift (<a href="' . $this->url(array(
+										'controller' => 'temp',
+										'action'     => 'cancel',
+										'id'         => $temp->getId(),
+									), null, true) . '">cancel</a>)'; 
+							}
+							else
+							{
+								print $temp->getTempConsultant()->getName() . ' is covering this shift';
+							}
+						}
+						else
+						{
+							if ($shift->getConsultant()->getId() == $this->user->getId())
+							{
+								print '<a href="' . $this->url(array(
+									'controller' => 'temp',
+									'action' => 'cancel',
+									'id' => $temp->getId(),
+									), null, true) . '">Cancel this temp shift</a>';
+							}
+							else
+							{
+								// Allow someone to claim the shift
+								print '<a href="' . $this->url(array(
+										'controller' => 'temp',
+										'action'     => 'take',
+										'id' => $temp->getId(),
+									), null, true) . '">Take this shift</a>';
+							}
+						}
+					}
+					else
+					{
+						print $shift->getConsultant()->getName();
+						
+						if ($shift->getConsultant()->getId() == $this->user->getId())
+						{
+							print ' (<a href="' . $this->url(array(
+									'controller' => 'temp',
+									'action' => 'create',
+									'id' => $shift->getId(),
+								), null, true) . '">request temp</a>)';
+						}
+					}
 				}
+				// No one is assigned to the shift
 				else
 				{
-					print $shift->getConsultant()->getName();
+					// Is the shift assigned?
+					print 'No consultant assigned';
 				}
 				?></td>
 			</tr>
-			
+			<?php unset($temp) ?>
 			<?php endforeach ?>
 		</tbody>
 	</table>

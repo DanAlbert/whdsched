@@ -27,6 +27,12 @@
           <actionMethod actionName="create"/>
           <actionMethod actionName="assign"/>
         </controllerFile>
+        <controllerFile controllerName="Temp">
+          <actionMethod actionName="index"/>
+          <actionMethod actionName="create"/>
+          <actionMethod actionName="cancel"/>
+          <actionMethod actionName="take"/>
+        </controllerFile>
       </controllersDirectory>
       <formsDirectory enabled="false">
         <formFile formName="Consultant"/>
@@ -90,6 +96,18 @@
           <viewControllerScriptsDirectory forControllerName="Index">
             <viewScriptFile forActionName="logout"/>
           </viewControllerScriptsDirectory>
+          <viewControllerScriptsDirectory forControllerName="Temp">
+            <viewScriptFile forActionName="index"/>
+          </viewControllerScriptsDirectory>
+          <viewControllerScriptsDirectory forControllerName="Temp">
+            <viewScriptFile forActionName="create"/>
+          </viewControllerScriptsDirectory>
+          <viewControllerScriptsDirectory forControllerName="Temp">
+            <viewScriptFile forActionName="cancel"/>
+          </viewControllerScriptsDirectory>
+          <viewControllerScriptsDirectory forControllerName="Temp">
+            <viewScriptFile forActionName="take"/>
+          </viewControllerScriptsDirectory>
         </viewScriptsDirectory>
         <viewHelpersDirectory/>
         <viewFiltersDirectory enabled="false"/>
@@ -141,6 +159,12 @@
             <testApplicationActionMethod forActionName="index"/>
             <testApplicationActionMethod forActionName="create"/>
             <testApplicationActionMethod forActionName="assign"/>
+          </testApplicationControllerFile>
+          <testApplicationControllerFile forControllerName="Temp">
+            <testApplicationActionMethod forActionName="index"/>
+            <testApplicationActionMethod forActionName="create"/>
+            <testApplicationActionMethod forActionName="cancel"/>
+            <testApplicationActionMethod forActionName="take"/>
           </testApplicationControllerFile>
         </testApplicationControllerDirectory>
       </testApplicationDirectory>

@@ -20,25 +20,25 @@ CREATE TABLE shifts
 	consultant_id INT,
 	PRIMARY KEY (id),
 	UNIQUE (start_time, end_time, location, day),
-	FOREIGN KEY (consultant_id) REFERENCES consultants (id) ON DELETE CASCADE ON UPDATE CASCADE
+	FOREIGN KEY (consultant_id) REFERENCES consultants (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 CREATE TABLE temp_shifts
 (
 	id INT NOT NULL AUTO_INCREMENT,
 	shift_id INT NOT NULL,
-	temp_consultant_id INT NOT NULL,
-	post_time TIMESTAMP,
+	temp_consultant_id INT,
+	post_time TIMESTAMP NOT NULL DEFAULT NOW(),
 	response_time TIMESTAMP,
 	hours SET('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11',
 		'12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23'),
 	assigned_to INT,
 	timeout INT,
 	PRIMARY KEY (id),
-	UNIQUE (shift_id, temp_consultant_id),
+	UNIQUE (shift_id),
 	FOREIGN KEY (shift_id) REFERENCES shifts (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	FOREIGN KEY (temp_consultant_id) REFERENCES consultants (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	FOREIGN KEY (assigned_to) REFERENCES consultants (id) ON DELETE CASCADE ON UPDATE CASCADE
+	FOREIGN KEY (temp_consultant_id) REFERENCES consultants (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	FOREIGN KEY (assigned_to) REFERENCES consultants (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 CREATE TABLE terms

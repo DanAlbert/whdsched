@@ -3,8 +3,8 @@
 class Application_Model_TempShift
 {
 	protected $_id;
-	protected $_shiftId;
-	protected $_tempConsultantId;
+	protected $_shift;
+	protected $_tempConsultant;
 	protected $_postTime;
 	protected $_responseTime;
 	protected $_hours;
@@ -32,10 +32,10 @@ class Application_Model_TempShift
 			case 'id':
 				$this->setId($value);
 				break;
-			case 'shift_id':
+			case 'shift':
 				$this->setShiftId($value);
 				break;
-			case 'temp_consultant_id':
+			case 'temp_consultant':
 				$this->setTempConsultantId($value);
 				break;
 			case 'post_time':
@@ -70,24 +70,24 @@ class Application_Model_TempShift
 		$this->_id = $id;
 	}
 	
-	public function getShiftId()
+	public function getShift()
 	{
-		return $this->_shiftId;
+		return $this->_shift;
 	}
 	
-	public function setShiftId($shiftId)
+	public function setShift($shift)
 	{
-		$this->_shiftId = $shiftId;
+		$this->_shift = $shift;
 	}
 	
-	public function getTempConsultantId()
+	public function getTempConsultant()
 	{
-		return $this->_tempConsultantId;
+		return $this->_tempConsultant;
 	}
 	
-	public function setTempConsultantId($tempConsultantId)
+	public function setTempConsultant($tempConsultant)
 	{
-		$this->_tempConsultantId = $tempConsultantId;
+		$this->_tempConsultant = $tempConsultant;
 	}
 	
 	public function getPostTime()

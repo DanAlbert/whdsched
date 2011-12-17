@@ -10,6 +10,10 @@ class ScheduleController extends Zend_Controller_Action
 
     public function indexAction()
     {
+    	$this->view->messages = $this->_helper->getHelper('FlashMessenger')->getMessages();
+    	
+    	$this->view->user = Zend_Auth::getInstance()->getIdentity();
+    	
 		$day = $this->getRequest()->getParam('day');
         $month = $this->getRequest()->getParam('month');
 		$year = $this->getRequest()->getParam('year');
@@ -41,7 +45,17 @@ class ScheduleController extends Zend_Controller_Action
 		$shiftMapper = new Application_Model_ShiftMapper();
 		$tempShiftMapper = new Application_Model_TempShiftMapper();
 		
-		return $shiftMapper->fetchAllByDate($this->timestamp);
+		$shifts = $shiftMapper->fetchAllByDate($this->timestamp);
+		foreach ($shifts as $key => $shift)
+		{
+			$temp = $tempShiftMapper->findByShift($shift);
+			if ($temp !== null)
+			{
+				$shifts[$key] = $temp;
+			}
+		}
+		
+		return $shifts;
 	}
 }
 

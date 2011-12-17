@@ -5,6 +5,15 @@ class Application_Model_TempShiftMapper
 	protected $_dbTable;
 	protected $_sequence = true; // Primary key autoincrements
 	
+	protected $shiftMapper;
+	protected $consultantMapper;
+	
+	public function __construct()
+	{
+		$this->shiftMapper = new Application_Model_ShiftMapper();
+		$this->consultantMapper = new Application_Model_ConsultantMapper();
+	}
+	
 	public function setDbTable($dbTable)
 	{
 		// If the DbTable class name was passed as a string
@@ -35,15 +44,35 @@ class Application_Model_TempShiftMapper
 		return $this->_dbTable;
 	}
 	
+	// You were here before you had to dig Andy out from under a heaping pile of OS X server
+	// TODO: Replace temp consultant id, shift id, assigned consultant id with the actual models
 	public function save(Application_Model_TempShift $tempShift)
 	{
+	if ($tempShift->getTempConsultant() !== null)
+		{
+			$tempConsultantId = $tempShift->getTempConsultant()->getId();
+		}
+		else
+		{
+			$tempConsultantId = null;
+		}
+		
+		if ($tempShift->getAssignedConsultant() !== null)
+		{
+			$assignedId = $tempShift->getAssignedConsultant()->getId();
+		}
+		else
+		{
+			$assignedId = null;
+		}
+		
 		$data = array(
-			'shift_id'           => $tempShift->getShiftId(),
-			'temp_consultant_id' => $tempShift->getTempConsultantId(),
+			'shift_id'           => $tempShift->getShift()->getId(),
+			'temp_consultant_id' => $tempConsultantId,
 			'post_time'          => $tempShift->getPostTime(),
 			'response_time'      => $tempShift->getResponseTime(),
 			'hours'              => $tempShift->getHours(),
-			'assigned_to'        => $tempShift->getAssignedConsultant(),
+			'assigned_to'        => $assignedId,
 			'timeout'            => $tempShift->getTimeout(),
 		);
 		
@@ -78,12 +107,35 @@ class Application_Model_TempShiftMapper
 		
 		$tempShift = new Application_Model_TempShift();
 		$tempShift->setId($id);
-		$tempShift->setShiftId($row->shift_id);
-		$tempShift->setTempConsultant($row->temp_consultant_id);
+		$tempShift->setShift($this->shiftMapper->find($row->shift_id));
+		$tempShift->setTempConsultant($this->consultantMapper->find($row->temp_consultant_id));
 		$tempShift->setPostTime($row->post_time);
 		$tempShift->setResponseTime($row->response_time);
 		$tempShift->setHours($row->hours);
-		$tempShift->setAssignedConsultant($row->assigned_to);
+		$tempShift->setAssignedConsultant($this->consultantMapper->find($row->assigned_to));
+		$tempShift->setTimeout($row->timeout);
+		
+		return $tempShift;
+	}
+	
+	public function findByShift(Application_Model_Shift $shift)
+	{
+		$result = $this->getDbTable()->fetchAll(array('shift_id = ?' => $shift->getId()));
+		if (count($result) == 0)
+		{
+			return null;
+		}
+		
+		$row = $result->current();
+		
+		$tempShift = new Application_Model_TempShift();
+		$tempShift->setId($row->id);
+		$tempShift->setShift($this->shiftMapper->find($row->shift_id));
+		$tempShift->setTempConsultant($this->consultantMapper->find($row->temp_consultant_id));
+		$tempShift->setPostTime($row->post_time);
+		$tempShift->setResponseTime($row->response_time);
+		$tempShift->setHours($row->hours);
+		$tempShift->setAssignedConsultant($this->consultantMapper->find($row->assigned_to));
 		$tempShift->setTimeout($row->timeout);
 		
 		return $tempShift;
@@ -98,12 +150,12 @@ class Application_Model_TempShiftMapper
 		{
 			$tempShift = new Application_Model_TempShift();
 			$tempShift->setId($row->id);
-			$tempShift->setShiftId($row->shift_id);
-			$tempShift->setTempConsultant($row->temp_consultant_id);
+			$tempShift->setShift($this->shiftMapper->find($row->shift_id));
+			$tempShift->setTempConsultant($this->consultantMapper->find($row->temp_consultant_id));
 			$tempShift->setPostTime($row->post_time);
 			$tempShift->setResponseTime($row->response_time);
 			$tempShift->setHours($row->hours);
-			$tempShift->setAssignedConsultant($row->assigned_to);
+			$tempShift->setAssignedConsultant($this->consultantMapper->find($row->assigned_to));
 			$tempShift->setTimeout($row->timeout);
 			
 			$tempShifts[] = $tempShift;
