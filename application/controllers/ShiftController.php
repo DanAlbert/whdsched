@@ -2,9 +2,11 @@
 
 class ShiftController extends Zend_Controller_Action
 {
+
+	protected $_messenger;
     public function init()
     {
-        /* Initialize action controller here */
+        $this->_messenger = $this->_helper->getHelper('FlashMessenger');
     }
 
     public function indexAction()
@@ -106,6 +108,7 @@ class ShiftController extends Zend_Controller_Action
 		{
 			$this->view->messages[] = 'You are forbidden from creating shifts.';
 		}
+		
     }
 
     public function assignAction()
@@ -189,9 +192,121 @@ class ShiftController extends Zend_Controller_Action
 		else
 		{
 			$this->view->messages[] = 'You are forbidden from assigning shifts.';
+			
 		}
+		
     }
+
+    public function specialAction()
+    {
+    	$this->view->messages = $this->_messenger->getMessages();
+    	$user = Zend_Auth::getInstance()->getIdentity();
+
+    	if ($user->isAdmin())
+    	{
+			$this->view->month = $this->getRequest()->getParam('month');
+			if ($this->view->month == null)
+			{
+				$this->view->month = date('n');
+			}
+			
+			$this->view->year = $this->getRequest()->getParam('year');
+			if ($this->view->year == null)
+			{
+				$this->view->year = date('Y');
+			}
+    	
+    	}
+    	else
+    	{
+    		$this->view->messages[] = 'You are forbidden from creating special shifts';
+    	
+    	}
+    	
+    	
+    }
+
+    public function keepAction()
+    {
+    	
+    	$user = Zend_Auth::getInstance()->getIdentity();
+    	$shiftMapper = new Application_Model_ShiftMapper();
+    	$tempMapper = new Application_Model_TempShiftMapper();
+    	
+    	if($user->isAdmin())
+    	{
+	    	$request = $this->getRequest();
+	    	
+	    	$day = $request->getParam("day");
+	    	$month = $request->getParam("month");
+	    	$year = $request->getParam("year");
+	    	$shifts = $shiftMapper->fetchAllByDate(mktime(0, 0, 0, $month, $day, $year));
+	    	
+	    	if(count($shifts) == 0)
+	    	{
+	    		$this->_messenger->addMessage('No Shifts Exist');
+	    		$this->_helper->getHelper('Redirector')->gotoSimple('special', 'shift', null, array(
+	    			'month' => $month,
+	    			'year' => $year,
+	    			'day' => $day));
+	    	
+	    	}
+	    	
+	    	
+	    	$form = new Application_Form_ShiftSelector($shifts);
+	    	
+	    	if($request->isPost())
+	    	{
+	    		if($form->isValid($request->getPost()))
+	    		{
+	    			$values = $form->getValues();
+	    			$keep = $values['shifts'];
+					foreach ($shifts as $shift) 
+					{
+						if (in_array($shift->getId(), $keep)) {
+							$consultant = $shift->getConsultant();
+							$shift->setConsultant(null);
+							
+							$temp = new Application_Model_TempShift();
+							$temp->setAssignedConsultant($consultant);
+							$temp->setShift($shift);
+							$temp->setPostTime(time());
+							$temp->setTimeout(168); 		//One week
+							$this->_messenger->addMessage('Adding Temp');
+							//$shiftMapper->save($shift);
+							//$tempMapper->save($temp);
+						}
+						else 
+						{
+							$this->_messenger->addMessage('Deleting Shift');
+							//$shiftMapper->delete($shift);	
+						}	
+					}
+	    		}
+	    	}
+	    	else 
+	    	{
+		    	
+				
+				$this->view->form = $form;
+			}
+			
+			
+		}
+		else 
+		{
+			$this->view->messages[] = 'Forbidden!!!!';
+		}
+		
+		$this->view->messages = $this->_messenger->getMessages();
+    }
+
+
 }
+
+
+
+
 
 
 

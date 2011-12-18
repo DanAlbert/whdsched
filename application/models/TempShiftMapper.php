@@ -48,7 +48,7 @@ class Application_Model_TempShiftMapper
 	// TODO: Replace temp consultant id, shift id, assigned consultant id with the actual models
 	public function save(Application_Model_TempShift $tempShift)
 	{
-	if ($tempShift->getTempConsultant() !== null)
+		if ($tempShift->getTempConsultant() !== null)
 		{
 			$tempConsultantId = $tempShift->getTempConsultant()->getId();
 		}

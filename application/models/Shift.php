@@ -117,5 +117,10 @@ class Application_Model_Shift
 	{
 		$this->_consultant = $consultant;
 	}
+	
+	public function __toString()
+	{
+		return $this->getTimeString().' '.$this->getLocation();
+	}
 }
 

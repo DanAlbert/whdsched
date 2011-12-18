@@ -1,0 +1,103 @@
+<br /><br />
+<div id="view-content">
+	<?php
+	
+	$timestamp = mktime(0, 0, 0, $this->month, 1, $this->year);
+	
+	?>
+	<table class="calendar">
+		<thead>
+			<tr>
+				<?php
+				
+				$month = $this->month;
+				$year = $this->year;
+				
+				$month--;
+				if ($month < 1)
+				{
+					$month = 12;
+					$year--;
+				}
+				
+				print '<td><a href="' . $this->url(array(
+					'controller' => 'shift',
+					'action'     => 'special',
+					'month'      => $month,
+					'year'       => $year,
+				)) . '">&larr;</a></td>';
+				
+				?>
+				<td colspan="5"><?php print date("F Y",  $timestamp) ?></td>
+				<?php
+				
+				$month = $this->month;
+				$year = $this->year;
+				
+				$month++;
+				if ($month > 12)
+				{
+					$month = 1;
+					$year++;
+				}
+				
+				print '<td><a href="' . $this->url(array(
+					'controller' => 'shift',
+					'action'     => 'special',
+					'month'      => $month,
+					'year'       => $year,
+				), null, true) . '">&rarr;</a></td>';
+				
+				?>
+			</tr>
+			<tr>
+				<td>Sunday</td>
+				<td>Monday</td>
+				<td>Tuesday</td>
+				<td>Wednesday</td>
+				<td>Thursday</td>
+				<td>Friday</td>
+				<td>Saturday</td>
+			</tr>
+		</thead>
+		<tbody>
+			<?php
+			
+			$firstOfMonth = getdate($timestamp);
+			
+			// Nonpositive until at first day of month
+			$day = 1 - $firstOfMonth['wday'];
+			$daysInMonth = cal_days_in_month(
+					CAL_GREGORIAN,
+					$firstOfMonth['mon'],
+					$firstOfMonth['year']);
+			
+			while ($day < $daysInMonth)
+			{
+				print '<tr>';
+				for ($i = 0; $i < 7; $i++)
+				{
+					if (($day < 1) or ($day > $daysInMonth))
+					{
+						print '<td>&nbsp;</td>';
+					}
+					else
+					{
+						print '<td><a href="' . $this->url(array(
+							'controller' => 'shift',
+							'action'     => 'keep',
+							'day'        => $day,
+							'month'      => $this->month,
+							'year'       => $this->year,
+						), null, true) . '">' . $day . '</a></td>';
+					}
+					$day++;
+				}
+				print '</tr>';
+			}
+			
+			?>
+		</tbody>
+	</table>
+
+</div>

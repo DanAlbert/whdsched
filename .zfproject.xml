@@ -26,6 +26,26 @@
           <actionMethod actionName="index"/>
           <actionMethod actionName="create"/>
           <actionMethod actionName="assign"/>
+          <actionMethod actionName="special"/>
+          <actionMethod actionName="keep"/>
+        </controllerFile>
+        <controllerFile controllerName="Temp">
+          <actionMethod actionName="index"/>
+          <actionMethod actionName="create"/>
+          <actionMethod actionName="cancel"/>
+          <actionMethod actionName="take"/>
+        </controllerFile>
+        <controllerFile controllerName="Temp">
+          <actionMethod actionName="index"/>
+          <actionMethod actionName="create"/>
+          <actionMethod actionName="cancel"/>
+          <actionMethod actionName="take"/>
+        </controllerFile>
+        <controllerFile controllerName="Temp">
+          <actionMethod actionName="index"/>
+          <actionMethod actionName="create"/>
+          <actionMethod actionName="cancel"/>
+          <actionMethod actionName="take"/>
         </controllerFile>
         <controllerFile controllerName="Temp">
           <actionMethod actionName="index"/>
@@ -38,6 +58,7 @@
         <formFile formName="Consultant"/>
         <formFile formName="Shift"/>
         <formFile formName="Assign"/>
+        <formFile formName="ShiftSelector"/>
       </formsDirectory>
       <layoutsDirectory>
         <layoutScriptsDirectory>
@@ -96,6 +117,11 @@
           <viewControllerScriptsDirectory forControllerName="Index">
             <viewScriptFile forActionName="logout"/>
           </viewControllerScriptsDirectory>
+          <viewControllerScriptsDirectory forControllerName="Shift">
+            <viewScriptFile forActionName="special"/>
+          </viewControllerScriptsDirectory>
+          <viewControllerScriptsDirectory forControllerName="Shift">
+            <viewScriptFile forActionName="keep"/>
           <viewControllerScriptsDirectory forControllerName="Temp">
             <viewScriptFile forActionName="index"/>
           </viewControllerScriptsDirectory>

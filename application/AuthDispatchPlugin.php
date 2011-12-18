@@ -40,6 +40,7 @@ class AuthDispatchPlugin extends Zend_Controller_Plugin_Abstract
 			}
 			else
 			{
+				Zend_Auth::getInstance()->clearIdentity();
 				$this->_request->setControllerName('Index');
 				$this->_request->setActionName('authenticate');
 			}

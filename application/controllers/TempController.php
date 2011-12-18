@@ -56,7 +56,8 @@ class TempController extends Zend_Controller_Action
         if ($temp !== null)
         {
         	// Only let the shift's owner cancel the temp
-	        if ($user->getId() == $temp->getShift()->getConsultant()->getId())
+	        if (($temp->getShift()->getConsultant()) and
+	        	($user->getId() == $temp->getShift()->getConsultant()->getId()))
 	        {
 	        	$tempMapper->delete($temp);
 	        }
@@ -117,7 +118,8 @@ class TempController extends Zend_Controller_Action
         if ($temp !== null)
         {
         	// If this isn't the user that temped the shift
-	        if ($user->getId() != $temp->getShift()->getConsultant()->getId())
+	        if (($temp->getShift()->getConsultant() === null) or
+	        	($user->getId() != $temp->getShift()->getConsultant()->getId()))
 	        {
 				$date = $temp->getShift()->getDate();
 				$startTime = $temp->getShift()->getStartTime();
