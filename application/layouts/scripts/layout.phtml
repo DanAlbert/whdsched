@@ -27,8 +27,11 @@ if (Zend_Auth::getInstance()->hasIdentity())
 		'title' => 'Schedule',
 		'links' => array(
 			'<a href="' . $this->url(array(
-				'controller' => 'index',
-				'action'     => 'index'
+				'controller' => 'schedule',
+				'action'     => 'index',
+				'day'        => date('j'),
+				'month'      => date('m'),
+				'year'       => date('y'),
 			),
 			null, true) . '">Today</a>',
 			'<a href="' . $this->url(array(
