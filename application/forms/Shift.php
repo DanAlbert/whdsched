@@ -2,16 +2,16 @@
 
 class Application_Form_Shift extends Zend_Form
 {
-    public function init()
-    {
+	public function init()
+	{
 		$termMapper = new Application_Model_TermMapper();
 		
-        $this->setMethod('post');
+		$this->setMethod('post');
 		
 		$this->addElement('text', 'startTime', array(
-			'label'      => 'Start Time',
+			'label'	  => 'Start Time',
 			'required'   => true,
-			'filters'    => array('StringTrim', 'Digits'),
+			'filters'	=> array('StringTrim', 'Digits'),
 			'validators' => array(
 				array(
 					'validator' => 'StringLength',
@@ -21,9 +21,9 @@ class Application_Form_Shift extends Zend_Form
 		));
 		
 		$this->addElement('text', 'endTime', array(
-			'label'      => 'End Time',
+			'label'	  => 'End Time',
 			'required'   => true,
-			'filters'    => array('StringTrim', 'Digits'),
+			'filters'	=> array('StringTrim', 'Digits'),
 			'validators' => array(
 				array(
 					'validator' => 'StringLength',
@@ -33,6 +33,7 @@ class Application_Form_Shift extends Zend_Form
 		));
 		
 		$days = $this->createElement('multiCheckbox', 'days');
+		$days->setRequired(true);
 		$days->setLabel('Days');
 		$days->addMultiOptions(array(
 			0 => 'Sunday',
@@ -47,6 +48,7 @@ class Application_Form_Shift extends Zend_Form
 		$this->addElement($days);
 		
 		$location = $this->createElement('multiCheckbox', 'location');
+		$location->setRequired(true);
 		$location->setLabel('Location');
 		$location->addMultiOptions(array(
 			'WHD'  => 'Helpdesk',
@@ -58,6 +60,7 @@ class Application_Form_Shift extends Zend_Form
 		$this->addElement($location);
 		
 		$terms = $this->createElement('select', 'term');
+		$terms->setRequired(true);
 		$terms->setLabel('Term');
 		foreach ($termMapper->fetchAll() as $t)
 		{
@@ -74,6 +77,6 @@ class Application_Form_Shift extends Zend_Form
 		$this->addElement('hash', 'csrf', array(
 			'ignore' => true,
 		));
-    }
+	}
 }
 

@@ -74,12 +74,32 @@
 						
 						if ($shift->getConsultant()->getId() == $this->user->getId())
 						{
+							$links = array();
+							
 							// Add a link to temp the shift
-							print ' (<a href="' . $this->url(array(
+							$links[] = '<a href="' . $this->url(array(
 									'controller' => 'temp',
 									'action' => 'create',
 									'id' => $shift->getId(),
-								), null, true) . '">request temp</a>)';
+							), null, true) . '">request temp</a>';
+							
+							list($start, $m, $s) = explode(':', $shift->getStartTime());
+							list($end, $m, $s) = explode(':', $shift->getEndTime());
+							
+							// If not a single hour temp
+							// Absolute value to handle 2300-0200 shifts
+							if (abs($end - $start) > 1)
+							{
+								// Add a link to temp the shift
+								$links[] = ' <a href="' . $this->url(array(
+										'controller' => 'temp',
+										'action' => 'create',
+										'id' => $shift->getId(),
+										'form' => true,
+								), null, true) . '">temp part</a>';
+							}
+							
+							print ' (' . implode(', ', $links) . ')';
 						}
 					}
 					else

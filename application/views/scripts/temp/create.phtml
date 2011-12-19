@@ -1,4 +1,16 @@
 <br /><br />
 <div id="view-content">
-	<p>View script for controller <b>Temp</b> and script/action name <b>create</b></p>
+	<?php
+	
+	if (isset($this->form))
+	{
+		$this->form->setAction($this->url());
+		print $this->form;
+	}
+	else
+	{
+		print 'You really shouldn\'t be here';
+	}
+	
+	?>
 </div>

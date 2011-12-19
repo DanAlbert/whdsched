@@ -66,12 +66,13 @@ class Application_Model_TempShiftMapper
 			$assignedId = null;
 		}
 		
+		$hours = implode(',', $tempShift->getHours()); // Format for SQL
 		$data = array(
 			'shift_id'           => $tempShift->getShift()->getId(),
 			'temp_consultant_id' => $tempConsultantId,
 			'post_time'          => $tempShift->getPostTime(),
 			'response_time'      => $tempShift->getResponseTime(),
-			'hours'              => $tempShift->getHours(),
+			'hours'              => $hours,
 			'assigned_to'        => $assignedId,
 			'timeout'            => $tempShift->getTimeout(),
 		);

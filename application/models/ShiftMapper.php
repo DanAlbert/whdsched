@@ -54,10 +54,10 @@ class Application_Model_ShiftMapper
 		}
 		
 		$data = array(
-			'start_time'    => $shift->getStartTime(),
-			'end_time'      => $shift->getEndTime(),
-			'location'      => $shift->getLocation(),
-			'day'           => $shift->getDate(),
+			'start_time'	=> $shift->getStartTime(),
+			'end_time'	  => $shift->getEndTime(),
+			'location'	  => $shift->getLocation(),
+			'day'		   => $shift->getDate(),
 			'consultant_id' => $consultantId,
 		);
 		
@@ -65,7 +65,9 @@ class Application_Model_ShiftMapper
 		if ($id == null)
 		{
 			unset($data['id']);
-			return $this->getDbTable()->insert($data);
+			$shift->setId($this->getDbTable()->insert($data));
+			return $shift->getId();
+			
 		}
 		else
 		{

@@ -17,9 +17,15 @@ class AuthDispatchPlugin extends Zend_Controller_Plugin_Abstract
 	public function dispatchLoopStartup(Zend_Controller_Request_Abstract $request)
 	{
 		$auth = Zend_Auth::getInstance();
-
-		$this->adapter->setRequest($this->_request);
-		$this->adapter->setResponse($this->_response);
+		
+		// HTTP Basic and Digest require the request and response
+		if (($this->adapter instanceof Zend_Auth_Adapter_Http) or
+			($this->adapter instanceof Zend_Auth_Adapter_Digest))
+		{
+			$this->adapter->setRequest($this->_request);
+			$this->adapter->setResponse($this->_response);
+		}
+		
 		$result = $auth->authenticate($this->adapter);
 
 		if (!$result->isValid())

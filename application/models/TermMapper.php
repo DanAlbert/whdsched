@@ -37,8 +37,8 @@ class Application_Model_TermMapper
 	public function save(Application_Model_Term $term)
 	{
 		$data = array(
-			'term'       => $term->getTerm(),
-			'year'       => $term->getYear(),
+			'term'	   => $term->getTerm(),
+			'year'	   => $term->getYear(),
 			'start_date' => $term->getStartDate(),
 			'end_date'   => $term->getEndDate(),
 		);

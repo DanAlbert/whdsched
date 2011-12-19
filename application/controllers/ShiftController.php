@@ -4,21 +4,21 @@ class ShiftController extends Zend_Controller_Action
 {
 
 	protected $_messenger;
-    public function init()
-    {
-        $this->_messenger = $this->_helper->getHelper('FlashMessenger');
-    }
+	public function init()
+	{
+		$this->_messenger = $this->_helper->getHelper('FlashMessenger');
+	}
 
-    public function indexAction()
-    {
-        // action body
-    }
+	public function indexAction()
+	{
+		// action body
+	}
 
-    public function createAction()
-    {
-    	$this->view->messages = array();
-    	$user = Zend_Auth::getInstance()->getIdentity();
-    	
+	public function createAction()
+	{
+		$this->view->messages = array();
+		$user = Zend_Auth::getInstance()->getIdentity();
+		
 		$form = new Application_Form_Shift();
 		$request = $this->getRequest();
 		
@@ -109,13 +109,13 @@ class ShiftController extends Zend_Controller_Action
 			$this->view->messages[] = 'You are forbidden from creating shifts.';
 		}
 		
-    }
+	}
 
-    public function assignAction()
-    {
-    	$this->view->messages = array();
-    	$user = Zend_Auth::getInstance()->getIdentity();
-    	
+	public function assignAction()
+	{
+		$this->view->messages = array();
+		$user = Zend_Auth::getInstance()->getIdentity();
+		
 		$form = new Application_Form_Assign();
 		$request = $this->getRequest();
 		
@@ -195,15 +195,15 @@ class ShiftController extends Zend_Controller_Action
 			
 		}
 		
-    }
+	}
 
-    public function specialAction()
-    {
-    	$this->view->messages = $this->_messenger->getMessages();
-    	$user = Zend_Auth::getInstance()->getIdentity();
+	public function specialAction()
+	{
+		$this->view->messages = $this->_messenger->getMessages();
+		$user = Zend_Auth::getInstance()->getIdentity();
 
-    	if ($user->isAdmin())
-    	{
+		if ($user->isAdmin())
+		{
 			$this->view->month = $this->getRequest()->getParam('month');
 			if ($this->view->month == null)
 			{
@@ -215,52 +215,52 @@ class ShiftController extends Zend_Controller_Action
 			{
 				$this->view->year = date('Y');
 			}
-    	
-    	}
-    	else
-    	{
-    		$this->view->messages[] = 'You are forbidden from creating special shifts';
-    	
-    	}
-    	
-    	
-    }
+		
+		}
+		else
+		{
+			$this->view->messages[] = 'You are forbidden from creating special shifts';
+		
+		}
+		
+		
+	}
 
-    public function keepAction()
-    {
-    	
-    	$user = Zend_Auth::getInstance()->getIdentity();
-    	$shiftMapper = new Application_Model_ShiftMapper();
-    	$tempMapper = new Application_Model_TempShiftMapper();
-    	
-    	if($user->isAdmin())
-    	{
-	    	$request = $this->getRequest();
-	    	
-	    	$day = $request->getParam("day");
-	    	$month = $request->getParam("month");
-	    	$year = $request->getParam("year");
-	    	$shifts = $shiftMapper->fetchAllByDate(mktime(0, 0, 0, $month, $day, $year));
-	    	
-	    	if(count($shifts) == 0)
-	    	{
-	    		$this->_messenger->addMessage('No Shifts Exist');
-	    		$this->_helper->getHelper('Redirector')->gotoSimple('special', 'shift', null, array(
-	    			'month' => $month,
-	    			'year' => $year,
-	    			'day' => $day));
-	    	
-	    	}
-	    	
-	    	
-	    	$form = new Application_Form_ShiftSelector($shifts);
-	    	
-	    	if($request->isPost())
-	    	{
-	    		if($form->isValid($request->getPost()))
-	    		{
-	    			$values = $form->getValues();
-	    			$keep = $values['shifts'];
+	public function keepAction()
+	{
+		
+		$user = Zend_Auth::getInstance()->getIdentity();
+		$shiftMapper = new Application_Model_ShiftMapper();
+		$tempMapper = new Application_Model_TempShiftMapper();
+		
+		if($user->isAdmin())
+		{
+			$request = $this->getRequest();
+			
+			$day = $request->getParam("day");
+			$month = $request->getParam("month");
+			$year = $request->getParam("year");
+			$shifts = $shiftMapper->fetchAllByDate(mktime(0, 0, 0, $month, $day, $year));
+			
+			if(count($shifts) == 0)
+			{
+				$this->_messenger->addMessage('No Shifts Exist');
+				$this->_helper->getHelper('Redirector')->gotoSimple('special', 'shift', null, array(
+					'month' => $month,
+					'year' => $year,
+					'day' => $day));
+			
+			}
+			
+			
+			$form = new Application_Form_ShiftSelector($shifts);
+			
+			if($request->isPost())
+			{
+				if($form->isValid($request->getPost()))
+				{
+					$values = $form->getValues();
+					$keep = $values['shifts'];
 					foreach ($shifts as $shift) 
 					{
 						if (in_array($shift->getId(), $keep)) {
@@ -282,11 +282,11 @@ class ShiftController extends Zend_Controller_Action
 							//$shiftMapper->delete($shift);	
 						}	
 					}
-	    		}
-	    	}
-	    	else 
-	    	{
-		    	
+				}
+			}
+			else 
+			{
+				
 				
 				$this->view->form = $form;
 			}
@@ -299,7 +299,7 @@ class ShiftController extends Zend_Controller_Action
 		}
 		
 		$this->view->messages = $this->_messenger->getMessages();
-    }
+	}
 
 
 }

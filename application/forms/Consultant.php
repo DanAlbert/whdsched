@@ -2,14 +2,14 @@
 
 class Application_Form_Consultant extends Zend_Form
 {
-    public function init()
-    {
-        $this->setMethod('post');
+	public function init()
+	{
+		$this->setMethod('post');
 		
 		$this->addElement('text', 'firstName', array(
-			'label'      => 'First Name',
+			'label'	  => 'First Name',
 			'required'   => true,
-			'filters'    => array('StringTrim'),
+			'filters'	=> array('StringTrim'),
 			'validators' => array(
 				array(
 					'validator' => 'StringLength',
@@ -19,9 +19,9 @@ class Application_Form_Consultant extends Zend_Form
 		));
 		
 		$this->addElement('text', 'lastName', array(
-			'label'      => 'Last Name',
+			'label'	  => 'Last Name',
 			'required'   => true,
-			'filters'    => array('StringTrim'),
+			'filters'	=> array('StringTrim'),
 			'validators' => array(
 				array(
 					'validator' => 'StringLength',
@@ -31,9 +31,9 @@ class Application_Form_Consultant extends Zend_Form
 		));
 		
 		$this->addElement('text', 'engr', array(
-			'label'      => 'Engineering Username',
+			'label'	  => 'Engineering Username',
 			'required'   => true,
-			'filters'    => array('StringTrim', 'StringToLower'),
+			'filters'	=> array('StringTrim', 'StringToLower'),
 			'validators' => array(
 				array(
 					'validator' => 'StringLength',
@@ -46,9 +46,9 @@ class Application_Form_Consultant extends Zend_Form
 		));
 		
 		$this->addElement('text', 'phone', array(
-			'label'      => 'Phone Number',
+			'label'	  => 'Phone Number',
 			'required'   => true,
-			'filters'    => array('Digits'),
+			'filters'	=> array('Digits'),
 			'validators' => array(
 				array(
 					'validator' => 'StringLength',
@@ -65,6 +65,6 @@ class Application_Form_Consultant extends Zend_Form
 		$this->addElement('hash', 'csrf', array(
 			'ignore' => true,
 		));
-    }
+	}
 }
 

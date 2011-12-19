@@ -14,14 +14,16 @@ class Application_Form_ShiftSelector extends Zend_Form
 
 	
 
-    public function init()
-    {
+	public function init()
+	{
 		$shifts = $this->createElement('multiCheckbox', 'shifts');
+		$shifts->setRequired(true);
 		$shifts->setLabel('Shifts');
-		
-		foreach($this->shifts as $shift){
+		foreach ($this->shifts as $shift)
+		{
 			$shifts->addMultiOption($shift->getId(), $shift->__toString());
-		}		
+		}
+		
 		$this->addElement($shifts);
 		
 		$this->addElement('submit', 'submit', array(
@@ -32,7 +34,7 @@ class Application_Form_ShiftSelector extends Zend_Form
 		$this->addElement('hash', 'csrf', array(
 			'ignore' => true,
 		));
-    }
+	}
 
 
 }
