@@ -12,46 +12,100 @@
 <?php
 
 $menuLinks = array();
-
-$menuLinks[] = '<a href="' . $this->url(array(
-		'controller' => 'index',
-		'action' => 'index'),
-		null, true) . '">Calendar</a>';
-
-$menuLinks[] = '<a href="' . $this->url(array(
-		'controller' => 'schedule',
-		'action' => 'index'),
-		null, true) . '">Today\'s schedule</a>';
-
-$menuLinks[] = '<a href="' . $this->url(array(
-		'controller' => 'consultants',
-		'action' => 'index'),
-		null, true) . '">View roster</a>';
+$adminLinks = array();
 
 if (Zend_Auth::getInstance()->hasIdentity())
 {
-	if (Zend_Auth::getInstance()->getIdentity()->isAdmin())
-	{
-		$menuLinks[] = '<a href="' . $this->url(array(
-				'controller' => 'shift',
-				'action' => 'create'),
-				null, true) . '">Create shifts</a>';
-		
-		$menuLinks[] = '<a href="' . $this->url(array(
-				'controller' => 'shift',
-				'action' => 'assign'),
-				null, true) . '">Assign shifts</a>';
-	}
+	$user = Zend_Auth::getInstance()->getIdentity();
+	$menuLinks[] = '<a href="' . $this->url(array(
+				'controller' => 'temp',
+				'action'     => 'index'
+			),
+			null, true) . '">Available Shifts</a>';
+	
+	$menuLinks[] = array(
+		'title' => 'Schedule',
+		'links' => array(
+			'<a href="' . $this->url(array(
+				'controller' => 'index',
+				'action'     => 'index'
+			),
+			null, true) . '">Today</a>',
+			'<a href="' . $this->url(array(
+				'controller' => 'index',
+				'action'     => 'index'
+			),
+			null, true) . '">Month</a>',
+		)
+	);
+	
+	$menuLinks[] = '<a href="' . $this->url(array(
+				'controller' => 'schedule',
+				'action'     => 'index'
+			),
+			null, true) . '">Your schedule</a>';
+	
+	$menuLinks[] = '<a href="' . $this->url(array(
+				'controller' => 'consultants',
+				'action'     => 'index'
+			),
+			null, true) . '">View roster</a>';
+	
+	$menuLinks[] = '<a href="' . $this->url(array(
+				'controller' => 'consulants',
+				'action'     => 'edit',
+				'id'         => $user->getId(),
+			),
+			null, true) . '">' . $user->getName() . '</a>';
 	
 	$menuLinks[] = '<a href="' . $this->url(array(
 				'controller' => 'index',
-				'action' => 'logout'
+				'action'     => 'logout'
 			),
 			null, true) . '">Logout</a>';
+	
+	if (Zend_Auth::getInstance()->getIdentity()->isAdmin())
+	{
+		$adminLinks[] = '<a href="' . $this->url(array(
+					'controller' => 'shift',
+					'action'     => 'create'
+				),
+				null, true) . '">Create shifts</a>';
+	
+		$adminLinks[] = '<a href="' . $this->url(array(
+					'controller' => 'shift',
+					'action'     => 'assign'
+				),
+				null, true) . '">Assign shifts</a>';
+	}
 }
 
-// Print all menu links with a separator
-print implode(' | ', $menuLinks);
+// Print the menu
+print '<div class="nav"><ul id="menu" class="menu">';
+foreach ($menuLinks as $link)
+{
+	if (is_array($link))
+	{
+		print '<li><span>' . $link['title'] . '</span>';
+		print '<ul>';
+		foreach ($link['links'] as $sub)
+		{
+			print "<li>{$sub}</li>";
+		}
+		print '</ul></li>';
+	}
+	else
+	{
+		print '<li class="nodiv">' . $link . '</li>';
+	}
+	
+	print '</li>';
+}
+print '</ul></div>';
+
+print   '<script type="text/javascript">var dropdown=' .
+		'new TINY.dropdown.init("dropdown", {id:\'menu\', active:\'menuhover\'}); ' .
+		'</script>';
 
 // Print any messages sent from the controller
 if (isset($this->messages))

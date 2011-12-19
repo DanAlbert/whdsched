@@ -47,6 +47,25 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 		
 		$this->_view->headLink()->appendStylesheet(
 				$this->view->baseUrl('css/global.css'));
+		
+		$this->_view->headLink()->appendStylesheet(
+				$this->view->baseUrl('css/tinydropdown.css'));
+	}
+	
+	protected function _initScript()
+	{
+		$this->bootstrap('request');
+		$this->bootstrap('view');
+		$this->_view = $this->getResource('view');
+		
+		$this->_view->headScript()->appendFile(
+				$this->view->baseUrl('js/jquery-1.7.1.min.js'));
+		
+		$this->_view->headScript()->appendFile(
+				$this->view->baseUrl('js/tinydropdown.js'));
+		
+		/*$this->_view->headScript()->appendFile(
+				$this->view->baseUrl('js/navigation.js'));*/
 	}
 	
 	protected function _initRequest()
