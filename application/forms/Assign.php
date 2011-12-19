@@ -2,8 +2,8 @@
 
 class Application_Form_Assign extends Zend_Form
 {
-    public function init()
-    {
+	public function init()
+	{
 		$consultantMapper = new Application_Model_ConsultantMapper();
 		$termMapper = new Application_Model_TermMapper();
 		
@@ -19,6 +19,7 @@ class Application_Form_Assign extends Zend_Form
 		$this->addElement($consultant);
 		
 		$day = $this->createElement('select', 'day');
+		$day->setRequired(true);
 		$day->setLabel('Day');
 		$day->addMultiOption(0, 'Sunday');
 		$day->addMultiOption(1, 'Monday');
@@ -31,9 +32,9 @@ class Application_Form_Assign extends Zend_Form
 		$this->addElement($day);
 		
 		$this->addElement('text', 'startTime', array(
-			'label'      => 'Start Time',
+			'label'	  => 'Start Time',
 			'required'   => true,
-			'filters'    => array('StringTrim', 'Digits'),
+			'filters'	=> array('StringTrim', 'Digits'),
 			'validators' => array(
 				array(
 					'validator' => 'StringLength',
@@ -43,9 +44,9 @@ class Application_Form_Assign extends Zend_Form
 		));
 		
 		$this->addElement('text', 'endTime', array(
-			'label'      => 'End Time',
+			'label'	  => 'End Time',
 			'required'   => true,
-			'filters'    => array('StringTrim', 'Digits'),
+			'filters'	=> array('StringTrim', 'Digits'),
 			'validators' => array(
 				array(
 					'validator' => 'StringLength',
@@ -55,6 +56,7 @@ class Application_Form_Assign extends Zend_Form
 		));
 		
 		$location = $this->createElement('select', 'location');
+		$location->setRequired(true);
 		$location->setLabel('Location');
 		$location->addMultiOption('WHD', 'Helpdesk');
 		$location->addMultiOption('Lab', 'Labs');
@@ -64,6 +66,7 @@ class Application_Form_Assign extends Zend_Form
 		$this->addElement($location);
 		
 		$terms = $this->createElement('select', 'term');
+		$terms->setRequired(true);
 		$terms->setLabel('Term');
 		foreach ($termMapper->fetchAll() as $t)
 		{
@@ -80,6 +83,6 @@ class Application_Form_Assign extends Zend_Form
 		$this->addElement('hash', 'csrf', array(
 			'ignore' => true,
 		));
-    }
+	}
 }
 

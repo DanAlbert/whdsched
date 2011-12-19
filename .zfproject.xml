@@ -59,6 +59,7 @@
         <formFile formName="Shift"/>
         <formFile formName="Assign"/>
         <formFile formName="ShiftSelector"/>
+        <formFile formName="Temp"/>
       </formsDirectory>
       <layoutsDirectory>
         <layoutScriptsDirectory>
@@ -122,6 +123,7 @@
           </viewControllerScriptsDirectory>
           <viewControllerScriptsDirectory forControllerName="Shift">
             <viewScriptFile forActionName="keep"/>
+          </viewControllerScriptsDirectory>
           <viewControllerScriptsDirectory forControllerName="Temp">
             <viewScriptFile forActionName="index"/>
           </viewControllerScriptsDirectory>

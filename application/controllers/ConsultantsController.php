@@ -3,25 +3,25 @@
 class ConsultantsController extends Zend_Controller_Action
 {
 
-    public function init()
-    {
-        // Initialize action controller here
-    }
+	public function init()
+	{
+		// Initialize action controller here
+	}
 
-    public function indexAction()
-    {
-    	$this->view->messages = array();
-    	$this->view->user = Zend_Auth::getInstance()->getIdentity();
-    	
+	public function indexAction()
+	{
+		$this->view->messages = array();
+		$this->view->user = Zend_Auth::getInstance()->getIdentity();
+		
 		$consultantMapper = new Application_Model_ConsultantMapper();
 		$this->view->consultants = $consultantMapper->fetchAll();
-    }
+	}
 
-    public function editAction()
-    {
-    	$this->view->messages = array();
-    	$user = Zend_Auth::getInstance()->getIdentity();
-    	
+	public function editAction()
+	{
+		$this->view->messages = array();
+		$user = Zend_Auth::getInstance()->getIdentity();
+		
 		$form = new Application_Form_Consultant();
 		$consultantMapper = new Application_Model_ConsultantMapper();
 		
@@ -61,8 +61,8 @@ class ConsultantsController extends Zend_Controller_Action
 					$defaults = array(
 						'firstName' => $consultant->getFirstName(),
 						'lastName'  => $consultant->getLastName(),
-						'engr'      => $consultant->getEngr(),
-						'phone'     => $consultant->getPhone(),
+						'engr'	  => $consultant->getEngr(),
+						'phone'	 => $consultant->getPhone(),
 					);
 					
 					$form->populate($defaults);
@@ -75,15 +75,15 @@ class ConsultantsController extends Zend_Controller_Action
 				$this->view->messages[] = "You are forbidden from editing this user's information.";
 			}
 		}
-    }
+	}
 
-    public function deleteAction()
-    {
-    	$this->view->messages = array();
-    	$user = Zend_Auth::getInstance()->getIdentity();
-    	
-    	if ($user->isAdmin())
-    	{
+	public function deleteAction()
+	{
+		$this->view->messages = array();
+		$user = Zend_Auth::getInstance()->getIdentity();
+		
+		if ($user->isAdmin())
+		{
 			$consultantMapper = new Application_Model_ConsultantMapper();
 			
 			$request = $this->getRequest();
@@ -100,18 +100,18 @@ class ConsultantsController extends Zend_Controller_Action
 				
 				return $this->_helper->redirector('index');
 			}
-    	}
-    	else
-    	{
-    		$this->view->messages[] = "You are forbidden from deleting users.";
-    	}
-    }
+		}
+		else
+		{
+			$this->view->messages[] = "You are forbidden from deleting users.";
+		}
+	}
 
-    public function createAction()
-    {
-    	$this->view->messages = array();
-    	$user = Zend_Auth::getInstance()->getIdentity();
-    	
+	public function createAction()
+	{
+		$this->view->messages = array();
+		$user = Zend_Auth::getInstance()->getIdentity();
+		
 		$form = new Application_Form_Consultant();
 		$request = $this->getRequest();
 		
@@ -153,9 +153,9 @@ class ConsultantsController extends Zend_Controller_Action
 		}
 		else
 		{
-    		$this->view->messages[] = "You are forbidden from creating users.";
+			$this->view->messages[] = "You are forbidden from creating users.";
 		}
-    }
+	}
 
 
 }

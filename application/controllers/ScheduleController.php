@@ -3,19 +3,19 @@
 class ScheduleController extends Zend_Controller_Action
 {
 
-    public function init()
-    {
-        /* Initialize action controller here */
-    }
+	public function init()
+	{
+		/* Initialize action controller here */
+	}
 
-    public function indexAction()
-    {
-    	$this->view->messages = $this->_helper->getHelper('FlashMessenger')->getMessages();
-    	
-    	$this->view->user = Zend_Auth::getInstance()->getIdentity();
-    	
+	public function indexAction()
+	{
+		$this->view->messages = $this->_helper->getHelper('FlashMessenger')->getMessages();
+		
+		$this->view->user = Zend_Auth::getInstance()->getIdentity();
+		
 		$day = $this->getRequest()->getParam('day');
-        $month = $this->getRequest()->getParam('month');
+		$month = $this->getRequest()->getParam('month');
 		$year = $this->getRequest()->getParam('year');
 		
 		if (($day == null) and ($month == null) and ($year == null))
@@ -38,7 +38,7 @@ class ScheduleController extends Zend_Controller_Action
 			$this->view->timestamp = $this->timestamp;
 			$this->view->schedule = $this->getSchedule();
 		}
-    }
+	}
 
 	private function getSchedule()
 	{

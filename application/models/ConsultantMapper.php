@@ -40,9 +40,9 @@ class Application_Model_ConsultantMapper
 		$data = array(
 			'first_name' => $consultant->getFirstName(),
 			'last_name'  => $consultant->getLastName(),
-			'engr'       => $consultant->getEngr(),
-			'phone'      => $consultant->getPhone(),
-			'admin'      => $consultant->isAdmin(),
+			'engr'	   => $consultant->getEngr(),
+			'phone'	  => $consultant->getPhone(),
+			'admin'	  => $consultant->isAdmin(),
 		);
 		
 		$id = $consultant->getId();

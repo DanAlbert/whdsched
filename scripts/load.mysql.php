@@ -14,8 +14,8 @@ Zend_Loader_Autoloader::getInstance();
 // Define some CLI options
 $getopt = new Zend_Console_Getopt(array(
 	'withdata|w' => 'Load database with sample data',
-	'env|e-s'    => 'Application environment for which to create database (defaults to development)',
-	'help|h'     => 'Help -- usage message',
+	'env|e-s'	=> 'Application environment for which to create database (defaults to development)',
+	'help|h'	 => 'Help -- usage message',
 ));
 
 try

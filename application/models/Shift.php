@@ -21,6 +21,20 @@ class Application_Model_Shift
 		}
 	}
 	
+	/**
+	 * Copy constructor
+	 */
+	public function __clone()
+	{
+		$this->_id = null;
+		$this->_consultant = clone $this->_consultant;
+	}
+	
+	public function __toString()
+	{
+		return $this->getTimeString() . ' ' . $this->getLocation();
+	}
+	
 	public function setData(array $data)
 	{
 		foreach ($data as $key => $value)
@@ -116,11 +130,6 @@ class Application_Model_Shift
 	public function setConsultant($consultant)
 	{
 		$this->_consultant = $consultant;
-	}
-	
-	public function __toString()
-	{
-		return $this->getTimeString().' '.$this->getLocation();
 	}
 }
 
