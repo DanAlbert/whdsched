@@ -12,40 +12,23 @@
 	margin: 0;
 }
 
-/*nav ul
-{
-	list-style: none;
-	border: 1px solid black;
-	padding: 16px 8px 15px 8px;
-	-webkit-border-radius: 10px;
-}
-
-nav ul li
-{
-	display: inline;
-}
-
-nav ul li a
-{
-	padding: 16px;
-	border-right: 1px solid black;	
-}
-
-nav ul li:first-child a
-{
-	padding: 16px;
-	border-left: 1px solid black;	
-}
-
-nav ul li a:hover
-{
-	background-color: #ffad01;
-}*/
-
 div#container
 {
 	margin: 10px auto;
 	width: 800px;
+}
+
+div.date-picker
+{
+	font-weight: bold;	
+	margin: 10px auto;
+	width: 230px;
+}
+
+div.date-picker a
+{
+	font-weight: bold;
+	text-decoration: none;	
 }
 
 table.calendar
@@ -79,3 +62,31 @@ table.calendar tbody td a:hover
 	background-color: #c0c0ff;
 }
 
+table.schedule
+{
+	width: 800px;
+}
+
+table.schedule thead tr td
+{
+	font-weight: bold;
+}
+
+table.schedule tbody tr.odd
+{
+	background-color: #f0f0f0;
+}
+
+table.schedule tbody tr td
+{
+	width: 200px;
+}
+
+table.schedule tbody tr td:first-child
+{
+	width: 100px;
+}
+
+table.schedule tbody tr td.no-shift
+{
+}

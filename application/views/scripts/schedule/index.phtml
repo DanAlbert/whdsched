@@ -1,118 +1,85 @@
-<br /><br />
 <div id="view-content">
 	<?php
-	
-	if (isset($this->error)):
-		print $this->error;
-	else:
+	$yesterday = $this->timestamp - (60 * 60 * 24);
+	$tomorrow = $this->timestamp + (60 * 60 * 24);
 	?>
-	Schedule for <?php print date('l, F j, Y', $this->timestamp) ?>
+	<div class="date-picker">
+		<a href="<?php print $this->url(array(
+				'controller' => 'schedule',
+				'action'     => 'index',
+				'day'        => date('j', $yesterday),
+				'month'      => date('m', $yesterday),
+				'year'       => date('Y', $yesterday),
+			))?>">&larr;</a>
+		<?php print date('l, F j, Y', $this->timestamp) ?>
+		<a href="<?php print $this->url(array(
+				'controller' => 'schedule',
+				'action'     => 'index',
+				'day'        => date('j', $tomorrow),
+				'month'      => date('m', $tomorrow),
+				'year'       => date('Y', $tomorrow),
+			))?>">&rarr;</a>
+	</div>
 	<table class="schedule">
 		<thead>
 			<tr>
 				<td>Time</td>
-				<td>Location</td>
-				<td>Consultant</td>
+				<td>Wireless Help Desk</td>
+				<td>Lab Cleaning</td>
 			</tr>
 		</thead>
 		<tbody>
-			<?php foreach ($this->schedule as $shift): ?>
-			<?php if ($shift instanceof Application_Model_TempShift) { $temp = $shift; $shift = $temp->getShift(); } ?>
+			<?php foreach ($this->schedule as $time => $shifts): ?>
+			<?php
 			
-			<tr>
-				<td><?php print $shift->getTimeString() ?></td>
-				<td><?php print $shift->getLocation() ?></td>
-				<td><?php
-				// Is there a temp shift?
-				if (isset($temp))
-				{
-					// Has someone taken the shift?
-					if ($temp->getTempConsultant())
-					{
-						if ($temp->getTempConsultant()->getId() == $this->user->getId())
-						{
-							print 'You are covering this shift (<a href="' . $this->url(array(
-									'controller' => 'temp',
-									'action'     => 'cancel',
-									'id'         => $temp->getId(),
-								), null, true) . '">cancel</a>)'; 
-						}
-						else
-						{
-							print $temp->getTempConsultant()->getName() . ' is covering this shift';
-						}
-					}
-					else
-					{
-						if ($shift->getConsultant()->getId() == $this->user->getId())
-						{
-							print '<a href="' . $this->url(array(
-									'controller' => 'temp',
-									'action' => 'cancel',
-									'id' => $temp->getId(),
-									), null, true) . '">Cancel this temp shift</a>';
-						}
-						else
-						{
-							// Allow someone to claim the shift
-							print '<a href="' . $this->url(array(
-									'controller' => 'temp',
-									'action'     => 'take',
-									'id' => $temp->getId(),
-								), null, true) . '">Take this shift</a>';
-						}
-					}
-				}
-				// No temp shift
-				else
-				{
-					// Is the shift assigned?
-					if ($shift->getConsultant() !== null)
-					{
-						// No temp, assigned
-						print $shift->getConsultant()->getName();
-						
-						if ($shift->getConsultant()->getId() == $this->user->getId())
-						{
-							$links = array();
-							
-							// Add a link to temp the shift
-							$links[] = '<a href="' . $this->url(array(
-									'controller' => 'temp',
-									'action' => 'create',
-									'id' => $shift->getId(),
-							), null, true) . '">request temp</a>';
-							
-							list($start, $m, $s) = explode(':', $shift->getStartTime());
-							list($end, $m, $s) = explode(':', $shift->getEndTime());
-							
-							// If not a single hour temp
-							// Absolute value to handle 2300-0200 shifts
-							if (abs($end - $start) > 1)
-							{
-								// Add a link to temp the shift
-								$links[] = ' <a href="' . $this->url(array(
-										'controller' => 'temp',
-										'action' => 'create',
-										'id' => $shift->getId(),
-										'form' => true,
-								), null, true) . '">temp part</a>';
-							}
-							
-							print ' (' . implode(', ', $links) . ')';
-						}
-					}
-					else
-					{
-						// No temp, no consultant
-						print 'No consultant assigned';
-					}
-				}
-				?></td>
+			if (!isset($row))
+			{
+				$row = 0;
+			}
+			
+			if ($row % 2)
+			{
+				$class = 'odd';
+			}
+			else
+			{
+				$class = 'even';
+			}
+			
+			if (isset($shifts['WHD']))
+			{
+				$whd = $shifts['WHD'];
+			}
+			else if (isset($shifts['KEC']))
+			{
+				$whd = $shifts['KEC'];
+			}
+			
+			if (isset($shifts['Lab']))
+			{
+				$lab = $shifts['Lab'];
+			}
+			else if (isset($shifts['Owen']))
+			{
+				$lab = $shifts['Owen'];
+			}
+			
+			?>
+			<tr class="<?php print $class ?>">
+				<td><?php print $time ?></td>
+				<?php if (isset($whd)): ?>
+				<td><?php print $this->shiftText($whd, $this) ?></td>
+				<?php else: ?>
+				<td class="no-shift"><?php print '&nbsp' ?></td>
+				<?php endif; ?>
+				<?php if (isset($lab)): ?>
+				<td><?php print $this->shiftText($lab, $this) ?></td>
+				<?php else: ?>
+				<td class="no-shift"><?php print '&nbsp' ?></td>
+				<?php endif; ?>
 			</tr>
-			<?php unset($temp) ?>
+			<?php unset($whd); unset($lab); $row++; ?>
 			<?php endforeach ?>
 		</tbody>
 	</table>
-	<?php endif ?>
 </div>

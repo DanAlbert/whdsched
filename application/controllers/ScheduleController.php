@@ -44,18 +44,31 @@ class ScheduleController extends Zend_Controller_Action
 	{
 		$shiftMapper = new Application_Model_ShiftMapper();
 		$tempShiftMapper = new Application_Model_TempShiftMapper();
+		$sched = array();
 		
 		$shifts = $shiftMapper->fetchAllByDate($this->timestamp);
 		foreach ($shifts as $key => $shift)
 		{
+			$time = $shift->getTimeString();
+			$location = $shift->getLocation();
+			
+			if (!array_key_exists($time, $sched))
+			{
+				$sched[$time] = array();
+			}
+			
 			$temp = $tempShiftMapper->findByShift($shift);
 			if ($temp !== null)
 			{
-				$shifts[$key] = $temp;
+				$sched[$time][$location] = $temp;
+			}
+			else
+			{
+				$sched[$time][$location] = $shift;
 			}
 		}
 		
-		return $shifts;
+		return $sched;
 	}
 }
 
