@@ -36,7 +36,9 @@ if (Zend_Auth::getInstance()->hasIdentity())
 			null, true) . '">Today</a>',
 			'<a href="' . $this->url(array(
 				'controller' => 'index',
-				'action'     => 'index'
+				'action'     => 'index',
+				'month'      => date('m'),
+				'year'       => date('y'),
 			),
 			null, true) . '">Month</a>',
 		)
