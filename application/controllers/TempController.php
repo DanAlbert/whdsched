@@ -1,5 +1,18 @@
 <?php
 
+function cmpTempShift(Application_Model_TempShift $a, Application_Model_TempShift $b)
+{
+	$atime = $a->getShift()->getStartTimestamp();
+	$btime = $b->getShift()->getStartTimestamp();
+
+	if ($atime == $btime)
+	{
+		return 0;
+	}
+
+	return ($atime < $btime) ? -1 : 1;
+}
+
 class TempController extends Zend_Controller_Action
 {
 
@@ -14,7 +27,30 @@ class TempController extends Zend_Controller_Action
 
 	public function indexAction()
 	{
-		// action body
+		$this->view->user = Zend_Auth::getInstance()->getIdentity();
+		$tempMapper = new Application_Model_TempShiftMapper();
+
+		$this->view->days = array();
+		foreach ($tempMapper->fetchAll() as $temp)
+		{
+			if ($temp->getTempConsultant() === null)
+			{
+				$date = $temp->getShift()->getDate();
+				if (!array_key_exists($date, $this->view->days))
+				{
+					$this->view->days[$date] = array();
+				}
+				
+				$this->view->days[$date][] = $temp;
+			}
+		}
+		
+		// Make sure they are sorted properly
+		foreach ($this->view->days as $day => $shifts)
+		{
+			usort($shifts, 'cmpTempShift');
+			$this->view->days[$day] = $shifts;
+		}
 	}
 
 	public function createAction()
@@ -235,7 +271,14 @@ class TempController extends Zend_Controller_Action
 			$this->_messenger->addMessage('No such temp shift');
 		}
 		
-		$this->gotoSchedule($temp->getShift()->getDate());
+		if ($request->getParam('sched'))
+		{
+			$this->gotoSchedule($temp->getShift()->getDate());
+		}
+		else
+		{
+			$this->_redirector->gotoSimple('index', 'temp');
+		}
 	}
 
 	public function takeAction()
@@ -275,19 +318,37 @@ class TempController extends Zend_Controller_Action
 					$tempMapper->save($temp);
 				}
 				
-				$this->gotoSchedule($temp->getShift()->getDate());
+				if ($request->getParam('sched'))
+				{
+					$this->gotoSchedule($temp->getShift()->getDate());
+				}
+				else
+				{
+					$this->_redirector->gotoSimple('index', 'temp');
+				}
 			}
 			else
 			{
 				// The regularly scheduled consultant is trying to claim the shift
 				// Just cancel the temp
-				$this->_redirector->gotoSimple('cancel', 'temp', null, array('id' => $id));
+				$this->_redirector->gotoSimple('cancel', 'temp', null, array(
+						'id' => $id,
+						'sched' => $request->getParam('sched')
+				));
 			}
 		}
 		else
 		{
 			$this->_messenger->addMessage('No such temp shift');
-			$this->gotoSchedule();
+			
+			if ($request->getParam('sched'))
+			{
+				$this->gotoSchedule($temp->getShift()->getDate());
+			}
+			else
+			{
+				$this->_redirector->gotoSimple('index', 'temp');
+			}
 		}
 	}
 	

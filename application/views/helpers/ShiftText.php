@@ -39,12 +39,13 @@ class Zend_View_Helper_ShiftText
 			// Has someone taken the shift?
 			if ($temp->getTempConsultant())
 			{
-				if ($temp->getTempConsultant()->getId() == $view->user->getId())
+				if ($temp->getTempConsultant()->getId() == $this->view->user->getId())
 				{
 					$text .= 'You are covering this shift (<a href="' . $this->view->url(array(
 							'controller' => 'temp',
 							'action'     => 'cancel',
 							'id'         => $temp->getId(),
+							'sched'      => true,
 					), null, true) . '">cancel</a>)';
 				}
 				else
@@ -60,6 +61,7 @@ class Zend_View_Helper_ShiftText
 							'controller' => 'temp',
 							'action' => 'cancel',
 							'id' => $temp->getId(),
+							'sched'      => true,
 					), null, true) . '">Cancel this temp shift</a>';
 				}
 				else
@@ -69,6 +71,7 @@ class Zend_View_Helper_ShiftText
 							'controller' => 'temp',
 							'action'     => 'take',
 							'id' => $temp->getId(),
+							'sched'      => true,
 					), null, true) . '">Take this shift</a>';
 				}
 			}

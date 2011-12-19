@@ -31,6 +31,11 @@ div.date-picker a
 	text-decoration: none;	
 }
 
+table tbody tr.odd
+{
+	background-color: #f0f0f0;
+}
+
 table.calendar
 {
 	width: 100%;
@@ -72,11 +77,6 @@ table.schedule thead tr td
 	font-weight: bold;
 }
 
-table.schedule tbody tr.odd
-{
-	background-color: #f0f0f0;
-}
-
 table.schedule tbody tr td
 {
 	width: 200px;
@@ -89,4 +89,58 @@ table.schedule tbody tr td:first-child
 
 table.schedule tbody tr td.no-shift
 {
+}
+
+table.available-shifts
+{
+	width: 800px;
+}
+
+table.available-shifts tr.date td
+{
+	padding-top: 16px;
+	font-weight: bold;
+}
+
+table.available-shifts tr td.spacer
+{
+	width: 30px;
+}
+
+table.available-shifts tr td.time
+{
+	width: 100px;
+}
+
+table.available-shifts tr td.location
+{
+	width: 100px;
+}
+
+table.available-shifts tr td.message
+{
+	width: 200px;
+}
+
+table.available-shifts tr td.message strong
+{
+	color: #bd1628;
+}
+
+table.available-shifts tr td.message em
+{
+	color: #2175b5;
+	font-style: normal;
+	font-weight: bold;
+}
+
+table.available-shifts tr td.action
+{
+	width: 200px;
+}
+
+table.available-shifts tr td.action a
+{
+	color: #837584;
+	font-weight: bold;	
 }

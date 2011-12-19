@@ -1,4 +1,75 @@
-<br /><br />
+<br />
 <div id="view-content">
-	<p>View script for controller <b>Temp</b> and script/action name <b>index</b></p>
+	<?php if (count($this->days) > 0): ?>
+	<table class="available-shifts">
+		<tbody>
+			<?php foreach ($this->days as $day => $temps): ?>
+			<tr class="date">
+				<?php if (date('Y-m-d', mktime(10, 0, 0, 12, 5, 2011)) == $day): ?>
+				<td colspan="5">Today</td>
+				<?php else: ?>
+				<td colspan="5"><?php print date('l, F j, Y', strtotime($day)) ?></td>
+				<?php endif; ?>
+			</tr>
+			<?php foreach ($temps as $temp): ?>
+			<?php
+			
+			if (!isset($row))
+			{
+				$row = 0;
+			}
+			
+			if ($row % 2)
+			{
+				$class = 'odd';
+			}
+			else
+			{
+				$class = 'even';
+			}
+			
+			?>
+			
+			<tr class="<?php print $class ?>">
+			<td class="spacer">&nbsp;</td>
+			<td class="time"><?php print $temp->getShift()->getTimeString() ?></td>
+			<td class="location"><?php print $temp->getShift()->getLocation() ?></td>
+			<td class="message"><?php
+			
+			$timeUntil = $temp->getShift()->getStartTimestamp() - mktime(10, 0, 0, 12, 5, 2011);
+			
+			// Less than 24 hours until this shift?
+			if ($timeUntil < (60 * 60 * 24))
+			{
+				print '<strong>In ' . floor($timeUntil / 60 / 60) . ' hours</strong>';
+			}
+			else
+			{
+				print '<em>Not yet filled!</em>';
+			}
+			
+			?></td>
+			<?php if ($temp->getShift()->getConsultant()->getId() == $this->user->getId()): ?>
+			<td class="action"><a href="<?php print $this->url(array(
+					'controller' => 'temp',
+					'action'     => 'cancel',
+					'id'         => $temp->getId(),
+					'sched'      => false,
+					)) ?>">Cancel</a></td>
+			<?php else: ?>
+			<td class="action"><a href="<?php print $this->url(array(
+					'controller' => 'temp',
+					'action'     => 'take',
+					'id'         => $temp->getId(),
+					'sched'      => false,
+					)) ?>">Fill</a></td>
+			<?php endif; ?>
+			</tr>
+			<?php $row++; endforeach; ?>
+			<?php endforeach; ?>
+		</tbody>
+	</table>
+	<?php else: ?>
+	<h2>No temp shifts available.</h2>
+	<?php endif; ?>
 </div>

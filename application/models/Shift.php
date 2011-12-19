@@ -96,6 +96,20 @@ class Application_Model_Shift
 		$this->_endTime = $endTime;
 	}
 	
+	public function getStartTimestamp()
+	{
+		list($y, $mo, $d) = explode('-', $this->getDate());
+		list($h, $mi, $s) = explode(':', $this->getStartTime());
+		return mktime($h, $mi, $s, $mo, $d, $y);
+	}
+	
+	public function getEndTimestamp()
+	{
+		list($y, $mo, $d) = explode('-', $this->getDate());
+		list($h, $mi, $s) = explode(':', $this->getEndTime());
+		return mktime($h, $mi, $s, $mo, $d, $y);
+	}
+	
 	public function getTimeString()
 	{
 		return substr($this->getStartTime(), 0, 5) . ' - ' .
