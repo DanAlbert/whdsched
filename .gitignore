@@ -6,3 +6,7 @@ zf.sh
 .buildpath
 .project
 .settings
+
+whdsched.esproj/Project.espressostorage
+
+whdsched.esproj/user.andy.espressostorage
