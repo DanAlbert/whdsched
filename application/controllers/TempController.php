@@ -62,8 +62,23 @@ class TempController extends Zend_Controller_Action
 		$request = $this->getRequest();
 		$id = $request->getParam('id');
 		$showForm = $request->getParam('form');
+		$isTemp = $request->getParam('temp');
 		
-		$shift = $shiftMapper->find($id);
+		// The shift passed is a temp shift
+		// Make the temp consultant the owner of the shift and delete the old temp
+		if ($isTemp == true)
+		{
+			$temp = $tempMapper->find($id);
+			$shift = $temp->getShift();
+			$shift->setConsultant($user);
+			
+			$tempMapper->delete($temp);
+			$shiftMapper->save($shift);
+		}
+		else
+		{
+			$shift = $shiftMapper->find($id);
+		}
 		
 		$form = new Application_Form_Temp($shift);
 		
@@ -131,7 +146,6 @@ class TempController extends Zend_Controller_Action
 						
 							// Temp the new shift
 							$temp = new Application_Model_TempShift();
-							$temp->setPostTime(time());
 							$temp->setShift($newShift);
 							
 							$tempMapper->save($temp);
@@ -176,7 +190,7 @@ class TempController extends Zend_Controller_Action
 						}
 					}
 					
-					$this->gotoSchedule($shift->getDate());
+					$this->handleRedirect($request, $shift()->getDate());
 				}
 				else
 				{
@@ -197,18 +211,17 @@ class TempController extends Zend_Controller_Action
 				{
 					// Form not requested, just temp the whole shift
 					$temp = new Application_Model_TempShift();
-					$temp->setPostTime(time());
 					$temp->setShift($shift);
 					$tempMapper->save($temp);
 					
-					$this->gotoSchedule($shift->getDate());
+					$this->handleRedirect($request, $shift->getDate());
 				}
 			}
 		}
 		else
 		{
 			$this->_messenger->addMessage('You are forbidden from temping this shift');
-			$this->gotoSchedule($shift->getDate());
+			$this->handleRedirect($request, $shift()->getDate());
 		}
 	}
 
@@ -233,18 +246,9 @@ class TempController extends Zend_Controller_Action
 			else if (($temp->getTempConsultant() !== null) and
 					 ($user->getId() == $temp->getTempConsultant()->getId()))
 			{
-				// Give up the temp shift
-				$temp->setTempConsultant(null);
-				$temp->setResponseTime(null);
-				$tempMapper->save($temp);
-				
-				/*$date = $temp->getShift()->getDate();
-				$startTime = $temp->getShift()->getStartTime();
-				
 				// Is it too late to cancel?
-				$responseTime = strtotime("{$date} {$startTime}");
-				//$allowed = strtotime("+1 hours", $responseTime);
-				$allowed = strtotime("+1 minutes", $responseTime); // FOR TESTING ONLY
+				$responseTime = strtotime($temp->getResponseTime());
+				$allowed = strtotime("+1 hours", $responseTime);
 				// TODO: What if very close to the shift time?
 				// If someone claims a shift 20 minutes until the shift
 				// and then cancels, who is responsible? 
@@ -259,26 +263,21 @@ class TempController extends Zend_Controller_Action
 				else
 				{
 					$this->_messenger->addMessage('It is too late for you to cancel this shift');
-				}*/
+				}
 			}
 			else
 			{
 				$this->_messenger->addMessage('You are forbidden from cancelling this shift');
 			}
+			
+			$this->handleRedirect($request, $temp->getShift()->getDate());
 		}
 		else
 		{
 			$this->_messenger->addMessage('No such temp shift');
+			$this->handleRedirect($request);
 		}
 		
-		if ($request->getParam('sched'))
-		{
-			$this->gotoSchedule($temp->getShift()->getDate());
-		}
-		else
-		{
-			$this->_redirector->gotoSimple('index', 'temp');
-		}
 	}
 
 	public function takeAction()
@@ -314,18 +313,11 @@ class TempController extends Zend_Controller_Action
 				{
 					// Claim
 					$temp->setTempConsultant($user);
-					$temp->setResponseTime(time());
+					$temp->setResponseTime(date('Y-m-d H:i:s'));
 					$tempMapper->save($temp);
 				}
 				
-				if ($request->getParam('sched'))
-				{
-					$this->gotoSchedule($temp->getShift()->getDate());
-				}
-				else
-				{
-					$this->_redirector->gotoSimple('index', 'temp');
-				}
+				$this->handleRedirect($request, $temp->getShift()->getDate());
 			}
 			else
 			{
@@ -333,22 +325,14 @@ class TempController extends Zend_Controller_Action
 				// Just cancel the temp
 				$this->_redirector->gotoSimple('cancel', 'temp', null, array(
 						'id' => $id,
-						'sched' => $request->getParam('sched')
+						'goto' => $request->getParam('goto')
 				));
 			}
 		}
 		else
 		{
 			$this->_messenger->addMessage('No such temp shift');
-			
-			if ($request->getParam('sched'))
-			{
-				$this->gotoSchedule($temp->getShift()->getDate());
-			}
-			else
-			{
-				$this->_redirector->gotoSimple('index', 'temp');
-			}
+			$this->handleRedirect($request);
 		}
 	}
 	
@@ -365,6 +349,23 @@ class TempController extends Zend_Controller_Action
 					'year'  => $year,
 					'month' => $month,
 					'day'   => $day));
+		}
+	}
+	
+	private function handleRedirect($request, $date = null)
+	{
+		$goto = $request->getParam('goto');
+		if ($goto == 'sched')
+		{
+			$this->gotoSchedule($date);
+		}
+		else if ($goto == 'temps')
+		{
+			$this->_redirector->gotoSimple('index', 'temp');
+		}
+		else
+		{
+			$this->_redirector->gotoSimple('personal', 'schedule');
 		}
 	}
 	

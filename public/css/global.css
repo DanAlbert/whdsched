@@ -12,10 +12,20 @@
 	margin: 0;
 }
 
+ul li
+{
+	list-style-position:inside;
+}
+
 div#container
 {
 	margin: 10px auto;
 	width: 800px;
+}
+
+div#content
+{
+	padding: 8px;
 }
 
 div.date-picker
@@ -36,6 +46,16 @@ table tbody tr.odd
 	background-color: #f0f0f0;
 }
 
+table tbody tr.faded
+{
+	color: #d0d0d0;
+}
+
+table tbody tr.odd.faded
+{
+	color: #c0c0c0;	
+}
+
 table.calendar
 {
 	width: 100%;
@@ -51,15 +71,26 @@ table.calendar tbody td
 {
 	width: 64px;
 	height: 64px;
-	vertical-align: center;
+}
+
+table.calendar tbody td.no-shifts
+{
+	background-color: #df1f38;
+}
+
+table.calendar tbody td.consultant-works
+{
+	background-color: #ffad01;
 }
 
 table.calendar tbody td a
 {
+	color: #202020;
 	display: block;
 	text-decoration: none;
 	width: 100%;
 	height: 100%;
+	line-height: 64px;
 }
 
 table.calendar tbody td a:hover

@@ -5,7 +5,7 @@
 		<tbody>
 			<?php foreach ($this->days as $day => $temps): ?>
 			<tr class="date">
-				<?php if (date('Y-m-d', mktime(10, 0, 0, 12, 5, 2011)) == $day): ?>
+				<?php if (date('Y-m-d') == $day): ?>
 				<td colspan="5">Today</td>
 				<?php else: ?>
 				<td colspan="5"><?php print date('l, F j, Y', strtotime($day)) ?></td>
@@ -36,10 +36,15 @@
 			<td class="location"><?php print $temp->getShift()->getLocation() ?></td>
 			<td class="message"><?php
 			
-			$timeUntil = $temp->getShift()->getStartTimestamp() - mktime(10, 0, 0, 12, 5, 2011);
+			$timeUntil = $temp->getShift()->getStartTimestamp() - time();
 			
+			// Less than 90 minutes until this shift
+			if ($timeUntil < 60 * 90)
+			{
+				print '<em>In ' . floor($timeUntil / 60) . ' minutes</em>';
+			}
 			// Less than 24 hours until this shift?
-			if ($timeUntil < (60 * 60 * 24))
+			else if ($timeUntil < (60 * 60 * 24))
 			{
 				print '<strong>In ' . floor($timeUntil / 60 / 60) . ' hours</strong>';
 			}
@@ -54,15 +59,15 @@
 					'controller' => 'temp',
 					'action'     => 'cancel',
 					'id'         => $temp->getId(),
-					'sched'      => false,
-					)) ?>">Cancel</a></td>
+					'goto'       => 'temps',
+					), null, true) ?>">Cancel</a></td>
 			<?php else: ?>
 			<td class="action"><a href="<?php print $this->url(array(
 					'controller' => 'temp',
 					'action'     => 'take',
 					'id'         => $temp->getId(),
-					'sched'      => false,
-					)) ?>">Fill</a></td>
+					'goto'       => 'temps',
+					), null, true) ?>">Fill</a></td>
 			<?php endif; ?>
 			</tr>
 			<?php $row++; endforeach; ?>

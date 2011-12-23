@@ -68,12 +68,12 @@
 			<tr class="<?php print $class ?>">
 				<td><?php print $time ?></td>
 				<?php if (isset($whd)): ?>
-				<td><?php print $this->shiftText($whd, $this) ?></td>
+				<td><?php print $this->shiftText($whd, 'sched') ?></td>
 				<?php else: ?>
 				<td class="no-shift"><?php print '&nbsp' ?></td>
 				<?php endif; ?>
 				<?php if (isset($lab)): ?>
-				<td><?php print $this->shiftText($lab, $this) ?></td>
+				<td><?php print $this->shiftText($lab, 'sched') ?></td>
 				<?php else: ?>
 				<td class="no-shift"><?php print '&nbsp' ?></td>
 				<?php endif; ?>

@@ -121,7 +121,7 @@ class Application_Model_ConsultantMapper
 			$consultant->setPhone($row->phone);
 			$consultant->setAdmin($row->admin);
 			
-			$consultants[] = $consultant;
+			$consultants[$consultant->getId()] = $consultant;
 		}
 		
 		return $consultants;

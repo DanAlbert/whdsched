@@ -102,6 +102,26 @@ class Application_Model_TermMapper
 		return $terms;
 	}
 	
+	public function fetchAllByYear($year)
+	{
+		$resultSet = $this->getDbTable()->fetchAll(array('year' => $year));
+		$terms = array();
+		
+		foreach ($resultSet as $row)
+		{
+			$term = new Application_Model_Term();
+			$term->setId($row->id);
+			$term->setTerm($row->term);
+			$term->setYear($row->year);
+			$term->setStartDate($row->start_date);
+			$term->setEndDate($row->end_date);
+			
+			$terms[] = $term;
+		}
+		
+		return $terms;
+	}
+	
 	public function makeTermId(Application_Model_Term $term)
 	{
 		switch ($term->getTerm())

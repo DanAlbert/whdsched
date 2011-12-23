@@ -21,6 +21,7 @@
         </controllerFile>
         <controllerFile controllerName="Schedule">
           <actionMethod actionName="index"/>
+          <actionMethod actionName="personal"/>
         </controllerFile>
         <controllerFile controllerName="Shift">
           <actionMethod actionName="index"/>
@@ -135,6 +136,9 @@
           </viewControllerScriptsDirectory>
           <viewControllerScriptsDirectory forControllerName="Temp">
             <viewScriptFile forActionName="take"/>
+          </viewControllerScriptsDirectory>
+          <viewControllerScriptsDirectory forControllerName="Schedule">
+            <viewScriptFile forActionName="personal"/>
           </viewControllerScriptsDirectory>
         </viewScriptsDirectory>
         <viewHelpersDirectory/>

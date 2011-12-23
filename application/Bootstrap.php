@@ -63,9 +63,6 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 		
 		$this->_view->headScript()->appendFile(
 				$this->view->baseUrl('js/tinydropdown.js'));
-		
-		/*$this->_view->headScript()->appendFile(
-				$this->view->baseUrl('js/navigation.js'));*/
 	}
 	
 	protected function _initRequest()

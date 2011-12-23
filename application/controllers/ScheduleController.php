@@ -3,13 +3,15 @@
 class ScheduleController extends Zend_Controller_Action
 {
 
-	public function init()
-	{
-		/* Initialize action controller here */
-	}
+	protected $_messenger;
+	
+    public function init()
+    {
+		$this->_messenger = $this->_helper->getHelper('FlashMessenger');
+    }
 
-	public function indexAction()
-	{
+    public function indexAction()
+    {
 		$this->view->messages = $this->_helper->getHelper('FlashMessenger')->getMessages();
 		
 		$this->view->user = Zend_Auth::getInstance()->getIdentity();
@@ -33,15 +35,60 @@ class ScheduleController extends Zend_Controller_Action
 				$this->timestamp = mktime(0, 0, 0, $month, $day, $year);
 			}
 		}
+		
 		if (isset($this->timestamp))
 		{
 			$this->view->timestamp = $this->timestamp;
 			$this->view->schedule = $this->getSchedule();
 		}
+		
+    }
+
+	public function personalAction()
+	{
+		$user = Zend_Auth::getInstance()->getIdentity();
+		$shiftMapper = new Application_Model_ShiftMapper();
+		$tempShiftMapper = new Application_Model_TempShiftMapper();
+		
+		try
+		{
+			$shifts = $shiftMapper->fetchAllThisTerm();
+		}
+		catch (Exception $e)
+		{
+			return;
+		}
+		
+		$days = array();
+		
+		// Get the user's next 10 shifts
+		$shifts = $shiftMapper->fetchUpcomingShiftsByConsultant($user, true, 10);
+		foreach ($shifts as $key => $shift)
+		{
+			$date = $shift->getDate();
+			if (!array_key_exists($date, $days))
+			{
+				$days[$date] = array();
+			}
+			
+			// If they don't own the shift, they are the temp
+			if ($shift->getConsultant()->getId() != $user->getId())
+			{
+				$temp = $tempShiftMapper->findByShift($shift);
+				$days[$date][] = $temp;
+			}
+			else
+			{
+				$days[$date][] = $shift;
+			}
+		}
+		
+		$this->view->user = $user;
+		$this->view->days = $days;
 	}
 
-	private function getSchedule()
-	{
+    private function getSchedule()
+    {
 		$shiftMapper = new Application_Model_ShiftMapper();
 		$tempShiftMapper = new Application_Model_TempShiftMapper();
 		$sched = array();
@@ -70,6 +117,10 @@ class ScheduleController extends Zend_Controller_Action
 		
 		return $sched;
 	}
+
+
 }
 
+
 ?>
+

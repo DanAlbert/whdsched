@@ -82,7 +82,23 @@
 					}
 					else
 					{
-						print '<td><a href="' . $this->url(array(
+						$date = date('Y-m-d',
+									mktime(0, 0, 0, $this->month, $day, $this->year));
+						
+						if (!isset($this->days[$date]))
+						{
+							$class = 'no-shifts';
+						}
+						else if ($this->days[$date] === true)
+						{
+							$class = 'consultant-works';
+						}
+						else
+						{
+							$class = 'normal';
+						}
+						
+						print '<td class="' . $class . '"><a href="' . $this->url(array(
 							'controller' => 'schedule',
 							'action'     => 'index',
 							'day'        => $day,

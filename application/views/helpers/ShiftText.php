@@ -23,7 +23,7 @@ class Zend_View_Helper_ShiftText
 	/**
 	 *  
 	 */
-	public function shiftText($shift)
+	public function shiftText($shift, $goto)
 	{
 		$text = '';
 		
@@ -41,12 +41,54 @@ class Zend_View_Helper_ShiftText
 			{
 				if ($temp->getTempConsultant()->getId() == $this->view->user->getId())
 				{
-					$text .= 'You are covering this shift (<a href="' . $this->view->url(array(
-							'controller' => 'temp',
-							'action'     => 'cancel',
-							'id'         => $temp->getId(),
-							'sched'      => true,
-					), null, true) . '">cancel</a>)';
+					// Is it too late to cancel?
+					$responseTime = strtotime($temp->getResponseTime());
+					$allowed = strtotime("+1 hours", $responseTime);
+					
+					if (time() < $allowed)
+					{
+						$text .= 'You are covering this shift (<a href="' . $this->view->url(array(
+								'controller' => 'temp',
+								'action'     => 'cancel',
+								'id'         => $temp->getId(),
+								'temp'       => true,
+								'goto'       => $goto,
+						), null, true) . '">cancel</a>)';
+					}
+					else
+					{
+						$text .= 'You are covering this shift ';
+						
+						$links = array();
+							
+						// Add a link to temp the shift
+						$links[] = '<a href="' . $this->view->url(array(
+								'controller' => 'temp',
+								'action' => 'create',
+								'id' => $temp->getId(),
+								'temp'       => true,
+								'goto' => $goto,
+						), null, true) . '">request temp</a>';
+							
+						list($start, $m, $s) = explode(':', $shift->getStartTime());
+						list($end, $m, $s) = explode(':', $shift->getEndTime());
+							
+						// If not a single hour temp
+						// Absolute value to handle 2300-0200 shifts
+						if (abs($end - $start) > 1)
+						{
+							// Add a link to temp the shift
+							$links[] = ' <a href="' . $this->view->url(array(
+									'controller' => 'temp',
+									'action' => 'create',
+									'id' => $temp->getId(),
+									'form' => true,
+									'goto' => $goto,
+							), null, true) . '">temp part</a>';
+						}
+							
+						$text .= ' (' . implode(', ', $links) . ')';
+					}
 				}
 				else
 				{
@@ -59,9 +101,9 @@ class Zend_View_Helper_ShiftText
 				{
 					$text .= '<a href="' . $this->view->url(array(
 							'controller' => 'temp',
-							'action' => 'cancel',
-							'id' => $temp->getId(),
-							'sched'      => true,
+							'action'     => 'cancel',
+							'id'         => $temp->getId(),
+							'goto'       => $goto,
 					), null, true) . '">Cancel this temp shift</a>';
 				}
 				else
@@ -70,8 +112,8 @@ class Zend_View_Helper_ShiftText
 					$text .= '<a href="' . $this->view->url(array(
 							'controller' => 'temp',
 							'action'     => 'take',
-							'id' => $temp->getId(),
-							'sched'      => true,
+							'id'         => $temp->getId(),
+							'goto'       => $goto,
 					), null, true) . '">Take this shift</a>';
 				}
 			}
@@ -94,6 +136,7 @@ class Zend_View_Helper_ShiftText
 							'controller' => 'temp',
 							'action' => 'create',
 							'id' => $shift->getId(),
+							'goto' => $goto,
 					), null, true) . '">request temp</a>';
 						
 					list($start, $m, $s) = explode(':', $shift->getStartTime());
@@ -109,6 +152,7 @@ class Zend_View_Helper_ShiftText
 								'action' => 'create',
 								'id' => $shift->getId(),
 								'form' => true,
+								'goto' => $goto,
 						), null, true) . '">temp part</a>';
 					}
 						

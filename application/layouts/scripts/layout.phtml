@@ -46,7 +46,7 @@ if (Zend_Auth::getInstance()->hasIdentity())
 	
 	$menuLinks[] = '<a href="' . $this->url(array(
 				'controller' => 'schedule',
-				'action'     => 'index'
+				'action'     => 'personal'
 			),
 			null, true) . '">Your schedule</a>';
 	
@@ -112,6 +112,7 @@ print   '<script type="text/javascript">var dropdown=' .
 		'new TINY.dropdown.init("dropdown", {id:\'menu\', active:\'menuhover\'}); ' .
 		'</script>';
 
+print '<div id="content">';
 // Print any messages sent from the controller
 if (isset($this->messages))
 {
@@ -124,6 +125,7 @@ if (isset($this->messages))
 }
 
 print $this->layout()->content;
+print '</div>'; // End content
 
 ?>
 </div> <!-- End container -->
