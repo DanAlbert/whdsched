@@ -7,7 +7,6 @@ class Application_Model_TempShift
 	protected $_tempConsultant;
 	protected $_postTime;
 	protected $_responseTime;
-	protected $_hours;
 	protected $_assignedConsultant;
 	protected $_timeout;
 	
@@ -51,9 +50,6 @@ class Application_Model_TempShift
 				break;
 			case 'resposne_time':
 				$this->setResponseTime($value);
-				break;
-			case 'hours':
-				$this->setHours($value);
 				break;
 			case 'assigned_to':
 				$this->setAssignedConsultant($value);
@@ -116,16 +112,6 @@ class Application_Model_TempShift
 	public function setResponseTime($responseTime)
 	{
 		$this->_responseTime = $responseTime;
-	}
-	
-	public function getHours()
-	{
-		return $this->_hours;
-	}
-	
-	public function setHours($hours)
-	{
-		$this->_hours = $hours;
 	}
 	
 	public function getAssignedConsultant()

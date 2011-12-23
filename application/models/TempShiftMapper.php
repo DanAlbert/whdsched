@@ -66,13 +66,11 @@ class Application_Model_TempShiftMapper
 			$assignedId = null;
 		}
 		
-		$hours = implode(',', $tempShift->getHours()); // Format for SQL
 		$data = array(
 			'shift_id'           => $tempShift->getShift()->getId(),
 			'temp_consultant_id' => $tempConsultantId,
 			'post_time'          => $tempShift->getPostTime(),
 			'response_time'      => $tempShift->getResponseTime(),
-			'hours'              => $hours,
 			'assigned_to'        => $assignedId,
 			'timeout'            => $tempShift->getTimeout(),
 		);
@@ -112,7 +110,6 @@ class Application_Model_TempShiftMapper
 		$tempShift->setTempConsultant($this->consultantMapper->find($row->temp_consultant_id));
 		$tempShift->setPostTime($row->post_time);
 		$tempShift->setResponseTime($row->response_time);
-		$tempShift->setHours($row->hours);
 		$tempShift->setAssignedConsultant($this->consultantMapper->find($row->assigned_to));
 		$tempShift->setTimeout($row->timeout);
 		
@@ -135,7 +132,6 @@ class Application_Model_TempShiftMapper
 		$tempShift->setTempConsultant($this->consultantMapper->find($row->temp_consultant_id));
 		$tempShift->setPostTime($row->post_time);
 		$tempShift->setResponseTime($row->response_time);
-		$tempShift->setHours($row->hours);
 		$tempShift->setAssignedConsultant($this->consultantMapper->find($row->assigned_to));
 		$tempShift->setTimeout($row->timeout);
 		
@@ -155,7 +151,6 @@ class Application_Model_TempShiftMapper
 			$tempShift->setTempConsultant($this->consultantMapper->find($row->temp_consultant_id));
 			$tempShift->setPostTime($row->post_time);
 			$tempShift->setResponseTime($row->response_time);
-			$tempShift->setHours($row->hours);
 			$tempShift->setAssignedConsultant($this->consultantMapper->find($row->assigned_to));
 			$tempShift->setTimeout($row->timeout);
 			
