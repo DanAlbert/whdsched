@@ -122,6 +122,11 @@ table.schedule tbody tr td.no-shift
 {
 }
 
+table.week-schedule tbody tr
+{
+	height: 100px;
+}
+
 table.available-shifts
 {
 	width: 800px;

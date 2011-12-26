@@ -1,12 +1,129 @@
-<br /><br />
-<div id="view-content">
-	<?php
-	
-	if (isset($this->form))
+<script type="text/javascript">
+
+$(document).ready(function ()
+{
+	$('table.week-schedule select').change(function ()
 	{
-		$this->form->setAction($this->url());
-		print $this->form;
-	}
-	
-	?>
+		var id = $(this).attr('id');
+		
+		$.ajax({
+			type: 'POST',
+			dataType: 'json',
+			url:
+				'<?php print $this->url(array(
+					'controller' => 'shift',
+					'action'     => 'set',
+					'format'     => 'json',
+				), null, true) ?>',
+			async: false,
+			data:
+				{
+					shift: id,
+					consultant: $(this).val()
+				},
+			success:
+				function (data)
+				{
+					alert('Saved?');
+				}
+		});
+	});
+});
+
+</script>
+<div id="view-content">
+	<?php if (isset($this->sched)): ?>
+	<h2><?php print $this->term->getName() ?></h2>
+	<?php if (count($this->sched) > 0): ?>
+	<table class="week-schedule">
+		<thead>
+			<tr>
+				<td>&nbsp;</td>
+				<td>Monday</td>
+				<td>Tuesday</td>
+				<td>Wednesday</td>
+				<td>Thursday</td>
+				<td>Friday</td>
+				<td>Saturday</td>
+				<td>Sunday</td>
+			</tr>
+		</thead>
+		<tbody>
+		<?php
+
+		$i = 0;
+		foreach ($this->sched as $time => $days)
+		{
+			if ($i++ % 2)
+			{
+				$class = 'odd';
+			}
+			else
+			{
+				$class = 'even';
+			}
+
+			print '<tr id="' . "$time" . '" class="' . $class . '">';
+			print "<td>$time</td>";
+			foreach ($days as $day => $locations)
+			{
+				print '<td>';
+				if (count($locations) > 0)
+				{
+					$rows = array();
+					foreach ($locations as $loc => $shift)
+					{
+						$line = $loc . ': <select id="' . $shift->getId() . '">';
+						$line .= '<option value=""></option>';
+						foreach ($this->consultants as $consultant)
+						{
+							$id = $consultant->getId();
+							if (($shift->getConsultant() !== null) and
+								($shift->getConsultant()->getId() == $id))
+							{
+								$selected = ' selected="selected"';
+							}
+							else
+							{
+								$selected = '';
+							}
+
+							$line .= '<option value="' . $id . '" ' . $selected . '>';
+							$line .= $consultant->getShortName();
+							$line .= '</option>';
+						}
+						$line .= '</select>';
+						$rows[] = $line;
+					}
+
+					print implode('<br />', $rows);
+				}
+				else
+				{
+					print '&nbsp;';
+				}
+				print '</td>';
+			}
+			print '</tr>';
+		}
+
+		?>
+		</tbody>
+		<tfoot>
+			<tr>
+				<td>&nbsp;</td>
+				<td>Monday</td>
+				<td>Tuesday</td>
+				<td>Wednesday</td>
+				<td>Thursday</td>
+				<td>Friday</td>
+				<td>Saturday</td>
+				<td>Sunday</td>
+			</tr>
+		</tfoot>
+	</table>
+	<?php else: ?>
+	No shifts exist
+	<?php endif; ?>
+	<?php endif; ?>
 </div>

@@ -29,6 +29,7 @@
           <actionMethod actionName="assign"/>
           <actionMethod actionName="special"/>
           <actionMethod actionName="keep"/>
+          <actionMethod actionName="set"/>
         </controllerFile>
         <controllerFile controllerName="Temp">
           <actionMethod actionName="index"/>
@@ -139,6 +140,9 @@
           </viewControllerScriptsDirectory>
           <viewControllerScriptsDirectory forControllerName="Schedule">
             <viewScriptFile forActionName="personal"/>
+          </viewControllerScriptsDirectory>
+          <viewControllerScriptsDirectory forControllerName="Shift">
+            <viewScriptFile forActionName="set"/>
           </viewControllerScriptsDirectory>
         </viewScriptsDirectory>
         <viewHelpersDirectory/>

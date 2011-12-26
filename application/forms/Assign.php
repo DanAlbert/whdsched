@@ -2,13 +2,21 @@
 
 class Application_Form_Assign extends Zend_Form
 {
+	private $shifts;
+	private $consultants;
+
+	public function  __construct(array $shifts, array $consultants)
+	{
+		$this->shifts = $shifts;
+		$this->consultants = $consultants;
+
+		Zend_Form::__construct();
+	}
+
 	public function init()
 	{
-		$consultantMapper = new Application_Model_ConsultantMapper();
-		$termMapper = new Application_Model_TermMapper();
-		
 		$this->setMethod('post');
-		
+
 		$consultant = $this->createElement('select', 'consultant');
 		$consultant->setLabel('Consulant');
 		foreach ($consultantMapper->fetchAll() as $c)

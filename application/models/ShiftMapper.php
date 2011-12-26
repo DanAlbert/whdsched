@@ -73,8 +73,6 @@ class Application_Model_ShiftMapper
 		{
 			return $this->getDbTable()->update($data, array('id = ?' => $id));
 		}
-		
-		return true;
 	}
 	
 	public function delete(Application_Model_Shift $shift)
@@ -110,25 +108,32 @@ class Application_Model_ShiftMapper
 				array('start_time', 'location'));
 		return $this->mapAll($resultSet);
 	}
-	
-	public function fetchAllByTerm(Application_Model_Term $term)
+
+	public function fetchAllInRange($start, $end)
 	{
 		$select = $this->getDbTable()->select();
 		$select->where('day >= :start AND day <= :end')->bind(array(
-			':start' => $term->getStartDate(),
-			':end'   => $term->getEndDate(),
+			':start' => $start,
+			':end'   => $end,
 		));
-		
+
 		$resultSet = $this->getDbTable()->fetchAll($select);
 		return $this->mapAll($resultSet);
 	}
 	
+	public function fetchAllByTerm(Application_Model_Term $term)
+	{
+		return $this->fetchAllInRange($term->getStartDate(), $term->getEndDate());
+	}
+	
 	public function fetchAllThisTerm()
 	{
+		$termMapper = new Application_Model_TermMapper();
+
 		// Don't catch just to throw, but this is PHP
 		try
 		{
-			$term = $this->getCurrentTerm();
+			$term = $termMapper->getCurrentTerm();
 		}
 		catch (Exception $e)
 		{
@@ -150,7 +155,7 @@ class Application_Model_ShiftMapper
 		return $this->mapAll($resultSet);
 	}
 	
-	public function fetchAlLThisMonth()
+	public function fetchAllThisMonth()
 	{
 		return $this->fetchAllByMonth(date('m'));
 	}
@@ -235,6 +240,48 @@ class Application_Model_ShiftMapper
 		$resultSet = $this->getDbTable()->fetchAll($select);
 		return $this->mapAll($resultSet);
 	}
+
+	public function fetchAllSimilar(Application_Model_Shift $shift)
+	{
+		// Similar means:
+		// Same term
+		// Same day of week
+		// Same start time
+		// Same end time
+		// Same location
+
+		$termMapper = new Application_Model_TermMapper();
+
+		list($y, $m, $d) = explode('-', $shift->getDate());
+		$time = mktime(0, 0, 0, $m, $d, $y);
+		$term = $termMapper->getTermOf($time);
+
+		$termStart = $term->getStartDate();
+		$termEnd = $term->getEndDate();
+		$wday = date('w', $time);
+		$start = $shift->getStartTime();
+		$end = $shift->getEndTime();
+		$loc = $shift->getLocation();
+		
+		$select = $this->_dbTable->select();
+		$select->where(
+				'day >= :termStart AND ' .
+				'day <= :termEnd AND ' .
+				'DAYOFWEEK(day) = :wday AND ' .
+				'start_time = :start AND ' .
+				'end_time = :end AND ' .
+				'location = :loc')->bind(array(
+					':termStart' => $termStart,
+					':termEnd'   => $termEnd,
+					':wday'      => $wday + 1,
+					':start'     => $start,
+					':end'       => $end,
+					':loc'       => $loc,
+				));
+		
+		$resultSet = $this->getDbTable()->fetchAll($select);
+		return $this->mapAll($resultSet);
+	}
 	
 	private function mapAll($resultSet)
 	{
@@ -277,29 +324,6 @@ class Application_Model_ShiftMapper
 		}
 		
 		return $shift;
-	}
-	
-	private function getCurrentTerm()
-	{
-		$termMapper = new Application_Model_TermMapper();
-		$terms = $termMapper->fetchAllByYear(date('Y'));
-		$time = time();
-	
-		foreach ($terms as $term)
-		{
-			list($y, $m, $d) = explode('-', $term->getStartDate());
-			$start = mktime(0, 0, 0, $m, $d, $y);
-	
-			list($y, $m, $d) = explode('-', $term->getEndDate());
-			$end = mktime(0, 0, 0, $m, $d, $y);
-	
-			if (($time < $end) and ($time > $start))
-			{
-				return $term;
-			}
-		}
-	
-		throw new Exception('No term exists');
 	}
 }
 

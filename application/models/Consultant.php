@@ -87,6 +87,12 @@ class Application_Model_Consultant
 	{
 		return "{$this->getFirstName()} {$this->getLastName()}";
 	}
+
+	public function getShortName()
+	{
+		$lastInitial = substr($this->getLastName(), 0, 1);
+		return "{$this->getFirstName()} {$lastInitial}";
+	}
 	
 	public function getEngr()
 	{

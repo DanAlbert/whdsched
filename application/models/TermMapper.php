@@ -121,6 +121,86 @@ class Application_Model_TermMapper
 		
 		return $terms;
 	}
+
+	public function getTermOf($timestamp)
+	{
+		$terms = $this->fetchAllByYear(date('Y', $timestamp));
+
+		foreach ($terms as $term)
+		{
+			list($y, $m, $d) = explode('-', $term->getStartDate());
+			$start = mktime(0, 0, 0, $m, $d, $y);
+
+			list($y, $m, $d) = explode('-', $term->getEndDate());
+			$end = mktime(0, 0, 0, $m, $d, $y);
+
+			if (($timestamp < $end) and ($timestamp > $start))
+			{
+				return $term;
+			}
+		}
+
+		throw new Exception('No term exists');
+	}
+
+	public function getCurrentTerm()
+	{
+		try
+		{
+			$this->getTermOf(time());
+		}
+		catch (Exception $e)
+		{
+			throw $e;
+		}
+	}
+
+	public function getCurrentOrNextTerm()
+	{
+		$time = time();
+		$terms = $this->fetchAllByYear(date('Y', $time));
+
+		foreach ($terms as $term)
+		{
+			list($y, $m, $d) = explode('-', $term->getStartDate());
+			$start = mktime(0, 0, 0, $m, $d, $y);
+
+			list($y, $m, $d) = explode('-', $term->getEndDate());
+			$end = mktime(0, 0, 0, $m, $d, $y);
+
+			if (($time < $end) and ($time > $start))
+			{
+				return $term;
+			}
+
+			if ($start > $time)
+			{
+				if (isset($next))
+				{
+					list($y, $m, $d) = explode('-', $next->getStartDate());
+					$nextStart = mktime(0, 0, 0, $m, $d, $y);
+
+					if ($start < $nextStart)
+					{
+						$next = $term;
+					}
+				}
+				else
+				{
+					$next = $term;
+				}
+			}
+		}
+
+		if (!isset($next))
+		{
+			throw new Exception('No term exists');
+		}
+		else
+		{
+			return $next;
+		}
+	}
 	
 	public function makeTermId(Application_Model_Term $term)
 	{
