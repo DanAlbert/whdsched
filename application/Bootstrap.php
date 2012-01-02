@@ -2,6 +2,7 @@
 
 require_once 'AuthDispatchPlugin.php';
 require_once 'DevAuthAdapter.php';
+require_once 'ServerAuthAdapter.php';
 
 class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 {
@@ -80,6 +81,9 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 	
 	protected function _initAuth()
 	{
+		$this->bootstrap('log');
+		$log = $this->getResource('log');
+		
 		$this->bootstrap('session');
 		
 		$this->bootstrap('request');
@@ -90,6 +94,9 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 		$authOptions = $this->getOption('auth');
 		switch ($authOptions['type'])
 		{
+		case 'server':
+			$adapter = new ServerAuthAdapter($request->getServer('REMOTE_USER'));
+			break;
 		case 'dev':
 			$adapter = new DevAuthAdapter($authOptions['username']);
 			break;
@@ -98,10 +105,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 			$resolver = new Zend_Auth_Adapter_Http_Resolver_File($authOptions['file']);
 			$adapter->setDigestResolver($resolver);
 			break;
-		case 'ldap':
-			// Fallthrough
 		default:
-			$adapter = null; // Not implemented
 			break; 
 		}
 		
