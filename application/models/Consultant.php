@@ -8,6 +8,8 @@ class Application_Model_Consultant
 	protected $_lastName;
 	protected $_engr;
 	protected $_phone;
+	protected $_receiveNightly;
+	protected $_receiveInstant;
 	protected $_admin;
 	
 	public function __construct(array $data = null)
@@ -42,6 +44,12 @@ class Application_Model_Consultant
 				break;
 			case 'phone':
 				$this->setPhone($value);
+				break;
+			case 'recv_nightly':
+				$this->setReceiveNightly($value);
+				break;
+			case 'recv_instant':
+				$this->setReceiveInstant($value);
 				break;
 			case 'admin':
 				$this->setAdmin($value);
@@ -127,6 +135,27 @@ class Application_Model_Consultant
 		
 		return "({$area}) {$first}-{$last}";
 	}
+	
+	public function getReceiveNightly()
+	{
+		return $this->_receiveNightly;
+	}
+	
+	public function setReceiveNightly($receiveNightly)
+	{
+		$this->_receiveNightly = $receiveNightly;
+	}
+	
+	public function getReceiveInstant()
+	{
+		return $this->_receiveInstant;
+	}
+	
+	public function setReceiveInstant($receiveInstant)
+	{
+		$this->_receiveInstant = $receiveInstant;
+	}
+	
 	
 	public function isAdmin()
 	{

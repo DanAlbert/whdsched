@@ -57,6 +57,26 @@ class Application_Form_Consultant extends Zend_Form
 			)
 		));
 		
+		$nightly = $this->createElement('radio', 'nightly');
+		$nightly->setLabel('Receive nightly temp shift emails');
+		$nightly->addMultiOptions(array(
+			'yes' => 'Yes',
+			'no'  => 'No',
+		));
+		$nightly->setValue('yes');
+		
+		$this->addElement($nightly);
+		
+		$instant = $this->createElement('radio', 'instant');
+		$instant->setLabel('Receive instant temp shift emails');
+		$instant->addMultiOptions(array(
+			'yes' => 'Yes',
+			'no'  => 'No',
+		));
+		$instant->setValue('no');
+		
+		$this->addElement($instant);
+		
 		$this->addElement('submit', 'submit', array(
 			'ignore' => true,
 			'label'  => 'Save Changes',

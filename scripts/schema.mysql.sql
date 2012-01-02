@@ -5,6 +5,8 @@ CREATE TABLE consultants
 	last_name VARCHAR(40) NOT NULL,
 	engr VARCHAR(20) NOT NULL,
 	phone VARCHAR(10) NOT NULL,
+	recv_nightly BOOLEAN NOT NULL DEFAULT 1,
+	recv_instant BOOLEAN NOT NULL DEFAULT 0,
 	admin BOOLEAN NOT NULL DEFAULT 0,
 	PRIMARY KEY (id),
 	UNIQUE (engr)

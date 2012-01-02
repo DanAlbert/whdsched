@@ -46,7 +46,25 @@ class ConsultantsController extends Zend_Controller_Action
 						$consultant->setLastName($values['lastName']);
 						$consultant->setEngr($values['engr']);
 						$consultant->setPhone($values['phone']);
-	
+						
+						if ($values['nightly'] == 'yes')
+						{
+							$consultant->setReceiveNightly(true);
+						}
+						else
+						{
+							$consultant->setReceiveNightly(false);
+						}
+						
+						if ($values['instant'] == 'yes')
+						{
+							$consultant->setReceiveInstant(true);
+						}
+						else
+						{
+							$consultant->setReceiveInstant(false);
+						}
+						
 						$consultantMapper->save($consultant);
 	
 						return $this->_helper->redirector('index');
@@ -61,8 +79,12 @@ class ConsultantsController extends Zend_Controller_Action
 					$defaults = array(
 						'firstName' => $consultant->getFirstName(),
 						'lastName'  => $consultant->getLastName(),
-						'engr'	  => $consultant->getEngr(),
-						'phone'	 => $consultant->getPhone(),
+						'engr'      => $consultant->getEngr(),
+						'phone'     => $consultant->getPhone(),
+						'nightly'   => $consultant->getReceiveNightly() ? 
+							'yes' : 'no',
+						'instant'   => $consultant->getReceiveInstant() ? 
+							'yes' : 'no',
 					);
 					
 					$form->populate($defaults);
@@ -129,6 +151,24 @@ class ConsultantsController extends Zend_Controller_Action
 					$consultant->setLastName($values['lastName']);
 					$consultant->setEngr($values['engr']);
 					$consultant->setPhone($values['phone']);
+					
+					if ($values['nightly'] == 'yes')
+					{
+						$consultant->setReceiveNightly(true);
+					}
+					else
+					{
+						$consultant->setReceiveNightly(false);
+					}
+
+					if ($values['instant'] == 'yes')
+					{
+						$consultant->setReceiveInstant(true);
+					}
+					else
+					{
+						$consultant->setReceiveInstant(false);
+					}
 	
 					$consultant->setId(null);
 					

@@ -159,5 +159,35 @@ class Application_Model_TempShiftMapper
 		
 		return $tempShifts;
 	}
+	
+	public function fetchAvailable()
+	{
+		$resultSet = $this->getDbTable()->fetchAll();
+		$tempShifts = array();
+		
+		foreach ($resultSet as $row)
+		{
+			if ($row->temp_consultant_id === null)
+			{
+				$shift = $this->shiftMapper->find($row->shift_id);
+				list($y, $m, $d) = explode('-', $shift->getDate());
+				if (mktime(0, 0, 0, $m, $d, $y) > time())
+				{
+					$tempShift = new Application_Model_TempShift();
+					$tempShift->setId($row->id);
+					$tempShift->setShift($shift);
+					$tempShift->setTempConsultant($this->consultantMapper->find($row->temp_consultant_id));
+					$tempShift->setPostTime($row->post_time);
+					$tempShift->setResponseTime($row->response_time);
+					$tempShift->setAssignedConsultant($this->consultantMapper->find($row->assigned_to));
+					$tempShift->setTimeout($row->timeout);
+
+					$tempShifts[] = $tempShift;
+				}
+			}
+		}
+		
+		return $tempShifts;
+	}
 }
 

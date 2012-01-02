@@ -38,11 +38,13 @@ class Application_Model_ConsultantMapper
 	public function save(Application_Model_Consultant $consultant)
 	{
 		$data = array(
-			'first_name' => $consultant->getFirstName(),
-			'last_name'  => $consultant->getLastName(),
-			'engr'	   => $consultant->getEngr(),
-			'phone'	  => $consultant->getPhone(),
-			'admin'	  => $consultant->isAdmin(),
+			'first_name'   => $consultant->getFirstName(),
+			'last_name'    => $consultant->getLastName(),
+			'engr'         => $consultant->getEngr(),
+			'phone'        => $consultant->getPhone(),
+			'recv_nightly' => $consultant->getReceiveNightly(),
+			'recv_instant' => $consultant->getReceiveInstant(),
+			'admin'        => $consultant->isAdmin(),
 		);
 		
 		$id = $consultant->getId();
@@ -80,6 +82,8 @@ class Application_Model_ConsultantMapper
 		$consultant->setLastName($row->last_name);
 		$consultant->setEngr($row->engr);
 		$consultant->setPhone($row->phone);
+		$consultant->setReceiveNightly($row->recv_nightly);
+		$consultant->setReceiveInstant($row->recv_instant);
 		$consultant->setAdmin($row->admin);
 		
 		return $consultant;
@@ -101,6 +105,8 @@ class Application_Model_ConsultantMapper
 		$consultant->setLastName($row->last_name);
 		$consultant->setEngr($row->engr);
 		$consultant->setPhone($row->phone);
+		$consultant->setReceiveNightly($row->recv_nightly);
+		$consultant->setReceiveInstant($row->recv_instant);
 		$consultant->setAdmin($row->admin);
 		
 		return $consultant;
@@ -119,6 +125,8 @@ class Application_Model_ConsultantMapper
 			$consultant->setLastName($row->last_name);
 			$consultant->setEngr($row->engr);
 			$consultant->setPhone($row->phone);
+			$consultant->setReceiveNightly($row->recv_nightly);
+			$consultant->setReceiveInstant($row->recv_instant);
 			$consultant->setAdmin($row->admin);
 			
 			$consultants[$consultant->getId()] = $consultant;

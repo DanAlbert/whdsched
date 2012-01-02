@@ -143,12 +143,12 @@ class Application_Model_ShiftMapper
 		return $this->fetchAllByTerm($term);
 	}
 	
-	public function fetchAllByMonth($month)
+	public function fetchAllByMonth($month, $year)
 	{
 		$select = $this->getDbTable()->select();
 		$select->where('day >= :start AND day <= :end')->bind(array(
-				':start' => date('Y-m-d', mktime(0, 0, 0, $month, 1, date('Y'))),
-				':end'   => date('Y-m-d', mktime(0, 0, 0, $month + 1, 0, date('Y'))),
+				':start' => date('Y-m-d', mktime(0, 0, 0, $month, 1, $year)),
+				':end'   => date('Y-m-d', mktime(0, 0, 0, $month + 1, 0, $year)),
 		));
 		
 		$resultSet = $this->getDbTable()->fetchAll($select);

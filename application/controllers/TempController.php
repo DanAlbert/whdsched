@@ -31,18 +31,15 @@ class TempController extends Zend_Controller_Action
 		$tempMapper = new Application_Model_TempShiftMapper();
 
 		$this->view->days = array();
-		foreach ($tempMapper->fetchAll() as $temp)
+		foreach ($tempMapper->fetchAvailable() as $temp)
 		{
-			if ($temp->getTempConsultant() === null)
+			$date = $temp->getShift()->getDate();
+			if (!array_key_exists($date, $this->view->days))
 			{
-				$date = $temp->getShift()->getDate();
-				if (!array_key_exists($date, $this->view->days))
-				{
-					$this->view->days[$date] = array();
-				}
-				
-				$this->view->days[$date][] = $temp;
+				$this->view->days[$date] = array();
 			}
+
+			$this->view->days[$date][] = $temp;
 		}
 		
 		// Make sure they are sorted properly

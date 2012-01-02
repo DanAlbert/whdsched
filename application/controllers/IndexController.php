@@ -26,7 +26,10 @@ class IndexController extends Zend_Controller_Action
 			$this->view->year = date('Y');
 		}
 		
-		$shifts = $shiftMapper->fetchAllByMonth(date($this->view->month));
+		$shifts = $shiftMapper->fetchAllByMonth(
+				$this->view->month,
+				$this->view->year);
+		
 		$days = array();
 		foreach ($shifts as $shift)
 		{
