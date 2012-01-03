@@ -14,7 +14,8 @@
 $menuLinks = array();
 $adminLinks = array();
 
-if (Zend_Auth::getInstance()->hasIdentity())
+if ((Zend_Auth::getInstance()->hasIdentity()) and
+	(Zend_Auth::getInstance()->getIdentity() !== null))
 {
 	$user = Zend_Auth::getInstance()->getIdentity();
 	$menuLinks[] = '<a href="' . $this->url(array(
