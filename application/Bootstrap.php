@@ -1,11 +1,25 @@
 <?php
 
+require_once 'Zend/Loader/Autoloader.php';
+
 require_once 'AuthDispatchPlugin.php';
 require_once 'DevAuthAdapter.php';
 require_once 'ServerAuthAdapter.php';
 
 class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 {
+	protected function _initAutoloader()
+	{
+		$loader = Zend_Loader_Autoloader::getInstance();
+		$loader->registerNamespace('Whdsched');
+	}
+	
+	protected function _initConfig()
+	{
+		$config = $this->getOptions();
+		Zend_Registry::set('config', $config);
+	}
+	
 	protected function _initSession()
 	{
 		Zend_Session::setOptions(array('strict' => true));

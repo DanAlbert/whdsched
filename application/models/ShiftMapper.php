@@ -197,14 +197,16 @@ class Application_Model_ShiftMapper
 			$showCurrent = false,
 			$limit = null)
 	{
+		$tempMapper = new Application_Model_TempShiftMapper();
+		
 		$date = date('Y-m-d');
 		$time = date('H:i:s');
 		$select = $this->getDbTable()->select();
 		$id = $consultant->getId();
 		
 		$select->setIntegrityCheck(false);
-		$select->from(array('s' => 'shifts'))
-		       ->joinLeft(array('t' => 'temp_shifts'),
+		$select->from(array('s' => $this->getDbTable()->getName()))
+		       ->joinLeft(array('t' => $tempMapper->getDbTable()->getName()),
 		       		's.id = t.shift_id',
 		       		array('s.*', 't.temp_consultant_id'))
 		       ->order(array('day', 'start_time'))
