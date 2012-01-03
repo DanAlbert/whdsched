@@ -18,6 +18,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 	{
 		$config = $this->getOptions();
 		Zend_Registry::set('config', $config);
+		define('DEBUG', $config['debug']);
 	}
 	
 	protected function _initSession()
@@ -96,8 +97,6 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 	protected function _initAuth()
 	{
 		$this->bootstrap('log');
-		$log = $this->getResource('log');
-		
 		$this->bootstrap('session');
 		
 		$this->bootstrap('request');
@@ -137,6 +136,10 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 	
 	protected function _initLog()
 	{
-		return new Zend_Log(new Zend_Log_Writer_Stream('php://output'));
+		if (!Zend_Registry::isRegistered('log'))
+		{
+			$log = new Zend_Log(new Zend_Log_Writer_Stream('php://output'));
+			Zend_Registry::set('log', $log);
+		}
 	}
 }

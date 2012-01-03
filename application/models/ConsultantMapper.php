@@ -91,6 +91,11 @@ class Application_Model_ConsultantMapper
 	
 	public function findByEngr($engr)
 	{
+		if (DEBUG)
+		{
+			Zend_Registry::get('log')->debug('Finding user by engr');
+		}
+		
 		try
 		{
 			$result = $this->getDbTable()->fetchAll(array('engr = ?' => $engr));

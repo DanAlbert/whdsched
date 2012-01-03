@@ -26,26 +26,52 @@ class AuthDispatchPlugin extends Zend_Controller_Plugin_Abstract
 			$this->adapter->setResponse($this->_response);
 		}
 		
+		if (DEBUG)
+		{
+			Zend_Registry::get('log')->debug('Authenticating');
+		}
+		
 		$result = $auth->authenticate($this->adapter);
 
 		if (!$result->isValid())
 		{
+			if (DEBUG)
+			{
+				Zend_Registry::get('log')->debug('Invalid credentials');
+			}
+			
 			$this->_request->setControllerName('Index');
 			$this->_request->setActionName('authenticate');
 		}
 		else
 		{
+			if (DEBUG)
+			{
+				Zend_Registry::get('log')->debug('Valid credentials');
+				Zend_Registry::get('log')->debug('Verifying username');
+			}
+			
 			$consultantMapper = new Application_Model_ConsultantMapper();
 			$identity = $result->getIdentity();
 			$consultant = $consultantMapper->findByEngr($identity['username']);
 			
 			if ($consultant !== null)
 			{
+				if (DEBUG)
+				{
+					Zend_Registry::get('log')->debug('Valid user');
+				}
+				
 				Zend_Auth::getInstance()->getStorage()->write($consultant);
 				assert(Zend_Auth::getInstance()->getIdentity() instanceof Application_Model_Consultant);
 			}
 			else
 			{
+				if (DEBUG)
+				{
+					Zend_Registry::get('log')->debug('Invalid user');
+				}
+				
 				Zend_Auth::getInstance()->clearIdentity();
 				$this->_request->setControllerName('Index');
 				$this->_request->setActionName('authenticate');
