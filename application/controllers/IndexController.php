@@ -39,7 +39,7 @@ class IndexController extends Zend_Controller_Action
 				$days[$date] = false;
 			}
 			
-			if ($shift->getConsultant()->getId() == $user->getId())
+			if (($shift->getConsultant() !== null) and ($shift->getConsultant()->getId() == $user->getId()))
 			{
 				$days[$date] = true;
 			}
