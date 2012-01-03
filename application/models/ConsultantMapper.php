@@ -91,7 +91,15 @@ class Application_Model_ConsultantMapper
 	
 	public function findByEngr($engr)
 	{
-		$result = $this->getDbTable()->fetchAll(array('engr = ?' => $engr));
+		try
+		{
+			$result = $this->getDbTable()->fetchAll(array('engr = ?' => $engr));
+		}
+		catch (Exception $e)
+		{
+			return null;
+		}
+		
 		if (count($result) == 0)
 		{
 			return null;
