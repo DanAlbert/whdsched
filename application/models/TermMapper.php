@@ -153,7 +153,7 @@ class Application_Model_TermMapper
 	{
 		try
 		{
-			$this->getTermOf(time());
+			return $this->getTermOf(time());
 		}
 		catch (Exception $e)
 		{
