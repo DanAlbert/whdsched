@@ -1,8 +1,5 @@
 <?php
 
-require_once '../application/models/ConsultantMapper.php';
-require_once '../application/models/TempShiftMapper.php';
-
 // Initialize the application path and autoloading
 defined('APPLICATION_PATH') || define('APPLICATION_PATH', realpath(dirname(__FILE__) . '/../application'));
 
@@ -52,7 +49,10 @@ $application = new Zend_Application(
 
 // Initialize and retrieve DB resource
 $bootstrap = $application->getBootstrap();
+$bootstrap->bootstrap('autoloader');
+$bootstrap->bootstrap('config');
 $bootstrap->bootstrap('db');
+$bootstrap->bootstrap('mail');
 
 try
 {
@@ -62,7 +62,7 @@ try
 	$consultants = $consultantMapper->fetchAll();
 	
 	$temps = array();
-	foreach ($tempMapper->fetchAll() as $temp)
+	foreach ($tempMapper->fetchAvailable() as $temp)
 	{
 		$temps[] = "<li>{$temp}</li>";
 	}
@@ -79,11 +79,9 @@ try
 	
 	$options = $bootstrap->getOption('mail');
 	
-	Zend_Mail::setDefaultTransport(new Zend_Mail_Transport_Smtp('mail.engr.oregonstate.edu'));
 	$mail = new Zend_Mail();
 	$mail->setBodyHtml('<ul>' . implode(PHP_EOL, $temps) . '</ul>');
-	$mail->addTo($options['to']);
-	$mail->setFrom($options['sender']['address'], $options['sender']['name']);
+	$mail->addTo($options['to']['address'], $options['to']['name']);
 	$mail->setSubject($options['nightly']['subject']);
 	
 	foreach ($consultants as $consultant)

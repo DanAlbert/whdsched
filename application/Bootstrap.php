@@ -14,13 +14,81 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 		$loader->registerNamespace('Whdsched');
 	}
 	
+	// TODO: Christ this got ugly. Clean it up
 	protected function _initConfig()
 	{
 		$config = $this->getOptions();
 		Zend_Registry::set('config', $config);
-		define('DEBUG_AUTH', $config['debug']['auth']);
-		define('DEBUG_DB_CONSULTANT', $config['debug']['db']['consultant']);
-		define('DEBUG_DB_TERM', $config['debug']['db']['term']);
+		
+		if (isset($config['debug']))
+		{
+			if (isset($config['debug']['auth']))
+			{
+				define('DEBUG_AUTH', $config['debug']['auth']);
+			}
+			else
+			{
+				define('DEBUG_AUTH', false);
+			}
+			
+			if (isset($config['debug']['db']))
+			{
+				if (isset($config['debug']['db']['consultant']))
+				{
+					define('DEBUG_DB_CONSULTANT', $config['debug']['db']['consultant']);
+				}
+				else
+				{
+					define('DEBUG_DB_CONSULTANT', false);
+				}
+				
+				if (isset($config['debug']['db']['term']))
+				{
+					define('DEBUG_DB_TERM', $config['debug']['db']['term']);
+				}
+				else
+				{
+					define('DEBUG_DB_TERM', false);
+				}
+			}
+			else
+			{
+				define('DEBUG_DB_CONSULTANT', false);
+				define('DEBUG_DB_TERM', false);
+			}
+		}
+		else
+		{
+			define('DEBUG_AUTH', false);
+			define('DEBUG_DB_CONSULTANT', false);
+			define('DEBUG_DB_TERM', false);
+		}
+	}
+	
+	protected function _initMail()
+	{
+		$options = $this->getOption('mail');
+		if ($options['transport'] == 'smtp')
+		{
+			$transport = new Zend_Mail_Transport_Smtp(
+					$options['smtp']['server'], array(
+						'port'     => $options['smtp']['port'],
+						'ssl'      => $options['smtp']['ssl'],
+						'auth'     => $options['smtp']['auth'],
+						'username' => $options['smtp']['username'],
+						'password' => $options['smtp']['password'],
+			));
+			
+			Zend_Mail::setDefaultTransport($transport);
+		}
+		
+		Zend_Mail::setDefaultFrom(
+				$options['sender']['address'],
+				$options['sender']['name']);
+		
+		Zend_Mail::setDefaultReplyTo(
+				$options['replyto']['address'],
+				$options['replyto']['name']);
 	}
 	
 	protected function _initSession()

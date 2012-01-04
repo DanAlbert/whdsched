@@ -79,7 +79,8 @@ class Application_Model_TempShiftMapper
 		if ($id == null)
 		{
 			unset($data['id']);
-			return $this->getDbTable()->insert($data);
+			$tempShift->setId($this->getDbTable()->insert($data));
+			return $tempShift->getId();
 		}
 		else
 		{

@@ -48,6 +48,8 @@ class TempController extends Zend_Controller_Action
 			usort($shifts, 'cmpTempShift');
 			$this->view->days[$day] = $shifts;
 		}
+		
+		$this->view->messages = $this->_messenger->getMessages();
 	}
 
 	public function createAction()
@@ -146,6 +148,7 @@ class TempController extends Zend_Controller_Action
 							$temp->setShift($newShift);
 							
 							$tempMapper->save($temp);
+							$this->mailTemp($temp);
 						}
 					}
 					
@@ -210,6 +213,7 @@ class TempController extends Zend_Controller_Action
 					$temp = new Application_Model_TempShift();
 					$temp->setShift($shift);
 					$tempMapper->save($temp);
+					$this->mailTemp($temp);
 					
 					$this->handleRedirect($request, $shift->getDate());
 				}
@@ -308,10 +312,18 @@ class TempController extends Zend_Controller_Action
 				}
 				else
 				{
-					// Claim
-					$temp->setTempConsultant($user);
-					$temp->setResponseTime(date('Y-m-d H:i:s'));
-					$tempMapper->save($temp);
+					if ($temp->getTempConsultant() !== null)
+					{
+						$owner = $temp->getTempConsultant()->getName();
+						$this->_messenger->addMessage("{$owner} has already claimed this shift");
+					}
+					else
+					{
+						// Claim
+						$temp->setTempConsultant($user);
+						$temp->setResponseTime(date('Y-m-d H:i:s'));
+						$tempMapper->save($temp);
+					}
 				}
 				
 				$this->handleRedirect($request, $temp->getShift()->getDate());
@@ -328,7 +340,7 @@ class TempController extends Zend_Controller_Action
 		}
 		else
 		{
-			$this->_messenger->addMessage('No such temp shift');
+			$this->_messenger->addMessage('No such temp shift. It may have been cancelled');
 			$this->handleRedirect($request);
 		}
 	}
@@ -391,6 +403,57 @@ class TempController extends Zend_Controller_Action
 		}
 		
 		return $ranges;
+	}
+	
+	private function mailTemp(
+			Application_Model_TempShift $temp,
+			array $consultants = null)
+	{
+		if ($consultants === null)
+		{
+			$consultantsMapper = new Application_Model_ConsultantMapper();
+			$consultants = $consultantsMapper->fetchAll();
+		}
+		
+		$config = Zend_Registry::get('config');
+		$options = $config['mail'];
+		
+		$consultantName = $temp->getShift()->getConsultant()->getName();
+		
+		$path = $this->view->url(array(
+				'controller' => 'temp',
+				'action'     => 'take',
+				'id'         => $temp->getId(),
+				'goto'       => 'temps',
+			), null, true);
+		
+		$url = $this->getRequest()->getScheme() . '://' .
+				$this->getRequest()->getHttpHost() . $path;
+		
+		$lines = array();
+		
+		$lines[] = "{$consultantName} is looking for a temp for {$temp}";
+		$lines[] = '<a href="' . $url . '">Claim this shift</a>';
+		
+		$html = implode('<br />', $lines);
+		
+		$mail = new Zend_Mail();
+		$mail->setBodyHtml($html);
+		$mail->addTo($options['to']['address'], $options['to']['name']);
+		$mail->setSubject($options['instant']['subject']);
+		
+		foreach ($consultants as $consultant)
+		{
+			// If the consultant wishes to receive emails immediately
+			// and is not the consultant that posted the shift
+			if ($consultant->getReceiveInstant() and
+				($consultant->getId() != $temp->getShift()->getConsultant()->getId()))
+			{
+				$mail->addBcc($consultant->getEmail(), $consultant->getName());
+			}
+		}
+		
+		$mail->send();
 	}
 
 

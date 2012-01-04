@@ -47,7 +47,8 @@ class Application_Model_TermMapper
 		if ($id == null)
 		{
 			$data['id'] = $this->makeTermId($term);
-			return $this->getDbTable()->insert($data);
+			$term->setId($this->getDbTable()->insert($data));
+			return $term->getId();
 		}
 		else
 		{

@@ -51,7 +51,8 @@ class Application_Model_ConsultantMapper
 		if ($id == null)
 		{
 			unset($data['id']);
-			return $this->getDbTable()->insert($data);
+			$conusltant->setId($this->getDbTable()->insert($data));
+			return $consultant->getId();
 		}
 		else
 		{
