@@ -424,7 +424,6 @@ class TempController extends Zend_Controller_Action
 				'controller' => 'temp',
 				'action'     => 'take',
 				'id'         => $temp->getId(),
-				'goto'       => 'temps',
 			), null, true);
 		
 		$url = $this->getRequest()->getScheme() . '://' .

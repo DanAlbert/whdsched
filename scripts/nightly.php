@@ -62,9 +62,15 @@ try
 	$consultants = $consultantMapper->fetchAll();
 	
 	$temps = array();
-	foreach ($tempMapper->fetchAvailable() as $temp)
+	foreach ($tempMapper->fetchAll() as $temp)
 	{
-		$temps[] = "<li>{$temp}</li>";
+		$site = $bootstrap->getOption('site');
+		$scheme = $site['scheme'];
+		$host = $site['host'];
+		$root = $site['root'];
+		$url = "{$scheme}://{$host}{$root}/temp/take/id/{$temp->getId()}";
+		$link = '<a href="' . $url . '">Claim this shift</a>';
+		$temps[] = "<li>{$temp} {$link}</li>";
 	}
 	
 	if (count($temps) == 0)
