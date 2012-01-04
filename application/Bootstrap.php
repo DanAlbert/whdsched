@@ -18,7 +18,9 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 	{
 		$config = $this->getOptions();
 		Zend_Registry::set('config', $config);
-		define('DEBUG', $config['debug']);
+		define('DEBUG_AUTH', $config['debug']['auth']);
+		define('DEBUG_DB_CONSULTANT', $config['debug']['db']['consultant']);
+		define('DEBUG_DB_TERM', $config['debug']['db']['term']);
 	}
 	
 	protected function _initSession()

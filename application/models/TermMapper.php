@@ -104,6 +104,11 @@ class Application_Model_TermMapper
 	
 	public function fetchAllByYear($year)
 	{
+		if (DEBUG_DB_TERM)
+		{
+			Zend_Registry::get('log')->debug('Fetching all terms for ' . $year);
+		}
+		
 		$resultSet = $this->getDbTable()->fetchAll(array('year' => $year));
 		$terms = array();
 		
@@ -157,6 +162,11 @@ class Application_Model_TermMapper
 
 	public function getCurrentOrNextTerm()
 	{
+		if (DEBUG_DB_TERM)
+		{
+			Zend_Registry::get('log')->debug('Getting current or next term');
+		}
+		
 		$time = time();
 		$terms = $this->fetchAllByYear(date('Y', $time));
 
@@ -170,6 +180,11 @@ class Application_Model_TermMapper
 
 			if (($time < $end) and ($time > $start))
 			{
+				if (DEBUG_DB_TERM)
+				{
+					Zend_Registry::get('log')->debug('Found current term');
+				}
+				
 				return $term;
 			}
 
@@ -182,11 +197,20 @@ class Application_Model_TermMapper
 
 					if ($start < $nextStart)
 					{
+						if (DEBUG_DB_TERM)
+						{
+							Zend_Registry::get('log')->debug('Found closer future term');
+						}
+						
 						$next = $term;
 					}
 				}
 				else
 				{
+					if (DEBUG_DB_TERM)
+					{
+						Zend_Registry::get('log')->debug('Term is in future');
+					}
 					$next = $term;
 				}
 			}

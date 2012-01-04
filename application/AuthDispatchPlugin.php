@@ -26,7 +26,7 @@ class AuthDispatchPlugin extends Zend_Controller_Plugin_Abstract
 			$this->adapter->setResponse($this->_response);
 		}
 		
-		if (DEBUG)
+		if (DEBUG_AUTH)
 		{
 			Zend_Registry::get('log')->debug('Authenticating');
 		}
@@ -35,7 +35,7 @@ class AuthDispatchPlugin extends Zend_Controller_Plugin_Abstract
 
 		if (!$result->isValid())
 		{
-			if (DEBUG)
+			if (DEBUG_AUTH)
 			{
 				Zend_Registry::get('log')->debug('Invalid credentials');
 			}
@@ -45,7 +45,7 @@ class AuthDispatchPlugin extends Zend_Controller_Plugin_Abstract
 		}
 		else
 		{
-			if (DEBUG)
+			if (DEBUG_AUTH)
 			{
 				Zend_Registry::get('log')->debug('Valid credentials');
 				Zend_Registry::get('log')->debug('Verifying username');
@@ -57,7 +57,7 @@ class AuthDispatchPlugin extends Zend_Controller_Plugin_Abstract
 			
 			if ($consultant !== null)
 			{
-				if (DEBUG)
+				if (DEBUG_AUTH)
 				{
 					Zend_Registry::get('log')->debug('Valid user');
 				}
@@ -67,7 +67,7 @@ class AuthDispatchPlugin extends Zend_Controller_Plugin_Abstract
 			}
 			else
 			{
-				if (DEBUG)
+				if (DEBUG_AUTH)
 				{
 					Zend_Registry::get('log')->debug('Invalid user');
 				}
