@@ -171,8 +171,9 @@ class Application_Model_TempShiftMapper
 			if ($row->temp_consultant_id === null)
 			{
 				$shift = $this->shiftMapper->find($row->shift_id);
-				list($y, $m, $d) = explode('-', $shift->getDate());
-				if (mktime(0, 0, 0, $m, $d, $y) > time())
+				list($y, $mo, $d) = explode('-', $shift->getDate());
+				list($h, $mi, $s) = explode(':', $shift->getStartTime());
+				if (mktime($h, $mi, $s, $mo, $d, $y) > time())
 				{
 					$tempShift = new Application_Model_TempShift();
 					$tempShift->setId($row->id);

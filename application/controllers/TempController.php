@@ -43,6 +43,7 @@ class TempController extends Zend_Controller_Action
 		}
 		
 		// Make sure they are sorted properly
+		ksort($this->view->days);
 		foreach ($this->view->days as $day => $shifts)
 		{
 			usort($shifts, 'cmpTempShift');

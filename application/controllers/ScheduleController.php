@@ -71,10 +71,9 @@ class ScheduleController extends Zend_Controller_Action
 				$days[$date] = array();
 			}
 			
-			// If they don't own the shift, they are the temp
-			if ($shift->getConsultant()->getId() != $user->getId())
+			$temp = $tempShiftMapper->findByShift($shift);
+			if ($temp !== null)
 			{
-				$temp = $tempShiftMapper->findByShift($shift);
 				$days[$date][] = $temp;
 			}
 			else
