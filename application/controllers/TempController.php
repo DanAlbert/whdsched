@@ -160,7 +160,7 @@ class TempController extends Zend_Controller_Action
 						{
 							// Increment the date by one day
 							list($year, $month, $day) = explode('-', $shift->getDate());
-							$date = implode('-', $year, $month, $day + 1);
+							$date = implode('-', array($year, $month, $day + 1));
 						}
 						else
 						{
@@ -190,7 +190,7 @@ class TempController extends Zend_Controller_Action
 						}
 					}
 					
-					$this->handleRedirect($request, $shift()->getDate());
+					$this->handleRedirect($request, $shift->getDate());
 				}
 				else
 				{
