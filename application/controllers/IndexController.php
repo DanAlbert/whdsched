@@ -50,6 +50,7 @@ class IndexController extends Zend_Controller_Action
 				{
 					$temp = $tempMapper->findByShift($shift);
 					if (($temp !== null) and
+						($temp->getTempConsultant() !== null) and
 						($temp->getTempConsultant()->getId() == $user->getId()))
 					{
 						$days[$date] = true;
