@@ -61,13 +61,40 @@ try
 	
 	$consultants = $consultantMapper->fetchAll();
 	
+	$site = $bootstrap->getOption('site');
+	$scheme = $site['scheme'];
+	$host = $site['host'];
+	$root = $site['root'];
+
 	$temps = array();
-	foreach ($tempMapper->fetchAll() as $temp)
+	foreach ($tempMapper->fetchAvailable() as $temp)
 	{
-		$site = $bootstrap->getOption('site');
-		$scheme = $site['scheme'];
-		$host = $site['host'];
-		$root = $site['root'];
+		// If the shift is still open and occurs later today
+		if ($temp->getShift()->getDate() == date('Y-m-d'))
+		{
+			// Warn the consultant responsible for the shift
+			$consultant = $temp->getShift()->getConsultant();
+			
+			list($start, $end) = explode(' - ', $temp->getShift()->getTimeString());
+			$html = "Your shift today from {$start} to {$end} has not been taken<br />";
+			$html .= "Unless someone claims it before {$start}, " .
+					"you will still be responsible for this shift.";
+			
+			$mail = new Zend_Mail();
+			$mail->setBodyHtml($html);
+			$mail->addTo($consultant->getEmail(), $consultant->getName());
+			$mail->setSubject($options['warning']['subject']);
+			
+			if ($test === null)
+			{
+				$mail->send();
+			}
+			else
+			{
+				print "Sending warning to {$consultant->getName()}" . PHP_EOL;
+			}
+		}
+		
 		$url = "{$scheme}://{$host}{$root}/temp/take/id/{$temp->getId()}";
 		$link = '<a href="' . $url . '">Claim this shift</a>';
 		$temps[] = "<li>{$temp} {$link}</li>";
