@@ -1,62 +1,42 @@
-<br /><br />
 <div id="view-content">
 	<?php if ($this->user->isAdmin()): ?>
 	<a href="<?php print $this->url(array(
 			'controller' => 'consultants',
 			'action'     => 'create',
-		)); ?>">Create a new consultant</a>
+		)); ?>">Create a new consultant</a><br />
 	<br />
 	<?php endif; ?>
-	Consultants:
-	<table>
+	<table class="roster">
 		<thead>
 			<tr>
 				<td>Name</td>
 				<td>Email</td>
 				<td>Phone</td>
-				<td>&nbsp;</td>
-				<td>&nbsp;</td>
 			</tr>
 		</thead>
 		<tbody>
+			<?php $i = 0 ?>
 			<?php foreach ($this->consultants as $consultant): ?>
-			<tr>
-				<td><?php print $consultant->getName() ?></td>
-				<td><?php print $consultant->getEmail() ?></td>
-				<td><?php print $consultant->getPhoneFormatted() ?></td>
-				<?php
-				
-				// If the row refers to the current user
-				// Allow them to edit their information
-				if (($this->user->getId() == $consultant->getId()) or ($this->user->isAdmin()))
-				{
-				?>
-				
+			<?php
+			
+			if ($i++ % 2)
+			{
+				$class = "odd";
+			}
+			else
+			{
+				$class = "even";
+			}
+			
+			?>
+			<tr class="<?php print $class ?>">
 				<td><a href="<?php print $this->url(array(
 					'controller' => 'consultants',
-					'action'     => 'edit',
-					'id'         => $consultant->getId(),
-				), null, true); ?>">Edit</a></td>
-				
-				<?php
-				}
-				else
-				{
-					// Otherwise print an empty cell
-					print '<td>&nbsp;</td>';
-				}
-				?>
-				
-				<?php if ($this->user->isAdmin()): ?>
-				<td><a href="<?php print $this->url(array(
-						'controller' => 'consultants',
-						'action'     => 'delete',
-						'id'         => $consultant->getId(),
-					), null, true); ?>">Delete</a></td>
-				<?php else: ?>
-				<td>&nbsp;</td>
-				<?php endif; ?>
-				
+					'action'     => 'view',
+					'id'         => $consultant->getId()
+					), null, true) ?>"><?php print $consultant->getName() ?></a></td>
+				<td><?php print $consultant->getEmail() ?></td>
+				<td><?php print $consultant->getPhoneFormatted() ?></td>
 			</tr>
 			<?php endforeach ?>
 		</tbody>

@@ -1,9 +1,10 @@
 <?php
 
-class Application_Form_Consultant extends Zend_Form
+class Application_Form_EditConsultant extends Zend_Form
 {
-	public function init()
-	{
+
+    public function init()
+    {
 		$this->setMethod('post');
 		
 		$this->addElement('text', 'firstName', array(
@@ -30,21 +31,6 @@ class Application_Form_Consultant extends Zend_Form
 			)
 		));
 		
-		$this->addElement('text', 'engr', array(
-			'label'	  => 'Engineering Username',
-			'required'   => true,
-			'filters'	=> array('StringTrim', 'StringToLower'),
-			'validators' => array(
-				array(
-					'validator' => 'StringLength',
-					'options'   => array(0, 8),
-				),
-				array(
-					'validator' => 'Alnum',
-				)
-			)
-		));
-		
 		$this->addElement('text', 'phone', array(
 			'label'	  => 'Phone Number',
 			'required'   => true,
@@ -57,6 +43,26 @@ class Application_Form_Consultant extends Zend_Form
 			)
 		));
 		
+		$nightly = $this->createElement('radio', 'nightly');
+		$nightly->setLabel('Receive nightly temp shift emails');
+		$nightly->addMultiOptions(array(
+			'yes' => 'Yes',
+			'no'  => 'No',
+		));
+		$nightly->setValue('yes');
+		
+		$this->addElement($nightly);
+		
+		$instant = $this->createElement('radio', 'instant');
+		$instant->setLabel('Receive instant temp shift emails');
+		$instant->addMultiOptions(array(
+			'yes' => 'Yes',
+			'no'  => 'No',
+		));
+		$instant->setValue('no');
+		
+		$this->addElement($instant);
+		
 		$this->addElement('submit', 'submit', array(
 			'ignore' => true,
 			'label'  => 'Save Changes',
@@ -65,6 +71,8 @@ class Application_Form_Consultant extends Zend_Form
 		$this->addElement('hash', 'csrf', array(
 			'ignore' => true,
 		));
-	}
+    }
+
+
 }
 

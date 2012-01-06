@@ -32,7 +32,8 @@ div.date-picker
 {
 	font-weight: bold;	
 	margin: 10px auto;
-	width: 240px;
+	width: 260px;
+	text-align: center;
 }
 
 div.date-picker a
@@ -98,9 +99,19 @@ table.calendar tbody td a:hover
 	background-color: #c0c0ff;
 }
 
+table.roster
+{
+	width: 100%;
+}
+
+table.roster thead tr td
+{
+	font-weight: bold;
+}
+
 table.schedule
 {
-	width: 800px;
+	width: 100%;
 }
 
 table.schedule thead tr td
@@ -129,7 +140,7 @@ table.week-schedule tbody tr
 
 table.available-shifts
 {
-	width: 800px;
+	width: 100%;
 }
 
 table.available-shifts tr.date td
@@ -158,12 +169,19 @@ table.available-shifts tr td.message
 	width: 200px;
 }
 
-table.available-shifts tr td.message strong
+table.available-shifts tr td.message strong,
+table.available-shifts tr td.message strong a
 {
 	color: #bd1628;
 }
 
-table.available-shifts tr td.message em
+table.available-shifts tr td a:hover
+{
+	text-decoration: none;
+}
+
+table.available-shifts tr td.message em,
+table.available-shifts tr td.message em a
 {
 	color: #2175b5;
 	font-style: normal;
@@ -178,5 +196,10 @@ table.available-shifts tr td.action
 table.available-shifts tr td.action a
 {
 	color: #837584;
-	font-weight: bold;	
+	font-weight: bold;
+}
+
+table.available-shifts tr td a:hover
+{
+	text-decoration: none;
 }

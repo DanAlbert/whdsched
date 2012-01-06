@@ -51,7 +51,7 @@ class Application_Model_ConsultantMapper
 		if ($id == null)
 		{
 			unset($data['id']);
-			$conusltant->setId($this->getDbTable()->insert($data));
+			$consultant->setId($this->getDbTable()->insert($data));
 			return $consultant->getId();
 		}
 		else
@@ -129,6 +129,29 @@ class Application_Model_ConsultantMapper
 	public function fetchAll()
 	{
 		$resultSet = $this->getDbTable()->fetchAll();
+		$consultants = array();
+		
+		foreach ($resultSet as $row)
+		{
+			$consultant = new Application_Model_Consultant();
+			$consultant->setId($row->id);
+			$consultant->setFirstName($row->first_name);
+			$consultant->setLastName($row->last_name);
+			$consultant->setEngr($row->engr);
+			$consultant->setPhone($row->phone);
+			$consultant->setReceiveNightly($row->recv_nightly);
+			$consultant->setReceiveInstant($row->recv_instant);
+			$consultant->setAdmin($row->admin);
+			
+			$consultants[$consultant->getId()] = $consultant;
+		}
+		
+		return $consultants;
+	}
+	
+	public function fetchAllSorted()
+	{
+		$resultSet = $this->getDbTable()->fetchAll(null, 'last_name');
 		$consultants = array();
 		
 		foreach ($resultSet as $row)

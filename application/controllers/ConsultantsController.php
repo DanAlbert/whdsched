@@ -3,26 +3,26 @@
 class ConsultantsController extends Zend_Controller_Action
 {
 
-	public function init()
-	{
+    public function init()
+    {
 		// Initialize action controller here
-	}
+    }
 
-	public function indexAction()
-	{
+    public function indexAction()
+    {
 		$this->view->messages = array();
 		$this->view->user = Zend_Auth::getInstance()->getIdentity();
 		
 		$consultantMapper = new Application_Model_ConsultantMapper();
-		$this->view->consultants = $consultantMapper->fetchAll();
-	}
+		$this->view->consultants = $consultantMapper->fetchAllSorted();
+    }
 
-	public function editAction()
-	{
+    public function editAction()
+    {
 		$this->view->messages = array();
 		$user = Zend_Auth::getInstance()->getIdentity();
 		
-		$form = new Application_Form_Consultant();
+		$form = new Application_Form_EditConsultant();
 		$consultantMapper = new Application_Model_ConsultantMapper();
 		
 		$request = $this->getRequest();
@@ -44,7 +44,6 @@ class ConsultantsController extends Zend_Controller_Action
 						$values = $form->getValues();
 						$consultant->setFirstName($values['firstName']);
 						$consultant->setLastName($values['lastName']);
-						$consultant->setEngr($values['engr']);
 						$consultant->setPhone($values['phone']);
 						
 						if ($values['nightly'] == 'yes')
@@ -97,10 +96,11 @@ class ConsultantsController extends Zend_Controller_Action
 				$this->view->messages[] = "You are forbidden from editing this user's information.";
 			}
 		}
-	}
+		
+    }
 
-	public function deleteAction()
-	{
+    public function deleteAction()
+    {
 		$this->view->messages = array();
 		$user = Zend_Auth::getInstance()->getIdentity();
 		
@@ -127,10 +127,11 @@ class ConsultantsController extends Zend_Controller_Action
 		{
 			$this->view->messages[] = "You are forbidden from deleting users.";
 		}
-	}
+		
+    }
 
-	public function createAction()
-	{
+    public function createAction()
+    {
 		$this->view->messages = array();
 		$user = Zend_Auth::getInstance()->getIdentity();
 		
@@ -151,24 +152,6 @@ class ConsultantsController extends Zend_Controller_Action
 					$consultant->setLastName($values['lastName']);
 					$consultant->setEngr($values['engr']);
 					$consultant->setPhone($values['phone']);
-					
-					if ($values['nightly'] == 'yes')
-					{
-						$consultant->setReceiveNightly(true);
-					}
-					else
-					{
-						$consultant->setReceiveNightly(false);
-					}
-
-					if ($values['instant'] == 'yes')
-					{
-						$consultant->setReceiveInstant(true);
-					}
-					else
-					{
-						$consultant->setReceiveInstant(false);
-					}
 	
 					$consultant->setId(null);
 					
@@ -195,10 +178,23 @@ class ConsultantsController extends Zend_Controller_Action
 		{
 			$this->view->messages[] = "You are forbidden from creating users.";
 		}
-	}
+		
+    }
+
+    public function viewAction()
+    {
+		$consultantMapper = new Application_Model_ConsultantMapper();
+		
+        $request = $this->getRequest();
+		$id = $request->getParam('id');
+		$this->view->consultant = $consultantMapper->find($id);
+		$this->view->user = Zend_Auth::getInstance()->getIdentity();
+    }
 
 
 }
+
+
 
 
 

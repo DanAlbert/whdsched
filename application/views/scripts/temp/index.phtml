@@ -1,4 +1,3 @@
-<br />
 <div id="view-content">
 	<?php if (count($this->days) > 0): ?>
 	<table class="available-shifts">
@@ -41,16 +40,57 @@
 			// Less than 90 minutes until this shift
 			if ($timeUntil < 60 * 90)
 			{
-				print '<em>In ' . floor($timeUntil / 60) . ' minutes</em>';
+				if ($temp->getShift()->getConsultant() !== null)
+				{
+					$name = $temp->getShift()->getConsultant()->getFirstName();
+					$link = '<a href="' . $this->url(array(
+						'controller' => 'consultants',
+						'action'     => 'view',
+						'id'         => $temp->getShift()->getConsultant()->getId(),
+					), null, true) . '">' . $name . '</a>';
+					print "<strong>{$link} needs a temp " .
+							'in ' . floor($timeUntil / 60) . ' minutes</strong>';
+				}
+				else
+				{
+					print '<strong>In ' . floor($timeUntil / 60) . ' minutes</strong>';
+				}
 			}
 			// Less than 24 hours until this shift?
 			else if ($timeUntil < (60 * 60 * 24))
 			{
-				print '<strong>In ' . floor($timeUntil / 60 / 60) . ' hours</strong>';
+				if ($temp->getShift()->getConsultant() !== null)
+				{
+					$name = $temp->getShift()->getConsultant()->getFirstName();
+					$link = '<a href="' . $this->url(array(
+						'controller' => 'consultants',
+						'action'     => 'view',
+						'id'         => $temp->getShift()->getConsultant()->getId(),
+					), null, true) . '">' . $name . '</a>';
+					print "<strong>{$link} needs a temp " .
+							'in ' . floor($timeUntil / 60 / 60) . ' hours</strong>';
+				}
+				else
+				{
+					print '<strong>In ' . floor($timeUntil / 60 / 60) . ' hours</strong>';
+				}
 			}
 			else
 			{
-				print '<em>Not yet filled!</em>';
+				if ($temp->getShift()->getConsultant() !== null)
+				{
+					$name = $temp->getShift()->getConsultant()->getFirstName();
+					$link = '<a href="' . $this->url(array(
+						'controller' => 'consultants',
+						'action'     => 'view',
+						'id'         => $temp->getShift()->getConsultant()->getId(),
+					), null, true) . '">' . $name . '</a>';
+					print "<em>{$link} needs a temp</em>";
+				}
+				else
+				{
+					print "<em>Not yet filled!</em>";
+				}
 			}
 			
 			?></td>

@@ -8,8 +8,8 @@ class Application_Model_Consultant
 	protected $_lastName;
 	protected $_engr;
 	protected $_phone;
-	protected $_receiveNightly;
-	protected $_receiveInstant;
+	protected $_receiveNightly = true;
+	protected $_receiveInstant = false;
 	protected $_admin;
 	
 	public function __construct(array $data = null)

@@ -1,0 +1,26 @@
+<div id="view-content">
+	<a href="<?php print $this->url(array(
+			'controller' => 'consultants',
+			'action'     => 'index',
+		), null, true) ?>">Return to roster</a><br />
+	<br />
+	<?php if (($this->user->isAdmin()) or
+			$this->user->getId() == $this->consultant->getId()): ?>
+	<a href="<?php print $this->url(array(
+			'controller' => 'consultants',
+			'action'     => 'edit',
+			'id'         => $this->consultant->getId(),
+		), null, true) ?>">Edit this information</a>
+	<?php if ($this->user->isAdmin()): ?> | 
+	<a href="<?php print $this->url(array(
+			'controller' => 'consultants',
+			'action'     => 'delete',
+			'id'         => $this->consultant->getId(),
+		), null, true) ?>">Delete</a>
+	<?php endif; ?>
+	<br />
+	<?php endif; ?>
+	<?php print "{$this->consultant->getName()}" ?><br />
+	<?php print "{$this->consultant->getEmail()}" ?><br />
+	<?php print "{$this->consultant->getPhoneFormatted()}" ?><br />
+</div>
