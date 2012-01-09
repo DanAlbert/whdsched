@@ -199,8 +199,8 @@ class Application_Model_ShiftMapper
 	{
 		$tempMapper = new Application_Model_TempShiftMapper();
 		
-		$date = date('Y-m-d');
-		$time = date('H:i:s');
+		$date = '2012-01-05';//date('Y-m-d');
+		$time = '11:00:00';//date('H:i:s');
 		$select = $this->getDbTable()->select();
 		$id = $consultant->getId();
 		
@@ -211,15 +211,17 @@ class Application_Model_ShiftMapper
 		       		array('s.*', 't.temp_consultant_id'))
 		       ->order(array('day', 'start_time'))
 		       ->limit($limit);
-			
+		
+		// TODO: This will NOT work for 2300-0200
 		if ($showCurrent === true)
 		{
 			// User is either the scheduled consultant or the temp
 			// The shift is either today or in the future
 			// The shift has not yet ended
 			$select->where('(s.consultant_id = :id OR t.temp_consultant_id = :id) AND ' .
-					's.day >= :date AND ' .
-					's.end_time > :time')->bind(array(
+					'(s.day > :date OR ' .
+					'(s.day = :date AND ' .
+					's.end_time > :time))')->bind(array(
 							':id'   => $id,
 							':date' => $date,
 							':time' => $time,
@@ -231,8 +233,9 @@ class Application_Model_ShiftMapper
 			// The shift is either today or in the future
 			// The shift has not yet begun
 			$select->where('(s.consultant_id = :id OR t.temp_consultant_id = :id) AND ' .
-					's.day >= :date AND ' .
-					's.start_time > :time')->bind(array(
+					'(s.day > :date OR ' .
+					'(s.day = :date AND ' .
+					's.start_time > :time))')->bind(array(
 							':id'   => $id,
 							':date' => $date,
 							':time' => $time,

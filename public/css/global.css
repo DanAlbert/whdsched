@@ -44,17 +44,17 @@ div.date-picker a
 
 table tbody tr.odd
 {
-	background-color: #f0f0f0;
+	background-color: #e0e0e0;
 }
 
 table tbody tr.faded
 {
-	color: #d0d0d0;
+	color: #c0c0c0;
 }
 
 table tbody tr.odd.faded
 {
-	color: #c0c0c0;	
+	color: #b0b0b0;	
 }
 
 table.calendar

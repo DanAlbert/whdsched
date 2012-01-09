@@ -138,9 +138,9 @@ class Application_Model_TermMapper
 			$start = mktime(0, 0, 0, $m, $d, $y);
 
 			list($y, $m, $d) = explode('-', $term->getEndDate());
-			$end = mktime(0, 0, 0, $m, $d, $y);
+			$end = mktime(23, 59, 59, $m, $d, $y);
 
-			if (($timestamp < $end) and ($timestamp > $start))
+			if (($timestamp <= $end) and ($timestamp >= $start))
 			{
 				return $term;
 			}
