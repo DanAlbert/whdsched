@@ -199,8 +199,9 @@ class Application_Model_ShiftMapper
 	{
 		$tempMapper = new Application_Model_TempShiftMapper();
 		
-		$date = '2012-01-05';//date('Y-m-d');
-		$time = '11:00:00';//date('H:i:s');
+		$date = date('Y-m-d');
+		$yesterday = date('Y-m-d', strtotime('-1 days'));
+		$time = date('H:i:s');
 		$select = $this->getDbTable()->select();
 		$id = $consultant->getId();
 		
@@ -212,34 +213,59 @@ class Application_Model_ShiftMapper
 		       ->order(array('day', 'start_time'))
 		       ->limit($limit);
 		
-		// TODO: This will NOT work for 2300-0200
 		if ($showCurrent === true)
 		{
 			// User is either the scheduled consultant or the temp
 			// The shift is either today or in the future
 			// The shift has not yet ended
-			$select->where('(s.consultant_id = :id OR t.temp_consultant_id = :id) AND ' .
-					'(s.day > :date OR ' .
-					'(s.day = :date AND ' .
-					's.end_time > :time))')->bind(array(
-							':id'   => $id,
-							':date' => $date,
-							':time' => $time,
-					));
+			$select->where(
+				'(s.consultant_id = :id OR t.temp_consultant_id = :id) AND ' .
+				'(' .
+					// Day is in future
+					's.day > :date OR ' .
+					// Same day, shift is later in day
+					'(' .
+						's.day = :date AND ' .
+						's.end_time > :time' .
+					') OR ' .
+					// Same day, shift ends the next day
+					'(' .
+						's.day = :date AND ' .
+						's.start_time > s.end_time' . // Shift ends next day
+					') OR' . 
+					// Started yesterday, ends today, has not yet ended
+					'(' .
+						's.day = :yesterday AND ' .
+						's.start_time > s.end_time AND ' .
+						's.end_time > :time' .
+					')' .
+				')')->bind(array(
+						':id'        => $id,
+						':date'      => $date,
+						':time'      => $time,
+						':yesterday' => $yesterday,
+				));
 		}
 		else
 		{
 			// User is either the scheduled consultant or the temp
 			// The shift is either today or in the future
 			// The shift has not yet begun
-			$select->where('(s.consultant_id = :id OR t.temp_consultant_id = :id) AND ' .
-					'(s.day > :date OR ' .
-					'(s.day = :date AND ' .
-					's.start_time > :time))')->bind(array(
-							':id'   => $id,
-							':date' => $date,
-							':time' => $time,
-					));
+			$select->where(
+				'(s.consultant_id = :id OR t.temp_consultant_id = :id) AND ' .
+				'(' .
+					// Day is in future
+					's.day > :date OR ' .
+					// Same day, shift is later in day
+					'(' .
+						's.day = :date AND ' .
+						's.start_time > :time' .
+					') OR ' .
+				')')->bind(array(
+						':id'        => $id,
+						':date'      => $date,
+						':time'      => $time,
+				));
 		}
 		
 		$resultSet = $this->getDbTable()->fetchAll($select);

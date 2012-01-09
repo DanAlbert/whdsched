@@ -50,15 +50,6 @@ class ScheduleController extends Zend_Controller_Action
 		$shiftMapper = new Application_Model_ShiftMapper();
 		$tempShiftMapper = new Application_Model_TempShiftMapper();
 		
-		try
-		{
-			$shifts = $shiftMapper->fetchAllThisTerm();
-		}
-		catch (Exception $e)
-		{
-			return;
-		}
-		
 		$days = array();
 		
 		// Get the user's next 10 shifts
