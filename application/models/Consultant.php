@@ -11,6 +11,7 @@ class Application_Model_Consultant
 	protected $_receiveNightly = true;
 	protected $_receiveInstant = false;
 	protected $_admin;
+	protected $_hidden;
 	
 	public function __construct(array $data = null)
 	{
@@ -53,6 +54,9 @@ class Application_Model_Consultant
 				break;
 			case 'admin':
 				$this->setAdmin($value);
+				break;
+			case 'hidden':
+				$this->setHidden($value);
 				break;
 			default:
 				throw new Exception("Invalid parameter: {$key}");
@@ -165,6 +169,16 @@ class Application_Model_Consultant
 	public function setAdmin($admin)
 	{
 		$this->_admin = $admin;
+	}
+	
+	public function isHidden()
+	{
+		return ($this->_hidden != 0);
+	}
+	
+	public function setHidden($hidden)
+	{
+		$this->_hidden = $hidden;
 	}
 }
 

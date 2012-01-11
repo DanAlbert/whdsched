@@ -45,6 +45,7 @@ class Application_Model_ConsultantMapper
 			'recv_nightly' => $consultant->getReceiveNightly(),
 			'recv_instant' => $consultant->getReceiveInstant(),
 			'admin'        => $consultant->isAdmin(),
+			'hidden'       => $consultant->isHidden(),
 		);
 		
 		$id = $consultant->getId();
@@ -86,6 +87,7 @@ class Application_Model_ConsultantMapper
 		$consultant->setReceiveNightly($row->recv_nightly);
 		$consultant->setReceiveInstant($row->recv_instant);
 		$consultant->setAdmin($row->admin);
+		$consultant->setHidden($row->hidden);
 		
 		return $consultant;
 	}
@@ -122,13 +124,23 @@ class Application_Model_ConsultantMapper
 		$consultant->setReceiveNightly($row->recv_nightly);
 		$consultant->setReceiveInstant($row->recv_instant);
 		$consultant->setAdmin($row->admin);
+		$consultant->setHidden($row->hidden);
 		
 		return $consultant;
 	}
 	
-	public function fetchAll()
+	public function fetchAll($showHidden = false)
 	{
-		$resultSet = $this->getDbTable()->fetchAll();
+		if ($showHidden)
+		{
+			$resultSet = $this->getDbTable()->fetchAll();
+		}
+		else
+		{
+			$resultSet = $this->getDbTable()->fetchAll(
+					array('hidden = ?' => 0));
+		}
+		
 		$consultants = array();
 		
 		foreach ($resultSet as $row)
@@ -142,6 +154,7 @@ class Application_Model_ConsultantMapper
 			$consultant->setReceiveNightly($row->recv_nightly);
 			$consultant->setReceiveInstant($row->recv_instant);
 			$consultant->setAdmin($row->admin);
+			$consultant->setHidden($row->hidden);
 			
 			$consultants[$consultant->getId()] = $consultant;
 		}
@@ -149,9 +162,21 @@ class Application_Model_ConsultantMapper
 		return $consultants;
 	}
 	
-	public function fetchAllSorted()
+	public function fetchAllSorted($showHidden = false)
 	{
-		$resultSet = $this->getDbTable()->fetchAll(null, 'last_name');
+		if ($showHidden)
+		{
+			$resultSet = $this->getDbTable()->fetchAll(
+					null,
+					'last_name');
+		}
+		else
+		{
+			$resultSet = $this->getDbTable()->fetchAll(
+					array('hidden = ?' => 0),
+					'last_name');
+		}
+		
 		$consultants = array();
 		
 		foreach ($resultSet as $row)
@@ -165,6 +190,7 @@ class Application_Model_ConsultantMapper
 			$consultant->setReceiveNightly($row->recv_nightly);
 			$consultant->setReceiveInstant($row->recv_instant);
 			$consultant->setAdmin($row->admin);
+			$consultant->setHidden($row->hidden);
 			
 			$consultants[$consultant->getId()] = $consultant;
 		}

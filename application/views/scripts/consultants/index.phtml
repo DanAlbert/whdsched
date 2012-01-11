@@ -34,8 +34,13 @@
 					'controller' => 'consultants',
 					'action'     => 'view',
 					'id'         => $consultant->getId()
-					), null, true) ?>"><?php print $consultant->getName() ?></a></td>
-				<td><?php print $consultant->getEmail() ?></td>
+					), null, true) ?>"><?php print $consultant->getName() ?></a>
+					<?php if ($consultant->isHidden()): ?>
+					(inactive)
+					<?php endif; ?>
+				</td>
+				<td><a href="mailto:<?php print $consultant->getEmail() ?>">
+						<?php print $consultant->getEmail() ?></a></td>
 				<td><?php print $consultant->getPhoneFormatted() ?></td>
 			</tr>
 			<?php endforeach ?>

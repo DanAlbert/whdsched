@@ -95,7 +95,6 @@ class Application_Model_ShiftMapper
 	public function fetchAll()
 	{
 		$resultSet = $this->getDbTable()->fetchAll();
-		$consultants = $this->consultantMapper->fetchAll();
 		return $this->mapAll($resultSet);
 	}
 	
@@ -370,7 +369,7 @@ class Application_Model_ShiftMapper
 	
 	private function mapAll($resultSet)
 	{
-		$consultants = $this->consultantMapper->fetchAll();
+		$consultants = $this->consultantMapper->fetchAll(true);
 		
 		$shifts = array();
 		foreach ($resultSet as $row)

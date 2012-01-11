@@ -12,9 +12,17 @@ class ConsultantsController extends Zend_Controller_Action
     {
 		$this->view->messages = array();
 		$this->view->user = Zend_Auth::getInstance()->getIdentity();
-		
 		$consultantMapper = new Application_Model_ConsultantMapper();
-		$this->view->consultants = $consultantMapper->fetchAllSorted();
+		
+		// Only show hidden users to admins
+		if ($this->view->user->isAdmin())
+		{
+			$this->view->consultants = $consultantMapper->fetchAllSorted(true);
+		}
+		else
+		{
+			$this->view->consultants = $consultantMapper->fetchAllSorted();
+		}
     }
 
     public function editAction()
