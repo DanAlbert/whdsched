@@ -321,8 +321,60 @@ class ShiftController extends Zend_Controller_Action
 				$shiftMapper->save($s);
 			}
 		}
+		
     }
+
+    public function availableAction()
+    {
+        $shiftMapper = new Application_Model_ShiftMapper();
+		$this->view->available = $shiftMapper->fetchAllUnassignedThisTerm();
+    }
+
+    public function takeAction()
+    {
+        $user = Zend_Auth::getInstance()->getIdentity();
+		$shiftMapper = new Application_Model_ShiftMapper();
+		
+		$request = $this->getRequest();
+		$id = $request->getParam('id');
+		
+		$this->view->success = false;
+		
+		$this->view->shift = $shiftMapper->find($id);
+		if ($this->view->shift !== null)
+		{
+			$shifts = $shiftMapper->fetchAllSimilar($this->view->shift);
+			foreach ($shifts as $shift)
+			{
+				if ($shift->getConsultant() !== null)
+				{
+					$this->_messenger->addMessage('This shift is already assigned');
+					return;
+				}
+			}
+
+			// TODO: Use transactions so the two loops can be merged
+			foreach ($shifts as $shift)
+			{
+				$shift->setConsultant($user);
+				$shiftMapper->save($shift);
+			}
+		}
+		else
+		{
+			$this->_messenger->addMessage('No such shift exists');
+			return;
+		}
+		
+		$this->view->success = true;
+    }
+
+
 }
+
+
+
+
 
 
 

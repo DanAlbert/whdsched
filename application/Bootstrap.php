@@ -68,22 +68,24 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 	protected function _initMail()
 	{
 		$options = $this->getOption('mail');
-		if (isset($options['transport']))
+		
+		if ($options['transport'] == 'smtp')
 		{
-			if ($options['transport'] == 'smtp')
-			{
-				$transport = new Zend_Mail_Transport_Smtp(
-						$options['smtp']['server'], array(
-							'port'     => $options['smtp']['port'],
-							'ssl'      => $options['smtp']['ssl'],
-							'auth'     => $options['smtp']['auth'],
-							'username' => $options['smtp']['username'],
-							'password' => $options['smtp']['password'],
-				));
-
-				Zend_Mail::setDefaultTransport($transport);
-			}
+			$transport = new Zend_Mail_Transport_Smtp(
+					$options['smtp']['server'], array(
+						'port'     => $options['smtp']['port'],
+						'ssl'      => $options['smtp']['ssl'],
+						'auth'     => $options['smtp']['auth'],
+						'username' => $options['smtp']['username'],
+						'password' => $options['smtp']['password'],
+			));
 		}
+		else
+		{
+			$transport = new Zend_Mail_Transport_Sendmail();
+		}
+		
+		Zend_Mail::setDefaultTransport($transport);
 		
 		Zend_Mail::setDefaultFrom(
 				$options['sender']['address'],

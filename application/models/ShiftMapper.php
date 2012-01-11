@@ -143,6 +143,55 @@ class Application_Model_ShiftMapper
 		return $this->fetchAllByTerm($term);
 	}
 	
+	public function fetchAllUnassignedThisTerm()
+	{
+		$termMapper = new Application_Model_TermMapper();
+		
+		try
+		{
+			$term = $termMapper->getCurrentOrNextTerm();
+		}
+		catch (Exception $e)
+		{
+			throw $e;
+		}
+		
+		$start = $term->getStartDate();
+		list($y, $m, $d) = explode('-', $start);
+		$date = mktime(0, 0, 0, $m, $d, $y);
+		while (date('w', $date) != 0)
+		{
+			$date += 60 * 60 * 24;
+		}
+
+		$start = date('Y-m-d', $date);
+		$end = date('Y-m-d', $date + (60 * 60 * 24 * 6));
+
+		$shifts = $this->fetchAllInRange($start, $end);
+
+		$available = array();
+		foreach ($shifts as $shift)
+		{
+			$assigned = false;
+			$similar = $this->fetchAllSimilar($shift);
+			foreach ($similar as $s)
+			{
+				if ($s->getConsultant() !== null)
+				{
+					$assigned = true;
+					break;
+				}
+			}
+			
+			if ($assigned === false)
+			{
+				$available[] = $shift;
+			}
+		}
+		
+		return $available;
+	}
+	
 	public function fetchAllByMonth($month, $year)
 	{
 		$select = $this->getDbTable()->select();
@@ -281,6 +330,11 @@ class Application_Model_ShiftMapper
 		// Same end time
 		// Same location
 
+		if ($shift === null)
+		{
+			throw new InvalidArgumentException('Null argument provided');
+		}
+		
 		$termMapper = new Application_Model_TermMapper();
 
 		list($y, $m, $d) = explode('-', $shift->getDate());

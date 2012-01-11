@@ -35,6 +35,12 @@ class Application_Model_Shift
 		return $this->getTimeString() . ' ' . $this->getLocation();
 	}
 	
+	public function getGeneralDescription()
+	{
+		$wday = date('l', strtotime($this->getDate()));
+		return "{$wday} {$this->getTimeString()} {$this->getLocation()}";
+	}
+	
 	public function setData(array $data)
 	{
 		foreach ($data as $key => $value)

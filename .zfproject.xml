@@ -31,6 +31,8 @@
           <actionMethod actionName="special"/>
           <actionMethod actionName="keep"/>
           <actionMethod actionName="set"/>
+          <actionMethod actionName="available"/>
+          <actionMethod actionName="take"/>
         </controllerFile>
         <controllerFile controllerName="Temp">
           <actionMethod actionName="index"/>
@@ -149,6 +151,12 @@
           <viewControllerScriptsDirectory forControllerName="Consultants">
             <viewScriptFile forActionName="view"/>
           </viewControllerScriptsDirectory>
+          <viewControllerScriptsDirectory forControllerName="Shift">
+            <viewScriptFile forActionName="available"/>
+          </viewControllerScriptsDirectory>
+          <viewControllerScriptsDirectory forControllerName="Shift">
+            <viewScriptFile forActionName="take"/>
+          </viewControllerScriptsDirectory>
         </viewScriptsDirectory>
         <viewHelpersDirectory/>
         <viewFiltersDirectory enabled="false"/>
@@ -201,6 +209,8 @@
             <testApplicationActionMethod forActionName="index"/>
             <testApplicationActionMethod forActionName="create"/>
             <testApplicationActionMethod forActionName="assign"/>
+            <testApplicationActionMethod forActionName="available"/>
+            <testApplicationActionMethod forActionName="take"/>
           </testApplicationControllerFile>
           <testApplicationControllerFile forControllerName="Temp">
             <testApplicationActionMethod forActionName="index"/>
