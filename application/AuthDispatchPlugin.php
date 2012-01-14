@@ -62,6 +62,13 @@ class AuthDispatchPlugin extends Zend_Controller_Plugin_Abstract
 					Zend_Registry::get('log')->debug('Valid user');
 				}
 				
+				$session = new Zend_Session_Namespace('whdsched');
+				
+				if (isset($session->masquerade) and $consultant->isAdmin())
+				{
+					$consultant = $consultantMapper->find($session->masquerade);
+				}
+				
 				Zend_Auth::getInstance()->getStorage()->write($consultant);
 				assert(Zend_Auth::getInstance()->getIdentity() instanceof Application_Model_Consultant);
 			}

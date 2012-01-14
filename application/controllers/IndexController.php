@@ -2,10 +2,13 @@
 
 class IndexController extends Zend_Controller_Action
 {
-
+	protected $_messenger;
+	protected $_redirector;
+	
 	public function init()
 	{
-		/* Initialize action controller here */
+		$this->_messenger = $this->_helper->getHelper('FlashMessenger');
+		$this->_redirector = $this->_helper->getHelper('Redirector');
 	}
 
 	public function indexAction()
@@ -68,16 +71,25 @@ class IndexController extends Zend_Controller_Action
 
 	public function logoutAction()
 	{
-		$this->view->messages = array();
-		
 		Zend_Auth::getInstance()->clearIdentity();
+		
+		$session = new Zend_Session_Namespace('whdsched');
+		/*foreach ($session as $key => $value)
+		{
+			unset($session->key);
+		}*/
+		
+		unset($session->masquerade);
+		
 		if (Zend_Auth::getInstance()->hasIdentity())
 		{
-			$this->view->messages[] = 'You have been logged out';
+			$this->_messenger->addMessage('You have been logged out');
 		}
 		else
 		{
-			$this->view->messages[] = 'Unable to log out';
+			$this->_messenger->addMessage('Unable to log out');
 		}
+		
+		$this->_redirector->gotoSimple('index', 'index');
 	}
 }

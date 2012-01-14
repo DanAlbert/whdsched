@@ -2,7 +2,6 @@
 
 class ScheduleController extends Zend_Controller_Action
 {
-
 	protected $_messenger;
 	
     public function init()
@@ -12,8 +11,6 @@ class ScheduleController extends Zend_Controller_Action
 
     public function indexAction()
     {
-		$this->view->messages = $this->_helper->getHelper('FlashMessenger')->getMessages();
-		
 		$this->view->user = Zend_Auth::getInstance()->getIdentity();
 		
 		$day = $this->getRequest()->getParam('day');

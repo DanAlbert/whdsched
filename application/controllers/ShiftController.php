@@ -2,7 +2,6 @@
 
 class ShiftController extends Zend_Controller_Action
 {
-
     protected $_messenger = null;
 
     public function init()
@@ -105,13 +104,10 @@ class ShiftController extends Zend_Controller_Action
 		{
 			$this->_messenger->addMessage('You are forbidden from creating shifts.');
 		}
-
-		$this->view->messages = $this->_messenger->getMessages();
     }
 
     public function assignAction()
     {
-		$this->view->messages = array();
 		$user = Zend_Auth::getInstance()->getIdentity();
 		
 		$request = $this->getRequest();
@@ -183,13 +179,10 @@ class ShiftController extends Zend_Controller_Action
 		{
 			$this->_messenger->addMessage('You are forbidden from assigning shifts.');
 		}
-
-		$this->view->messages = $this->_messenger->getMessages();
     }
 
     public function specialAction()
     {
-		$this->view->messages = $this->_messenger->getMessages();
 		$user = Zend_Auth::getInstance()->getIdentity();
 
 		if ($user->isAdmin())
@@ -209,16 +202,12 @@ class ShiftController extends Zend_Controller_Action
 		}
 		else
 		{
-			$this->view->messages[] = 'You are forbidden from creating special shifts';
-		
+			$this->_messenger->addMessage('You are forbidden from creating special shifts');
 		}
-		
-		
     }
 
     public function keepAction()
     {
-		
 		$user = Zend_Auth::getInstance()->getIdentity();
 		$shiftMapper = new Application_Model_ShiftMapper();
 		$tempMapper = new Application_Model_TempShiftMapper();
@@ -239,9 +228,7 @@ class ShiftController extends Zend_Controller_Action
 					'month' => $month,
 					'year' => $year,
 					'day' => $day));
-			
 			}
-			
 			
 			$form = new Application_Form_ShiftSelector($shifts);
 			
@@ -276,19 +263,13 @@ class ShiftController extends Zend_Controller_Action
 			}
 			else 
 			{
-				
-				
 				$this->view->form = $form;
 			}
-			
-			
 		}
 		else 
 		{
-			$this->view->messages[] = 'Forbidden!!!!';
+			$this->_messenger->addMessage('Forbidden!!!!');
 		}
-		
-		$this->view->messages = $this->_messenger->getMessages();
     }
 
     public function setAction()
@@ -321,7 +302,6 @@ class ShiftController extends Zend_Controller_Action
 				$shiftMapper->save($s);
 			}
 		}
-		
     }
 
     public function availableAction()

@@ -2,15 +2,15 @@
 
 class ConsultantsController extends Zend_Controller_Action
 {
-
+    protected $_messenger = null;
+	
     public function init()
     {
-		// Initialize action controller here
+		$this->_messenger = $this->_helper->getHelper('FlashMessenger');
     }
 
     public function indexAction()
     {
-		$this->view->messages = array();
 		$this->view->user = Zend_Auth::getInstance()->getIdentity();
 		$consultantMapper = new Application_Model_ConsultantMapper();
 		
@@ -27,7 +27,6 @@ class ConsultantsController extends Zend_Controller_Action
 
     public function editAction()
     {
-		$this->view->messages = array();
 		$user = Zend_Auth::getInstance()->getIdentity();
 		
 		$form = new Application_Form_EditConsultant();
@@ -39,7 +38,7 @@ class ConsultantsController extends Zend_Controller_Action
 		
 		if ($consultant === null)
 		{
-			$this->view->error = "No such consultant";
+			$this->_messenger->addMessage("No such consultant");
 		}
 		else
 		{
@@ -101,15 +100,13 @@ class ConsultantsController extends Zend_Controller_Action
 			}
 			else
 			{
-				$this->view->messages[] = "You are forbidden from editing this user's information.";
+				$this->_messenger->addMessage("You are forbidden from editing this user's information.");
 			}
 		}
-		
     }
 
     public function deleteAction()
     {
-		$this->view->messages = array();
 		$user = Zend_Auth::getInstance()->getIdentity();
 		
 		if ($user->isAdmin())
@@ -122,7 +119,7 @@ class ConsultantsController extends Zend_Controller_Action
 			
 			if ($consultant === null)
 			{
-				$this->view->messages[] = "No such consultant";
+				$this->_messenger->addMessage("No such consultant");
 			}
 			else
 			{
@@ -133,14 +130,12 @@ class ConsultantsController extends Zend_Controller_Action
 		}
 		else
 		{
-			$this->view->messages[] = "You are forbidden from deleting users.";
+			$this->_messenger->addMessage("You are forbidden from deleting users.");
 		}
-		
     }
 
     public function createAction()
     {
-		$this->view->messages = array();
 		$user = Zend_Auth::getInstance()->getIdentity();
 		
 		$form = new Application_Form_Consultant();
@@ -169,7 +164,7 @@ class ConsultantsController extends Zend_Controller_Action
 					}
 					else
 					{
-						$this->view->messages[] = "Could not insert consultant";
+						$this->_messenger->addMessage("Could not insert consultant");
 					}
 				}
 				else
@@ -184,9 +179,8 @@ class ConsultantsController extends Zend_Controller_Action
 		}
 		else
 		{
-			$this->view->messages[] = "You are forbidden from creating users.";
+			$this->_messenger->addMessage("You are forbidden from creating users.");
 		}
-		
     }
 
     public function viewAction()
@@ -199,8 +193,47 @@ class ConsultantsController extends Zend_Controller_Action
 		$this->view->user = Zend_Auth::getInstance()->getIdentity();
     }
 
-
+    public function masqueradeAction()
+    {
+		$user = Zend_Auth::getInstance()->getIdentity();
+		
+		$form = new Application_Form_Masquerade();
+		$request = $this->getRequest();
+		
+		if ($user->isAdmin())
+		{
+			if ($request->isPost())
+			{
+				if ($form->isValid($request->getPost()))
+				{
+					$consultantMapper = new Application_Model_ConsultantMapper();
+					$values = $form->getValues();
+					$consultant = $consultantMapper->find($values['consultant']);
+					
+					Zend_Auth::getInstance()->clearIdentity();
+					Zend_Auth::getInstance()->getStorage()->write($consultant);
+					
+					$session = new Zend_Session_Namespace('whdsched');
+					$session->masquerade = $consultant->getId();
+				}
+				else
+				{
+					$this->view->form = $form;
+				}
+			}
+			else
+			{
+				$this->view->form = $form;
+			}
+		}
+		else
+		{
+			$this->_messenger->addMessage("You are forbidden from masquerading");
+		}
+    }
 }
+
+
 
 
 

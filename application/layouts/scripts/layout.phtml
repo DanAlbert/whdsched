@@ -126,16 +126,7 @@ if (count($available) > 0)
 			), null, true) . '">View</a><br />';
 }
 
-// Print any messages sent from the controller
-if (isset($this->messages))
-{
-	print '<ul>';
-	foreach ($this->messages as $message)
-	{
-		print '<li>' . $message . '</li>';
-	}
-	print '</ul>';
-}
+print $this->flashMessenger();
 
 print $this->layout()->content;
 print '</div>'; // End content

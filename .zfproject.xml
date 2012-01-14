@@ -19,6 +19,7 @@
           <actionMethod actionName="delete"/>
           <actionMethod actionName="create"/>
           <actionMethod actionName="view"/>
+          <actionMethod actionName="masquerade"/>
         </controllerFile>
         <controllerFile controllerName="Schedule">
           <actionMethod actionName="index"/>
@@ -66,6 +67,7 @@
         <formFile formName="ShiftSelector"/>
         <formFile formName="Temp"/>
         <formFile formName="EditConsultant"/>
+        <formFile formName="Masquerade"/>
       </formsDirectory>
       <layoutsDirectory>
         <layoutScriptsDirectory>
@@ -157,6 +159,9 @@
           <viewControllerScriptsDirectory forControllerName="Shift">
             <viewScriptFile forActionName="take"/>
           </viewControllerScriptsDirectory>
+          <viewControllerScriptsDirectory forControllerName="Consultants">
+            <viewScriptFile forActionName="masquerade"/>
+          </viewControllerScriptsDirectory>
         </viewScriptsDirectory>
         <viewHelpersDirectory/>
         <viewFiltersDirectory enabled="false"/>
@@ -201,6 +206,7 @@
             <testApplicationActionMethod forActionName="delete"/>
             <testApplicationActionMethod forActionName="create"/>
             <testApplicationActionMethod forActionName="view"/>
+            <testApplicationActionMethod forActionName="masquerade"/>
           </testApplicationControllerFile>
           <testApplicationControllerFile forControllerName="Schedule">
             <testApplicationActionMethod forActionName="index"/>

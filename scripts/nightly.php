@@ -54,6 +54,8 @@ $bootstrap->bootstrap('config');
 $bootstrap->bootstrap('db');
 $bootstrap->bootstrap('mail');
 
+$options = $bootstrap->getOption('mail');
+
 try
 {
 	$consultantMapper = new Application_Model_ConsultantMapper();
@@ -110,11 +112,9 @@ try
 		return true;
 	}
 	
-	$options = $bootstrap->getOption('mail');
-	
 	$mail = new Zend_Mail();
 	$mail->setBodyHtml('<ul>' . implode(PHP_EOL, $temps) . '</ul>');
-	$mail->addTo($options['to']['address'], $options['to']['name']);
+	//$mail->addTo($options['to']['address'], $options['to']['name']);
 	$mail->setSubject($options['nightly']['subject']);
 	
 	foreach ($consultants as $consultant)

@@ -15,7 +15,6 @@ function cmpTempShift(Application_Model_TempShift $a, Application_Model_TempShif
 
 class TempController extends Zend_Controller_Action
 {
-
 	protected $_messenger;
 	protected $_redirector;
 	
@@ -49,8 +48,6 @@ class TempController extends Zend_Controller_Action
 			usort($shifts, 'cmpTempShift');
 			$this->view->days[$day] = $shifts;
 		}
-		
-		$this->view->messages = $this->_messenger->getMessages();
 	}
 
 	public function createAction()
