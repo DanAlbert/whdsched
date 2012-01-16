@@ -126,7 +126,9 @@ if (count($available) > 0)
 			), null, true) . '">View</a><br />';
 }
 
-print $this->flashMessenger();
+print '<ul>';
+print $this->flashMessenger('warning', '<li class="%s">%s</li>');
+print '</ul>';
 
 print $this->layout()->content;
 print '</div>'; // End content

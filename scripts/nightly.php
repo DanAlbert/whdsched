@@ -114,7 +114,18 @@ try
 	
 	$mail = new Zend_Mail();
 	$mail->setBodyHtml('<ul>' . implode(PHP_EOL, $temps) . '</ul>');
-	$mail->addTo('');
+		
+	if (isset($options['to']))
+	{
+		$mail->addTo($options['to']['address'], $options['to']['name']);
+		$minRecv = 0;
+	}
+	else
+	{
+		$mail->addTo('');
+		$minRecv = 1;
+	}
+	
 	$mail->setSubject($options['nightly']['subject']);
 	
 	foreach ($consultants as $consultant)
@@ -127,8 +138,15 @@ try
 	
 	if ($test === null)
 	{
-		print 'Sending to ' . count($mail->getRecipients()) . ' recipients' . PHP_EOL;
-		$mail->send();
+		if (count($mail->getRecipients()) > $minRecv)
+		{
+			print 'Sending to ' . count($mail->getRecipients()) . ' recipients' . PHP_EOL;
+			$mail->send();
+		}
+		else
+		{
+			print 'No recipients' . PHP_EOL;
+		}
 	}
 	else
 	{

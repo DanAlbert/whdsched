@@ -60,32 +60,25 @@ class Zend_View_Helper_ShiftText
 						$text .= 'You are covering this shift ';
 						
 						$links = array();
-							
+						
 						// Add a link to temp the shift
 						$links[] = '<a href="' . $this->view->url(array(
 								'controller' => 'temp',
-								'action' => 'create',
-								'id' => $temp->getId(),
+								'action'     => 'create',
+								'id'         => $temp->getId(),
 								'temp'       => true,
-								'goto' => $goto,
+								'form'       => true,
+								'goto'       => $goto,
 						), null, true) . '">request temp</a>';
-							
-						list($start, $m, $s) = explode(':', $shift->getStartTime());
-						list($end, $m, $s) = explode(':', $shift->getEndTime());
-							
-						// If not a single hour temp
-						// Absolute value to handle 2300-0200 shifts
-						if (abs($end - $start) > 1)
-						{
-							// Add a link to temp the shift
-							$links[] = ' <a href="' . $this->view->url(array(
-									'controller' => 'temp',
-									'action' => 'create',
-									'id' => $temp->getId(),
-									'form' => true,
-									'goto' => $goto,
-							), null, true) . '">temp part</a>';
-						}
+						
+						// Add a link to temp the shift
+						$links[] = '<a href="' . $this->view->url(array(
+								'controller' => 'temp',
+								'action'     => 'create',
+								'id'         => $temp->getId(),
+								'temp'       => true,
+								'goto'       => $goto,
+						), null, true) . '">quick</a>';
 							
 						$text .= ' (' . implode(', ', $links) . ')';
 					}
@@ -134,27 +127,19 @@ class Zend_View_Helper_ShiftText
 					// Add a link to temp the shift
 					$links[] = '<a href="' . $this->view->url(array(
 							'controller' => 'temp',
-							'action' => 'create',
-							'id' => $shift->getId(),
-							'goto' => $goto,
+							'action'     => 'create',
+							'id'         => $shift->getId(),
+							'form'       => true,
+							'goto'       => $goto,
 					), null, true) . '">request temp</a>';
-						
-					list($start, $m, $s) = explode(':', $shift->getStartTime());
-					list($end, $m, $s) = explode(':', $shift->getEndTime());
-						
-					// If not a single hour temp
-					// Absolute value to handle 2300-0200 shifts
-					if (abs($end - $start) > 1)
-					{
-						// Add a link to temp the shift
-						$links[] = ' <a href="' . $this->view->url(array(
-								'controller' => 'temp',
-								'action' => 'create',
-								'id' => $shift->getId(),
-								'form' => true,
-								'goto' => $goto,
-						), null, true) . '">temp part</a>';
-					}
+
+					// Add a link to temp the shift
+					$links[] = '<a href="' . $this->view->url(array(
+							'controller' => 'temp',
+							'action'     => 'create',
+							'id'         => $shift->getId(),
+							'goto'       => $goto,
+					), null, true) . '">quick</a>';
 						
 					$text .= ' (' . implode(', ', $links) . ')';
 				}
