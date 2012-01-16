@@ -44,7 +44,14 @@ class IndexController extends Zend_Controller_Action
 			
 			if (($shift->getConsultant() !== null) and ($shift->getConsultant()->getId() == $user->getId()))
 			{
-				$days[$date] = true;
+				$temp = $tempMapper->findByShift($shift);
+				
+				// No one has taken the shift yet
+				if (($temp === null) or
+					(($temp !== null) and ($temp->getTempConsultant() === null)))
+				{
+					$days[$date] = true;
+				}
 			}
 			else
 			{

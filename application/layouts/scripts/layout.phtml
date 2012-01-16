@@ -57,12 +57,49 @@ if ((Zend_Auth::getInstance()->hasIdentity()) and
 			),
 			null, true) . '">View roster</a>';
 	
-	$menuLinks[] = '<a href="' . $this->url(array(
-				'controller' => 'consultants',
-				'action'     => 'edit',
-				'id'         => $user->getId(),
-			),
-			null, true) . '">' . $user->getName() . '</a>';
+	if ($user->isAdmin())
+	{
+		$menuLinks[] = array(
+			'title' => $user->getName(),
+			'links' => array(
+				'<a href="' . $this->url(array(
+					'controller' => 'consultants',
+					'action'     => 'edit',
+					'id'         => $user->getId(),
+				), null, true) . '">Preferences</a>',
+				array(
+					'title' => 'Admin Tools',
+					'links' => array(
+						'<a href="' . $this->url(array(
+							'controller' => 'consultants',
+							'action'     => 'masquerade',
+						), null, true) . '">Masquerade</a>',
+						'<a href="' . $this->url(array(
+							'controller' => 'shift',
+							'action'     => 'create',
+						), null, true) . '">Create Shifts</a>',
+						'<a href="' . $this->url(array(
+							'controller' => 'shift',
+							'action'     => 'assign',
+						), null, true) . '">Assign Shifts</a>',
+						'<a href="' . $this->url(array(
+							'controller' => 'shift',
+							'action'     => 'special',
+						), null, true) . '">Special Shifts</a>',
+					)
+				)
+			)
+		);
+	}
+	else
+	{
+		$menuLinks[] = '<a href="' . $this->url(array(
+					'controller' => 'consultants',
+					'action'     => 'edit',
+					'id'         => $user->getId(),
+				),
+				null, true) . '">' . $user->getName() . '</a>';
+	}
 	
 	$menuLinks[] = '<a href="' . $this->url(array(
 				'controller' => 'index',
@@ -96,7 +133,22 @@ foreach ($menuLinks as $link)
 		print '<ul>';
 		foreach ($link['links'] as $sub)
 		{
-			print "<li>{$sub}</li>";
+			print '<li>';
+			if (is_array($sub))
+			{
+				print '<li><span>' . $sub['title'] . '</span>';
+				print '<ul>';
+				foreach($sub['links'] as $subsub)
+				{
+					print "<li>{$subsub}</li>";
+				}
+				print '</ul>';
+			}
+			else
+			{
+				print $sub;
+			}
+			print '</li>';
 		}
 		print '</ul></li>';
 	}

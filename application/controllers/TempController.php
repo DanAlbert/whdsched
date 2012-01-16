@@ -329,7 +329,7 @@ class TempController extends Zend_Controller_Action
 		if ($preferred !== null)
 		{
 			$temp->setAssignedConsultant($preferred);
-			$temp->setTimeout(6);
+			$temp->setTimeout(TIMEOUT_DEFAULT);
 		}
 		
 		$tempMapper->save($temp);
@@ -402,7 +402,7 @@ class TempController extends Zend_Controller_Action
 				if ($preferred !== null)
 				{
 					$temp->setAssignedConsultant($preferred);
-					$temp->setTimeout(6);
+					$temp->setTimeout(TIMEOUT_DEFAULT);
 				}
 
 				$tempMapper->save($temp);

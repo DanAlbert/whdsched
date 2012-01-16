@@ -21,6 +21,14 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 		$config = $this->getOptions();
 		Zend_Registry::set('config', $config);
 		
+		// Preferred consultants must accept the 
+		// shift within 48 hours of the shift
+		define('TIMEOUT_DEFAULT', 48);
+		
+		// Preferred consultants for special shifts must
+		// accept the shift within 1 week of the shift
+		define('TIMEOUT_SPECIAL', 168);
+		
 		if (isset($config['debug']))
 		{
 			if (isset($config['debug']['auth']))
