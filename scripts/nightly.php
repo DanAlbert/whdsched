@@ -114,7 +114,7 @@ try
 	
 	$mail = new Zend_Mail();
 	$mail->setBodyHtml('<ul>' . implode(PHP_EOL, $temps) . '</ul>');
-	//$mail->addTo($options['to']['address'], $options['to']['name']);
+	$mail->addTo('');
 	$mail->setSubject($options['nightly']['subject']);
 	
 	foreach ($consultants as $consultant)

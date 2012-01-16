@@ -436,7 +436,7 @@ class TempController extends Zend_Controller_Action
 		
 		$mail = new Zend_Mail();
 		$mail->setBodyHtml($html);
-		$mail->addTo($options['to']['address'], $options['to']['name']);
+		$mail->addTo('');
 		$mail->setSubject($options['instant']['subject']);
 		
 		foreach ($consultants as $consultant)
