@@ -247,16 +247,13 @@ class ShiftController extends Zend_Controller_Action
 							$temp = new Application_Model_TempShift();
 							$temp->setAssignedConsultant($consultant);
 							$temp->setShift($shift);
-							$temp->setPostTime(time());
 							$temp->setTimeout(168); 		//One week
-							$this->_messenger->addMessage('Adding Temp');
-							//$shiftMapper->save($shift);
-							//$tempMapper->save($temp);
+							$shiftMapper->save($shift);
+							$tempMapper->save($temp);
 						}
 						else 
 						{
-							$this->_messenger->addMessage('Deleting Shift');
-							//$shiftMapper->delete($shift);	
+							$shiftMapper->delete($shift);	
 						}	
 					}
 				}

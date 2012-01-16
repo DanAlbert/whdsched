@@ -90,7 +90,8 @@ class Zend_View_Helper_ShiftText
 			}
 			else
 			{
-				if ($shift->getConsultant()->getId() == $this->view->user->getId())
+				if (($shift->getConsultant() !== null) and
+					($shift->getConsultant()->getId() == $this->view->user->getId()))
 				{
 					$text .= '<a href="' . $this->view->url(array(
 							'controller' => 'temp',

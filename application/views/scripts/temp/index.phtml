@@ -94,7 +94,8 @@
 			}
 			
 			?></td>
-			<?php if ($temp->getShift()->getConsultant()->getId() == $this->user->getId()): ?>
+			<?php if (($temp->getShift()->getConsultant() !== null) and
+					  ($temp->getShift()->getConsultant()->getId() == $this->user->getId())): ?>
 			<td class="action"><a href="<?php print $this->url(array(
 					'controller' => 'temp',
 					'action'     => 'cancel',
