@@ -68,14 +68,30 @@ try
 	$host = $site['host'];
 	$root = $site['root'];
 
-	$temps = array();
-	foreach ($tempMapper->fetchAvailable() as $temp)
+	$temps = $tempMapper->fetchAvailable();
+	if (count($temps) == 0)
+	{
+		if ($test === true)
+		{
+			print 'No temp shifts outstanding' . PHP_EOL;
+		}
+		
+		return true;
+	}
+	
+	foreach ($temps as $temp)
 	{
 		// If the shift is still open and occurs later today
 		if ($temp->getShift()->getDate() == date('Y-m-d'))
 		{
 			// Warn the consultant responsible for the shift
 			$consultant = $temp->getShift()->getConsultant();
+			
+			// This is a special shift and has not been assigned, skip it
+			if ($consultant === null)
+			{
+				continue;
+			}
 			
 			list($start, $end) = explode(' - ', $temp->getShift()->getTimeString());
 			$html = "Your shift today from {$start} to {$end} has not been taken<br />";
@@ -96,24 +112,55 @@ try
 				print "Sending warning to {$consultant->getName()}" . PHP_EOL;
 			}
 		}
-		
-		$url = "{$scheme}://{$host}{$root}/temp/take/id/{$temp->getId()}";
-		$link = '<a href="' . $url . '">Claim this shift</a>';
-		$temps[] = "<li>{$temp} {$link}</li>";
 	}
 	
-	if (count($temps) == 0)
+	$temps = organizeTemps($temps);
+	
+	$html = '<table>';
+	foreach ($temps as $heading => $group)
 	{
-		if ($test === true)
+		$links = array();
+		$rows = array();
+		foreach ($group as $temp)
 		{
-			print 'No temp shifts outstanding' . PHP_EOL;
+			$url = "{$scheme}://{$host}{$root}/temp/take/id/{$temp->getId()}";
+			$link = '<a href="' . $url . '">Claim this shift</a>';
+			
+			$date = date('D, M j', $temp->getShift()->getStartTimeStamp());
+			
+			$start = date('H:i', $temp->getShift()->getStartTimeStamp());
+			$end = date('H:i', $temp->getShift()->getEndTimeStamp());
+			$time = "{$start} - {$end}";
+			
+			$location = '@ ' . $temp->getShift()->getLocation();
+			
+			if ($temp->getShift()->getConsultant() !== null)
+			{
+				$name = 'for ' . $temp->getShift()->getConsultant()->getName();
+				$text = "{$date} {$time} for {$name} @ {$location}";
+			}
+			else
+			{
+				$name = '&nbsp;';
+				$text = "{$date} {$time} @ {$location}";
+			}
+			
+			$date = "<td>{$date}</td>";
+			$time = "<td>{$time}</td>";
+			$location = "<td>{$location}</td>";
+			$name = "<td>{$name}</td>";
+			$rows[] = "<tr>{$date}{$time}{$location}{$name}{$link}</tr>";
+			$links[] = "<li>{$text} {$link}</li>";
 		}
 		
-		return true;
+		$html .= '<tr colspan="5"><td><h3>' . $heading . '</h3></td></tr>';
+		//$html .= '<ul>' . implode(PHP_EOL, $links) . '</ul>';
+		$html .=  implode(PHP_EOL, $rows);
 	}
+	$html .= '</table>';
 	
 	$mail = new Zend_Mail();
-	$mail->setBodyHtml('<ul>' . implode(PHP_EOL, $temps) . '</ul>');
+	$mail->setBodyHtml($html);
 		
 	if (isset($options['to']))
 	{
@@ -166,3 +213,64 @@ catch (Exception $e)
 
 return true;
 
+function organizeTemps(array $temps)
+{
+	$today = mktime(0, 0, 0);
+	$urgent = strtotime('+3 days', $today);
+	$week = strtotime('+1 week', $today);
+	
+	$urgentTemps = array();
+	$weekTemps = array();
+	$otherTemps = array();
+	
+	foreach ($temps as $temp)
+	{
+		if ($temp->getShift()->getStartTimestamp() < $urgent)
+		{
+			$urgentTemps[] = $temp;
+		}
+		else if ($temp->getShift()->getStartTimestamp() < $week)
+		{
+			$weekTemps[] = $temp;
+		}
+		else
+		{
+			$otherTemps[] = $temp;
+		}
+	}
+	
+	usort($urgentTemps, 'cmpTempShift');
+	usort($weekTemps, 'cmpTempShift');
+	usort($otherTemps, 'cmpTempShift');
+	
+	$temps = array();
+	if (count($urgentTemps) > 0)
+	{
+		$temps['URGENT'] = $urgentTemps;
+	}
+	
+	if (count($weekTemps) > 0)
+	{
+		$temps['Next 7 Days'] = $weekTemps;
+	}
+	
+	if (count($otherTemps) > 0)
+	{
+		$temps['Future'] = $otherTemps;
+	}
+	
+	return $temps;
+}
+
+function cmpTempShift(Application_Model_TempShift $a, Application_Model_TempShift $b)
+{
+	$atime = $a->getShift()->getStartTimestamp();
+	$btime = $b->getShift()->getStartTimestamp();
+
+	if ($atime == $btime)
+	{
+		return 0;
+	}
+
+	return ($atime < $btime) ? -1 : 1;
+}
