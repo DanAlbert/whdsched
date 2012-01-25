@@ -10,6 +10,7 @@ class Application_Model_Consultant
 	protected $_phone;
 	protected $_receiveNightly = true;
 	protected $_receiveInstant = false;
+	protected $_receiveTaken = true;
 	protected $_admin;
 	protected $_hidden;
 	
@@ -51,6 +52,9 @@ class Application_Model_Consultant
 				break;
 			case 'recv_instant':
 				$this->setReceiveInstant($value);
+				break;
+			case 'receive_taken':
+				$this->setReceiveTaken($value);
 				break;
 			case 'admin':
 				$this->setAdmin($value);
@@ -160,6 +164,15 @@ class Application_Model_Consultant
 		$this->_receiveInstant = $receiveInstant;
 	}
 	
+	public function getReceiveTaken()
+	{
+		return $this->_receiveTaken;
+	}
+	
+	public function setReceiveTaken($receiveTaken)
+	{
+		$this->_receiveTaken = $receiveTaken;
+	}
 	
 	public function isAdmin()
 	{

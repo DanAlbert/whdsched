@@ -295,6 +295,8 @@ class TempController extends Zend_Controller_Action
 					$temp->setTempConsultant(null);
 					$temp->setResponseTime(null);
 					$tempMapper->save($temp);
+					
+					$this->mailCancelled($temp);
 				}
 				else
 				{
@@ -361,6 +363,8 @@ class TempController extends Zend_Controller_Action
 						$temp->setAssignedConsultant(null);
 						$temp->setTimeout(null);
 						$tempMapper->save($temp);
+						
+						$this->mailTaken($temp);
 					}
 				}
 				
@@ -475,6 +479,7 @@ class TempController extends Zend_Controller_Action
 		return $ranges;
 	}
 	
+	// TODO: Will throw errors for special shifts
 	private function mailTemp(
 			Application_Model_TempShift $temp,
 			array $consultants = null)
@@ -521,6 +526,68 @@ class TempController extends Zend_Controller_Action
 				$mail->addBcc($consultant->getEmail(), $consultant->getName());
 			}
 		}
+		
+		$mail->send();
+	}
+	
+	private function mailTaken(Application_Model_TempShift $temp)
+	{
+		// For special shifts
+		if ($temp->getShift()->getConsultant() === null)
+		{
+			return;
+		}
+		
+		$consultant = $temp->getShift()->getConsultant();
+		
+		// If the consultant wishes to receive
+		// emails when their shifts are covered
+		if ($consultant->getReceiveTaken())
+		{
+			$config = Zend_Registry::get('config');
+			$options = $config['mail'];
+
+			$takenBy = $temp->getTempConsultant()->getName();
+
+			list($start, $end) = explode(' - ', $temp->getShift()->getTimeString());
+			$date = date('D, M j', $temp->getShift()->getStartTimeStamp());
+
+			$html = "{$takenBy} has covered your shift from {$start} to " .
+					"{$end} on {$date}";
+
+			$mail = new Zend_Mail();
+			$mail->setBodyHtml($html);
+			$mail->addTo($consultant->getEmail(), $consultant->getName());
+			$mail->setSubject($options['taken']['subject']);
+
+			$mail->send();
+		}
+	}
+	
+	private function mailCancelled(Application_Model_TempShift $temp)
+	{
+		// For special shifts
+		if ($temp->getShift()->getConsultant() === null)
+		{
+			return;
+		}
+		
+		$config = Zend_Registry::get('config');
+		$options = $config['mail'];
+		
+		$consultant = $temp->getShift()->getConsultant();
+		
+		list($start, $end) = explode(' - ', $temp->getShift()->getTimeString());
+		$date = date('D, M j', $temp->getShift()->getStartTimeStamp());
+		
+		$html = "Your shift from {$start} to {$end} on {$date} is no longer " .
+				"covered. You will be held responsible for this shift unless " .
+				"someone claims it before the shift begins.";
+		
+		$mail = new Zend_Mail();
+		$mail->setBodyHtml($html);
+		$mail->addTo($consultant->getEmail(), $consultant->getName());
+		$mail->setSubject($options['cancelled']['subject']);
 		
 		$mail->send();
 	}

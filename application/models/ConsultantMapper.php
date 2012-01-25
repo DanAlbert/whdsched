@@ -44,6 +44,7 @@ class Application_Model_ConsultantMapper
 			'phone'        => $consultant->getPhone(),
 			'recv_nightly' => $consultant->getReceiveNightly(),
 			'recv_instant' => $consultant->getReceiveInstant(),
+			'recv_taken'   => $consultant->getReceiveTaken(),
 			'admin'        => $consultant->isAdmin(),
 			'hidden'       => $consultant->isHidden(),
 		);
@@ -86,6 +87,7 @@ class Application_Model_ConsultantMapper
 		$consultant->setPhone($row->phone);
 		$consultant->setReceiveNightly($row->recv_nightly);
 		$consultant->setReceiveInstant($row->recv_instant);
+		$consultant->setReceiveTaken($row->recv_taken);
 		$consultant->setAdmin($row->admin);
 		$consultant->setHidden($row->hidden);
 		
@@ -123,6 +125,7 @@ class Application_Model_ConsultantMapper
 		$consultant->setPhone($row->phone);
 		$consultant->setReceiveNightly($row->recv_nightly);
 		$consultant->setReceiveInstant($row->recv_instant);
+		$consultant->setReceiveTaken($row->recv_taken);
 		$consultant->setAdmin($row->admin);
 		$consultant->setHidden($row->hidden);
 		
@@ -153,6 +156,7 @@ class Application_Model_ConsultantMapper
 			$consultant->setPhone($row->phone);
 			$consultant->setReceiveNightly($row->recv_nightly);
 			$consultant->setReceiveInstant($row->recv_instant);
+			$consultant->setReceiveTaken($row->recv_taken);
 			$consultant->setAdmin($row->admin);
 			$consultant->setHidden($row->hidden);
 			
@@ -189,6 +193,7 @@ class Application_Model_ConsultantMapper
 			$consultant->setPhone($row->phone);
 			$consultant->setReceiveNightly($row->recv_nightly);
 			$consultant->setReceiveInstant($row->recv_instant);
+			$consultant->setReceiveTaken($row->recv_taken);
 			$consultant->setAdmin($row->admin);
 			$consultant->setHidden($row->hidden);
 			
