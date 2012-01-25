@@ -35,67 +35,10 @@
 			<td class="location"><?php print $temp->getShift()->getLocation() ?></td>
 			<td class="message"><?php
 			
-			$timeUntil = $temp->getShift()->getStartTimestamp() - time();
-			
-			// Less than 90 minutes until this shift
-			if ($timeUntil < 60 * 90)
-			{
-				if ($temp->getShift()->getConsultant() !== null)
-				{
-					$name = $temp->getShift()->getConsultant()->getFirstName();
-					$link = '<a href="' . $this->url(array(
-						'controller' => 'consultants',
-						'action'     => 'view',
-						'id'         => $temp->getShift()->getConsultant()->getId(),
-					), null, true) . '">' . $name . '</a>';
-					print "<strong>{$link} needs a temp " .
-							'in ' . floor($timeUntil / 60) . ' minutes</strong>';
-				}
-				else
-				{
-					print '<strong>In ' . floor($timeUntil / 60) . ' minutes</strong>';
-				}
-			}
-			// Less than 24 hours until this shift?
-			else if ($timeUntil < (60 * 60 * 24))
-			{
-				if ($temp->getShift()->getConsultant() !== null)
-				{
-					$name = $temp->getShift()->getConsultant()->getFirstName();
-					$link = '<a href="' . $this->url(array(
-						'controller' => 'consultants',
-						'action'     => 'view',
-						'id'         => $temp->getShift()->getConsultant()->getId(),
-					), null, true) . '">' . $name . '</a>';
-					print "<strong>{$link} needs a temp " .
-							'in ' . floor($timeUntil / 60 / 60) . ' hours</strong>';
-				}
-				else
-				{
-					print '<strong>In ' . floor($timeUntil / 60 / 60) . ' hours</strong>';
-				}
-			}
-			else
-			{
-				if ($temp->getShift()->getConsultant() !== null)
-				{
-					$name = $temp->getShift()->getConsultant()->getFirstName();
-					$link = '<a href="' . $this->url(array(
-						'controller' => 'consultants',
-						'action'     => 'view',
-						'id'         => $temp->getShift()->getConsultant()->getId(),
-					), null, true) . '">' . $name . '</a>';
-					print "<em>{$link} needs a temp</em>";
-				}
-				else
-				{
-					print "<em>Not yet filled!</em>";
-				}
-			}
+			print $this->tempMessage($temp, $this->user);
 			
 			?></td>
-			<?php if (($temp->getShift()->getConsultant() !== null) and
-					  ($temp->getShift()->getConsultant()->getId() == $this->user->getId())): ?>
+			<?php if ($temp->getShift()->getConsultant()->getId() == $this->user->getId()): ?>
 			<td class="action"><a href="<?php print $this->url(array(
 					'controller' => 'temp',
 					'action'     => 'cancel',

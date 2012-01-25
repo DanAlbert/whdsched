@@ -133,5 +133,17 @@ class Application_Model_TempShift
 	{
 		$this->_timeout = $timeout;
 	}
+	
+	public function isAssigned()
+	{
+		return ($this->getAssignedConsultant() !== null);
+	}
+	
+	public function isAssignedTo(Application_Model_Consultant $consultant)
+	{
+		assert($consultant !== null);
+		return ($this->isAssigned() and
+				($this->getAssignedConsultant()->getId() == $consultant->getId()));
+	}
 }
 

@@ -151,5 +151,10 @@ class Application_Model_Shift
 	{
 		$this->_consultant = $consultant;
 	}
+	
+	public function isAssigned()
+	{
+		return ($this->getConsultant() !== null);
+	}
 }
 
