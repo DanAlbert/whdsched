@@ -168,7 +168,15 @@ class TempController extends Zend_Controller_Action
 								}
 								
 								$tempMapper->save($temp);
-								$this->mailTemp($temp);
+								
+								if (isset($assigned))
+								{
+									$this->mailAssigned($temp);
+								}
+								else
+								{
+									$this->mailTemp($temp);
+								}
 							}
 						}
 
@@ -223,6 +231,15 @@ class TempController extends Zend_Controller_Action
 						}
 						
 						$tempMapper->save($temp);
+						
+						if (isset($assigned))
+						{
+							$this->mailAssigned($temp);
+						}
+						else
+						{
+							$this->mailTemp($temp);
+						}
 					}
 					
 					$this->handleRedirect($request, $shift->getDate());
@@ -589,6 +606,55 @@ class TempController extends Zend_Controller_Action
 		$mail->addTo($consultant->getEmail(), $consultant->getName());
 		$mail->setSubject($options['cancelled']['subject']);
 		
+		$mail->send();
+	}
+	
+	private function mailAssigned(Application_Model_TempShift $temp)
+	{
+		// For special shifts
+		if ($temp->getShift()->getConsultant() === null)
+		{
+			return;
+		}
+		
+		$consultant = $temp->getAssignedConsultant();
+		
+		$config = Zend_Registry::get('config');
+		$options = $config['mail'];
+
+		$assignedBy = $temp->getShift()->getConsultant()->getName();
+
+		list($start, $end) = explode(' - ', $temp->getShift()->getTimeString());
+		$date = date('D, M j', $temp->getShift()->getStartTimeStamp());
+		
+		$acceptPath = $this->view->url(array(
+				'controller' => 'temp',
+				'action'     => 'take',
+				'id'         => $temp->getId(),
+			), null, true);
+		
+		$refusePath = $this->view->url(array(
+				'controller' => 'temp',
+				'action'     => 'refuse',
+				'id'         => $temp->getId(),
+			), null, true);
+		
+		$acceptUrl = $this->getRequest()->getScheme() . '://' .
+				$this->getRequest()->getHttpHost() . $acceptPath;
+		$refuseUrl = $this->getRequest()->getScheme() . '://' .
+				$this->getRequest()->getHttpHost() . $refusePath;
+		
+		$accept = '<a href="' . $acceptUrl . '">Accept</a>';
+		$refuse = '<a href="' . $refuseUrl . '">Refuse</a>';
+		
+		$html = "{$assignedBy} has assigned you to a shift from {$start} to " .
+				"{$end} on {$date}. {$accept}, {$refuse}";
+
+		$mail = new Zend_Mail();
+		$mail->setBodyHtml($html);
+		$mail->addTo($consultant->getEmail(), $consultant->getName());
+		$mail->setSubject($options['assigned']['subject']);
+
 		$mail->send();
 	}
 

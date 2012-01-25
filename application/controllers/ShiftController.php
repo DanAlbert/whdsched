@@ -250,6 +250,8 @@ class ShiftController extends Zend_Controller_Action
 							$temp->setTimeout(TIMEOUT_SPECIAL);
 							$shiftMapper->save($shift);
 							$tempMapper->save($temp);
+							
+							$this->mailAssigned($temp);
 						}
 						else 
 						{
@@ -345,6 +347,47 @@ class ShiftController extends Zend_Controller_Action
 		
 		$this->view->success = true;
     }
+	
+	private function mailAssigned(Application_Model_TempShift $temp)
+	{
+		$consultant = $temp->getAssignedConsultant();
+		
+		$config = Zend_Registry::get('config');
+		$options = $config['mail'];
+
+		list($start, $end) = explode(' - ', $temp->getShift()->getTimeString());
+		$date = date('D, M j', $temp->getShift()->getStartTimeStamp());
+		
+		$acceptPath = $this->view->url(array(
+				'controller' => 'temp',
+				'action'     => 'take',
+				'id'         => $temp->getId(),
+			), null, true);
+		
+		$refusePath = $this->view->url(array(
+				'controller' => 'temp',
+				'action'     => 'refuse',
+				'id'         => $temp->getId(),
+			), null, true);
+		
+		$acceptUrl = $this->getRequest()->getScheme() . '://' .
+				$this->getRequest()->getHttpHost() . $acceptPath;
+		$refuseUrl = $this->getRequest()->getScheme() . '://' .
+				$this->getRequest()->getHttpHost() . $refusePath;
+		
+		$accept = '<a href="' . $acceptUrl . '">Accept</a>';
+		$refuse = '<a href="' . $refuseUrl . '">Refuse</a>';
+		
+		$html = "You have been given priority over a shift from {$start} to " .
+				"{$end} on {$date}. {$accept}, {$refuse}";
+
+		$mail = new Zend_Mail();
+		$mail->setBodyHtml($html);
+		$mail->addTo($consultant->getEmail(), $consultant->getName());
+		$mail->setSubject($options['assigned']['subject']);
+
+		$mail->send();
+	}
 
 
 }
