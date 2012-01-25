@@ -28,7 +28,7 @@ class Zend_View_Helper_TempMessage
 		$timeStr = $this->getTimeString($temp);
 		
 		// If the shift has a user assigned to it
-		if ($temp->getShift()->isAssigned())
+		if ($temp->getShift()->isOwned())
 		{
 			$link = $this->getConsultantLink($temp->getShift()->getConsultant());
 			

@@ -38,13 +38,29 @@
 			print $this->tempMessage($temp, $this->user);
 			
 			?></td>
-			<?php if ($temp->getShift()->getConsultant()->getId() == $this->user->getId()): ?>
+			<?php if ($temp->getShift()->isOwnedBy($this->user)): ?>
 			<td class="action"><a href="<?php print $this->url(array(
 					'controller' => 'temp',
 					'action'     => 'cancel',
 					'id'         => $temp->getId(),
 					'goto'       => 'temps',
 					), null, true) ?>">Cancel</a></td>
+			<?php elseif ($temp->isAssignedTo($this->user)): ?>
+			<td class="action">
+				<a href="<?php print $this->url(array(
+					'controller' => 'temp',
+					'action'     => 'take',
+					'id'         => $temp->getId(),
+					'goto'       => 'temps',
+					), null, true) ?>">Accept</a>
+				<a href="<?php print $this->url(array(
+					'controller' => 'temp',
+					'action'     => 'refuse',
+					'id'         => $temp->getId(),
+					'goto'       => 'temps',
+					), null, true) ?>">Refuse</a></td>
+			<?php elseif ($temp->isAssigned()): ?>
+			<td class="action">&nbsp;</td>
 			<?php else: ?>
 			<td class="action"><a href="<?php print $this->url(array(
 					'controller' => 'temp',

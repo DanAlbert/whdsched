@@ -61,6 +61,7 @@ class TempController extends Zend_Controller_Action
 	{
 		$user = Zend_Auth::getInstance()->getIdentity();
 		$shiftMapper = new Application_Model_ShiftMapper();
+		$consultantMapper = new Application_Model_ConsultantMapper();
 		$tempMapper = new Application_Model_TempShiftMapper();
 		
 		$request = $this->getRequest();
@@ -96,103 +97,132 @@ class TempController extends Zend_Controller_Action
 				{
 					// Find ranges
 					$values = $form->getValues();
-					$hours = $values['hours'];
 					
-					// Find the ranges of hours the consultant wants to keep
-					list($start, $m, $s) = explode(':', $shift->getStartTime());
-					list($end, $m, $s) = explode(':', $shift->getEndTime());
-					
-					$tmp = $this->getRanges(range($start, $end));
-					$keepHours = array_diff(range($start, $end), $hours);
-					$keepRanges = $this->getRanges($keepHours);
-					
-					// Find the ranges of hours the consultant wants to temp
-					$tempRanges = $this->getRanges($hours);
-					
-					// Delete old shift
-					$shiftMapper->delete($shift);
-					
-					// Create new shifts for each range
-					foreach ($tempRanges as $range)
+					if (isset($values['preferred']))
 					{
-						// The start of this range falls on the next day
-						if ($range['start'] < $start)
-						{
-							// Increment the date by one day
-							list($year, $month, $day) = explode('-', $shift->getDate());
-							$date = implode('-', array($year, $month, $day + 1));
-						}
-						else
-						{
-							$date = $shift->getDate();
-						}
-						
-						// Sorry Andy, the comments are going to get a little hazy from
-						// here (chronologically, not necessarily line based) - dja
-						$rangeStart = $range['start'];
-						
-						// Because the ranges will only be based on the start of the hour
-						$rangeEnd = $range['end'] + 1;
-						
-						// Make sure we're not beyond the end of the shift
-						$rangeEnd = ($rangeEnd <= $end) ? $rangeEnd : $end;
-						
-						// Make sure it's still a valid shift
-						if ($rangeStart != $rangeEnd)
-						{
-							// Create the new shift
-							$newShift = clone $shift;
-							$newShift->setStartTime($rangeStart . ':00:00');
-							$newShift->setEndTime($rangeEnd . ':00:00');
-							$newShift->setDate($date);
-							
-							$shiftMapper->save($newShift);
-						
-							// Temp the new shift
-							$temp = new Application_Model_TempShift();
-							$temp->setShift($newShift);
-							
-							$tempMapper->save($temp);
-							$this->mailTemp($temp);
-						}
+						$assigned = $consultantMapper->find($values['preferred']);
 					}
 					
-					// Create new shifts for each kept range
-					foreach ($keepRanges as $range)
+					if (isset($values['hours']))
 					{
-						// The start of this range falls on the next day
-						if ($range['start'] < $start)
+						$hours = $values['hours'];
+						
+						// Find the ranges of hours the consultant wants to keep
+						list($start, $m, $s) = explode(':', $shift->getStartTime());
+						list($end, $m, $s) = explode(':', $shift->getEndTime());
+
+						$tmp = $this->getRanges(range($start, $end));
+						$keepHours = array_diff(range($start, $end), $hours);
+						$keepRanges = $this->getRanges($keepHours);
+
+						// Find the ranges of hours the consultant wants to temp
+						$tempRanges = $this->getRanges($hours);
+
+						// Delete old shift
+						$shiftMapper->delete($shift);
+
+						// Create new shifts for each range
+						foreach ($tempRanges as $range)
 						{
-							// Increment the date by one day
-							list($year, $month, $day) = explode('-', $shift->getDate());
-							$date = implode('-', array($year, $month, $day + 1));
+							// The start of this range falls on the next day
+							if ($range['start'] < $start)
+							{
+								// Increment the date by one day
+								list($year, $month, $day) = explode('-', $shift->getDate());
+								$date = implode('-', array($year, $month, $day + 1));
+							}
+							else
+							{
+								$date = $shift->getDate();
+							}
+
+							// Sorry Andy, the comments are going to get a little hazy from
+							// here (chronologically, not necessarily line based) - dja
+							$rangeStart = $range['start'];
+
+							// Because the ranges will only be based on the start of the hour
+							$rangeEnd = $range['end'] + 1;
+
+							// Make sure we're not beyond the end of the shift
+							$rangeEnd = ($rangeEnd <= $end) ? $rangeEnd : $end;
+
+							// Make sure it's still a valid shift
+							if ($rangeStart != $rangeEnd)
+							{
+								// Create the new shift
+								$newShift = clone $shift;
+								$newShift->setStartTime($rangeStart . ':00:00');
+								$newShift->setEndTime($rangeEnd . ':00:00');
+								$newShift->setDate($date);
+
+								$shiftMapper->save($newShift);
+
+								// Temp the new shift
+								$temp = new Application_Model_TempShift();
+								$temp->setShift($newShift);
+								
+								if (isset($assigned))
+								{
+									$temp->setAssignedConsultant($assigned);
+									$temp->setTimeout(TIMEOUT_DEFAULT);
+								}
+								
+								$tempMapper->save($temp);
+								$this->mailTemp($temp);
+							}
 						}
-						else
+
+						// Create new shifts for each kept range
+						foreach ($keepRanges as $range)
 						{
-							$date = $shift->getDate();
+							// The start of this range falls on the next day
+							if ($range['start'] < $start)
+							{
+								// Increment the date by one day
+								list($year, $month, $day) = explode('-', $shift->getDate());
+								$date = implode('-', array($year, $month, $day + 1));
+							}
+							else
+							{
+								$date = $shift->getDate();
+							}
+
+							// Sorry Andy, the comments are going to get a little hazy from
+							// here (chronologically, not necessarily line based) - dja
+							$rangeStart = $range['start'];
+
+							// Because the ranges will only be based on the start of the hour
+							$rangeEnd = $range['end'] + 1;
+
+							// Make sure we're not beyond the end of the shift
+							$rangeEnd = ($rangeEnd <= $end) ? $rangeEnd : $end;
+
+							// Make sure it's still a valid shift
+							if ($rangeStart != $rangeEnd)
+							{
+								// Create the new shift
+								$newShift = clone $shift;
+								$newShift->setStartTime($rangeStart . ':00:00');
+								$newShift->setEndTime($rangeEnd . ':00:00');
+								$newShift->setDate($date);
+
+								$shiftMapper->save($newShift);
+							}
 						}
+					}
+					else
+					{
+						// Temp the new shift
+						$temp = new Application_Model_TempShift();
+						$temp->setShift($shift);
 						
-						// Sorry Andy, the comments are going to get a little hazy from
-						// here (chronologically, not necessarily line based) - dja
-						$rangeStart = $range['start'];
-						
-						// Because the ranges will only be based on the start of the hour
-						$rangeEnd = $range['end'] + 1;
-						
-						// Make sure we're not beyond the end of the shift
-						$rangeEnd = ($rangeEnd <= $end) ? $rangeEnd : $end;
-						
-						// Make sure it's still a valid shift
-						if ($rangeStart != $rangeEnd)
+						if (isset($assigned))
 						{
-							// Create the new shift
-							$newShift = clone $shift;
-							$newShift->setStartTime($rangeStart . ':00:00');
-							$newShift->setEndTime($rangeEnd . ':00:00');
-							$newShift->setDate($date);
-							
-							$shiftMapper->save($newShift);
+							$temp->setAssignedConsultant($assigned);
+							$temp->setTimeout(TIMEOUT_DEFAULT);
 						}
+						
+						$tempMapper->save($temp);
 					}
 					
 					$this->handleRedirect($request, $shift->getDate());
@@ -309,7 +339,8 @@ class TempController extends Zend_Controller_Action
 				$fairGame = strtotime("-{$temp->getTimeout()} hours", $shiftTime);
 				
 				// Someone is assigned and the shift isn't fair game yet
-				if (($temp->getAssignedConsultant() !== null) and
+				if (($temp->isAssigned()) and
+					(!$temp->isAssignedTo($user)) and
 					(time() < $fairGame))
 				{
 					$assigned = $temp->getAssignedConsultant()->getName();
@@ -327,6 +358,8 @@ class TempController extends Zend_Controller_Action
 						// Claim
 						$temp->setTempConsultant($user);
 						$temp->setResponseTime(date('Y-m-d H:i:s'));
+						$temp->setAssignedConsultant(null);
+						$temp->setTimeout(null);
 						$tempMapper->save($temp);
 					}
 				}
@@ -341,6 +374,38 @@ class TempController extends Zend_Controller_Action
 						'id' => $id,
 						'goto' => $request->getParam('goto')
 				));
+			}
+		}
+		else
+		{
+			$this->_messenger->addMessage('No such temp shift. It may have been cancelled');
+			$this->handleRedirect($request);
+		}
+	}
+	
+	public function refuseAction()
+	{
+		$user = Zend_Auth::getInstance()->getIdentity();
+		$tempMapper = new Application_Model_TempShiftMapper();
+		
+		$request = $this->getRequest();
+		$id = $request->getParam('id');
+		$temp = $tempMapper->find($id);
+		
+		if ($temp !== null)
+		{
+			if ($temp->isAssignedTo($user))
+			{
+				$temp->setAssignedConsultant(null);
+				$temp->setTimeout(null);
+				$tempMapper->save($temp);
+				
+				$this->handleRedirect($request);
+			}
+			else
+			{
+				$this->_messenger->addMessage('This shift is not assigned to you');
+				$this->handleRedirect($request);
 			}
 		}
 		else

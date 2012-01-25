@@ -152,9 +152,16 @@ class Application_Model_Shift
 		$this->_consultant = $consultant;
 	}
 	
-	public function isAssigned()
+	public function isOwned()
 	{
 		return ($this->getConsultant() !== null);
+	}
+	
+	public function isOwnedBy(Application_Model_Consultant $consultant)
+	{
+		assert($consultant !== null);
+		return ($this->isOwned() and
+				($this->getConsultant()->getId() == $consultant->getId()));
 	}
 }
 
