@@ -496,7 +496,6 @@ class TempController extends Zend_Controller_Action
 		return $ranges;
 	}
 	
-	// TODO: Will throw errors for special shifts
 	private function mailTemp(
 			Application_Model_TempShift $temp,
 			array $consultants = null)

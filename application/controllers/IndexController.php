@@ -81,13 +81,17 @@ class IndexController extends Zend_Controller_Action
 		Zend_Auth::getInstance()->clearIdentity();
 		
 		$session = new Zend_Session_Namespace('whdsched');
-		/*foreach ($session as $key => $value)
-		{
-			unset($session->key);
-		}*/
-		
 		unset($session->masquerade);
 		
+		// :(
+		$response = $this->getResponse();
+		$response->setHeader(
+				'WWW-Authenticate',
+			   	'Basic realm="COE Wireless Helpdesk Staff');
+		$response->setRawHeader('HTTP/1.0 401 Unauthorized');
+		$response->sendResponse();
+		return;
+
 		if (Zend_Auth::getInstance()->hasIdentity())
 		{
 			$this->_messenger->addMessage('You have been logged out');
@@ -96,7 +100,9 @@ class IndexController extends Zend_Controller_Action
 		{
 			$this->_messenger->addMessage('Unable to log out');
 		}
-		
+
 		$this->_redirector->gotoSimple('index', 'index');
+
+		return;
 	}
 }
