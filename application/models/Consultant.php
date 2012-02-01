@@ -3,11 +3,14 @@
 class Application_Model_Consultant
 {
 	const MAIL_DOMAIN = 'engr.oregonstate.edu';
+	
 	protected $_id;
 	protected $_firstName;
 	protected $_lastName;
 	protected $_engr;
 	protected $_phone;
+	protected $_preferredEmail = null;
+	protected $_maxHours = 20;
 	protected $_receiveNightly = true;
 	protected $_receiveInstant = false;
 	protected $_receiveTaken = true;
@@ -46,6 +49,12 @@ class Application_Model_Consultant
 				break;
 			case 'phone':
 				$this->setPhone($value);
+				break;
+			case 'preferred_email':
+				$this->setPreferredEmail($value);
+				break;
+			case 'max_hours':
+				$this->setMaxHours($value);
 				break;
 			case 'recv_nightly':
 				$this->setReceiveNightly($value);
@@ -122,7 +131,14 @@ class Application_Model_Consultant
 	
 	public function getEmail()
 	{
-		return $this->getEngr() . '@' . self::MAIL_DOMAIN;
+		if ($this->getPreferredEmail() !== null)
+		{
+			return $this->getPreferredEmail();
+		}
+		else
+		{
+			return $this->getEngr() . '@' . self::MAIL_DOMAIN;
+		}
 	}
 	
 	public function getPhone()
@@ -142,6 +158,33 @@ class Application_Model_Consultant
 		$last = substr($this->getPhone(), 6, 4);
 		
 		return "({$area}) {$first}-{$last}";
+	}
+	
+	public function getPreferredEmail()
+	{
+		return $this->_preferredEmail;
+	}
+	
+	public function setPreferredEmail($preferredEmail)
+	{
+		if (trim($preferredEmail) == '')
+		{
+			$this->_preferredEmail = null;
+		}
+		else
+		{
+			$this->_preferredEmail = $preferredEmail;
+		}
+	}
+	
+	public function getMaxHours()
+	{
+		return $this->_maxHours;
+	}
+	
+	public function setMaxHours($maxHours)
+	{
+		$this->_maxHours = $maxHours;
 	}
 	
 	public function getReceiveNightly()

@@ -38,15 +38,17 @@ class Application_Model_ConsultantMapper
 	public function save(Application_Model_Consultant $consultant)
 	{
 		$data = array(
-			'first_name'   => $consultant->getFirstName(),
-			'last_name'    => $consultant->getLastName(),
-			'engr'         => $consultant->getEngr(),
-			'phone'        => $consultant->getPhone(),
-			'recv_nightly' => $consultant->getReceiveNightly(),
-			'recv_instant' => $consultant->getReceiveInstant(),
-			'recv_taken'   => $consultant->getReceiveTaken(),
-			'admin'        => $consultant->isAdmin(),
-			'hidden'       => $consultant->isHidden(),
+			'first_name'      => $consultant->getFirstName(),
+			'last_name'       => $consultant->getLastName(),
+			'engr'            => $consultant->getEngr(),
+			'phone'           => $consultant->getPhone(),
+			'preferred_email' => $consultant->getPreferredEmail(),
+			'max_hours'       => $consultant->getMaxHours(),
+			'recv_nightly'    => $consultant->getReceiveNightly(),
+			'recv_instant'    => $consultant->getReceiveInstant(),
+			'recv_taken'      => $consultant->getReceiveTaken(),
+			'admin'           => $consultant->isAdmin(),
+			'hidden'          => $consultant->isHidden(),
 		);
 		
 		$id = $consultant->getId();
@@ -85,6 +87,8 @@ class Application_Model_ConsultantMapper
 		$consultant->setLastName($row->last_name);
 		$consultant->setEngr($row->engr);
 		$consultant->setPhone($row->phone);
+		$consultant->setPreferredEmail($row->preferred_email);
+		$consultant->setMaxHours($row->max_hours);
 		$consultant->setReceiveNightly($row->recv_nightly);
 		$consultant->setReceiveInstant($row->recv_instant);
 		$consultant->setReceiveTaken($row->recv_taken);
@@ -123,6 +127,8 @@ class Application_Model_ConsultantMapper
 		$consultant->setLastName($row->last_name);
 		$consultant->setEngr($row->engr);
 		$consultant->setPhone($row->phone);
+		$consultant->setPreferredEmail($row->preferred_email);
+		$consultant->setMaxHours($row->max_hours);
 		$consultant->setReceiveNightly($row->recv_nightly);
 		$consultant->setReceiveInstant($row->recv_instant);
 		$consultant->setReceiveTaken($row->recv_taken);
@@ -154,6 +160,8 @@ class Application_Model_ConsultantMapper
 			$consultant->setLastName($row->last_name);
 			$consultant->setEngr($row->engr);
 			$consultant->setPhone($row->phone);
+			$consultant->setPreferredEmail($row->preferred_email);
+			$consultant->setMaxHours($row->max_hours);
 			$consultant->setReceiveNightly($row->recv_nightly);
 			$consultant->setReceiveInstant($row->recv_instant);
 			$consultant->setReceiveTaken($row->recv_taken);
@@ -191,6 +199,8 @@ class Application_Model_ConsultantMapper
 			$consultant->setLastName($row->last_name);
 			$consultant->setEngr($row->engr);
 			$consultant->setPhone($row->phone);
+			$consultant->setPreferredEmail($row->preferred_email);
+			$consultant->setMaxHours($row->max_hours);
 			$consultant->setReceiveNightly($row->recv_nightly);
 			$consultant->setReceiveInstant($row->recv_instant);
 			$consultant->setReceiveTaken($row->recv_taken);
@@ -201,5 +211,56 @@ class Application_Model_ConsultantMapper
 		}
 		
 		return $consultants;
+	}
+	
+	public function getConsultantHoursForDate(
+			Application_Model_Consultant $consultant,
+			$timestamp)
+	{
+		$shiftMapper = new Application_Model_ShiftMapper();
+		$tempMapper = new Application_Model_TempShiftMapper();
+		
+		$date = date('Y-m-d', $timestamp);
+		$shifts = $shiftMapper->fetchAllForConsultantOnDate($consultant, $date);
+		
+		$sum = 0;
+		foreach ($shifts as $shift)
+		{
+			$sum += $shift->getDuration();
+		}
+		
+		return $sum;
+	}
+	
+	public function getConsultantHoursInRange(
+			Application_Model_Consultant $consultant,
+			$start,
+			$end)
+	{
+		$shiftMapper = new Application_Model_ShiftMapper();
+		$tempMapper = new Application_Model_TempShiftMapper();
+		
+		$shifts = $shiftMapper->fetchAllForConsultantInRange($consultant, $start, $end);
+		
+		$sum = 0;
+		foreach ($shifts as $shift)
+		{
+			$sum += $shift->getDuration();
+		}
+		
+		return $sum;
+	}
+	
+	public function getConsultantHoursForWeekOf(
+			Application_Model_Consultant $consultant,
+			$timestamp)
+	{
+		$startTime = (date('w', $timestamp) == 0) ?
+			$timestamp : strtotime('last sunday', $timestamp);
+		
+		$start = date('Y-m-d', $startTime);
+		$end = date('Y-m-d', strtotime('next saturday', $startTime));
+		
+		return $this->getConsultantHoursInRange($consultant, $start, $end);
 	}
 }

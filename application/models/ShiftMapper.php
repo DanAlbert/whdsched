@@ -208,6 +208,69 @@ class Application_Model_ShiftMapper
 		return $this->fetchAllByMonth(date('m'));
 	}
 	
+	public function fetchAllForConsultantOnDate(
+			Application_Model_Consultant $consultant,
+			$date)
+	{
+		$tempMapper = new Application_Model_TempShiftMapper();
+		$select = $this->getDbTable()->select();
+		
+		$select->setIntegrityCheck(false);
+		$select->from(array('s' => $this->getDbTable()->getName()))
+		       ->joinLeft(array('t' => $tempMapper->getDbTable()->getName()),
+		       		's.id = t.shift_id',
+		       		array('s.*', 't.temp_consultant_id'))
+			   ->where(
+					'(' .
+						'(' .
+							's.consultant_id = :id  AND ' .
+							't.temp_consultant_id IS NULL' .
+						') OR ' .
+						't.temp_consultant_id = :id' .
+					') AND ' .
+					'day = :date')
+			   ->bind(array(
+					':id'    => $consultant->getId(),
+					':date' => $date,
+		));
+
+		$resultSet = $this->getDbTable()->fetchAll($select);
+		return $this->mapAll($resultSet);
+	}
+	
+	public function fetchAllForConsultantInRange(
+			Application_Model_Consultant $consultant,
+			$start,
+			$end)
+	{
+		$tempMapper = new Application_Model_TempShiftMapper();
+		$select = $this->getDbTable()->select();
+		
+		$select->setIntegrityCheck(false);
+		$select->from(array('s' => $this->getDbTable()->getName()))
+		       ->joinLeft(array('t' => $tempMapper->getDbTable()->getName()),
+		       		's.id = t.shift_id',
+		       		array('s.*', 't.temp_consultant_id'))
+			   ->where(
+					'(' .
+						'(' .
+							's.consultant_id = :id  AND ' .
+							't.temp_consultant_id IS NULL' .
+						') OR ' .
+						't.temp_consultant_id = :id' .
+					') AND ' .
+					'day >= :start AND ' .
+					'day <= :end')
+			   ->bind(array(
+					':id'    => $consultant->getId(),
+					':start' => $start,
+					':end'   => $end,
+		));
+
+		$resultSet = $this->getDbTable()->fetchAll($select);
+		return $this->mapAll($resultSet);
+	}
+	
 	public function fetchUpcomingShifts($showCurrent = false, $limit = null)
 	{
 		$date = date('Y-m-d');

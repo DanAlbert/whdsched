@@ -2,8 +2,9 @@
 
 class ConsultantsController extends Zend_Controller_Action
 {
+
     protected $_messenger = null;
-	
+
     public function init()
     {
 		$this->_messenger = $this->_helper->getHelper('FlashMessenger');
@@ -52,6 +53,8 @@ class ConsultantsController extends Zend_Controller_Action
 						$consultant->setFirstName($values['firstName']);
 						$consultant->setLastName($values['lastName']);
 						$consultant->setPhone($values['phone']);
+						$consultant->setPreferredEmail($values['email']);
+						$consultant->setMaxHours($values['maxHours']);
 						
 						if ($values['nightly'] == 'yes')
 						{
@@ -71,6 +74,15 @@ class ConsultantsController extends Zend_Controller_Action
 							$consultant->setReceiveInstant(false);
 						}
 						
+						if ($values['taken'] == 'yes')
+						{
+							$consultant->setReceiveTaken(true);
+						}
+						else
+						{
+							$consultant->setReceiveTaken(false);
+						}
+						
 						$consultantMapper->save($consultant);
 	
 						return $this->_helper->redirector('index');
@@ -87,9 +99,13 @@ class ConsultantsController extends Zend_Controller_Action
 						'lastName'  => $consultant->getLastName(),
 						'engr'      => $consultant->getEngr(),
 						'phone'     => $consultant->getPhone(),
+						'email'     => $consultant->getPreferredEmail(),
+						'maxHours'  => $consultant->getMaxHours(),
 						'nightly'   => $consultant->getReceiveNightly() ? 
 							'yes' : 'no',
 						'instant'   => $consultant->getReceiveInstant() ? 
+							'yes' : 'no',
+						'taken'     => $consultant->getReceiveTaken() ? 
 							'yes' : 'no',
 					);
 					
@@ -231,7 +247,40 @@ class ConsultantsController extends Zend_Controller_Action
 			$this->_messenger->addMessage("You are forbidden from masquerading");
 		}
     }
+
+    public function hideAction()
+    {
+        $user = Zend_Auth::getInstance()->getIdentity();
+		
+		if ($user->isAdmin())
+		{
+			$consultantMapper = new Application_Model_ConsultantMapper();
+			
+			$request = $this->getRequest();
+			$id = $request->getParam('id');
+			$hide = $request->getParam('hide');
+			$consultant = $consultantMapper->find($id);
+			
+			if ($consultant === null)
+			{
+				$this->_messenger->addMessage("No such consultant");
+			}
+			else
+			{
+				$consultant->setHidden($hide);
+				$consultantMapper->save($consultant);
+				
+				return $this->_helper->redirector('index');
+			}
+		}
+		else
+		{
+			$this->_messenger->addMessage("You are forbidden from hiding users.");
+		}
+    }
 }
+
+
 
 
 

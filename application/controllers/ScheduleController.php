@@ -11,7 +11,10 @@ class ScheduleController extends Zend_Controller_Action
 
     public function indexAction()
     {
-		$this->view->user = Zend_Auth::getInstance()->getIdentity();
+		$user = Zend_Auth::getInstance()->getIdentity();
+		$this->view->user = $user;
+		
+		$consultantMapper = new Application_Model_ConsultantMapper();
 		
 		$day = $this->getRequest()->getParam('day');
 		$month = $this->getRequest()->getParam('month');
@@ -19,7 +22,7 @@ class ScheduleController extends Zend_Controller_Action
 		
 		if (($day == null) and ($month == null) and ($year == null))
 		{
-			$this->timestamp = time();
+			$timestamp = time();
 		}
 		else
 		{
@@ -29,16 +32,15 @@ class ScheduleController extends Zend_Controller_Action
 			}
 			else
 			{
-				$this->timestamp = mktime(0, 0, 0, $month, $day, $year);
+				$timestamp = mktime(0, 0, 0, $month, $day, $year);
 			}
 		}
 		
-		if (isset($this->timestamp))
+		if (isset($timestamp))
 		{
-			$this->view->timestamp = $this->timestamp;
-			$this->view->schedule = $this->getSchedule();
+			$this->view->timestamp = $timestamp;
+			$this->view->schedule = $this->getSchedule($timestamp);
 		}
-		
     }
 
 	public function personalAction()
@@ -74,13 +76,13 @@ class ScheduleController extends Zend_Controller_Action
 		$this->view->days = $days;
 	}
 
-    private function getSchedule()
+    private function getSchedule($timestamp)
     {
 		$shiftMapper = new Application_Model_ShiftMapper();
 		$tempShiftMapper = new Application_Model_TempShiftMapper();
 		$sched = array();
 		
-		$shifts = $shiftMapper->fetchAllByDate($this->timestamp);
+		$shifts = $shiftMapper->fetchAllByDate($timestamp);
 		foreach ($shifts as $key => $shift)
 		{
 			$time = $shift->getTimeString();

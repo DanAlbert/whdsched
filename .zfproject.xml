@@ -20,6 +20,7 @@
           <actionMethod actionName="create"/>
           <actionMethod actionName="view"/>
           <actionMethod actionName="masquerade"/>
+          <actionMethod actionName="hide"/>
         </controllerFile>
         <controllerFile controllerName="Schedule">
           <actionMethod actionName="index"/>
@@ -163,6 +164,9 @@
           <viewControllerScriptsDirectory forControllerName="Consultants">
             <viewScriptFile forActionName="masquerade"/>
           </viewControllerScriptsDirectory>
+          <viewControllerScriptsDirectory forControllerName="Consultants">
+            <viewScriptFile forActionName="hide"/>
+          </viewControllerScriptsDirectory>
         </viewScriptsDirectory>
         <viewHelpersDirectory/>
         <viewFiltersDirectory enabled="false"/>
@@ -208,6 +212,7 @@
             <testApplicationActionMethod forActionName="create"/>
             <testApplicationActionMethod forActionName="view"/>
             <testApplicationActionMethod forActionName="masquerade"/>
+            <testApplicationActionMethod forActionName="hide"/>
           </testApplicationControllerFile>
           <testApplicationControllerFile forControllerName="Schedule">
             <testApplicationActionMethod forActionName="index"/>

@@ -5,6 +5,8 @@ CREATE TABLE consultants
 	last_name VARCHAR(40) NOT NULL,
 	engr VARCHAR(20) NOT NULL,
 	phone VARCHAR(10) NOT NULL,
+	preferred_email VARCHAR(255) DEFAULT NULL,
+	max_hours INT NOT NULL DEFAULT 20,
 	recv_nightly BOOLEAN NOT NULL DEFAULT 1,
 	recv_instant BOOLEAN NOT NULL DEFAULT 0,
 	recv_taken BOOLEAN NOT NULL DEFAULT 1,

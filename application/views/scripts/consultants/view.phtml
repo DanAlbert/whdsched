@@ -12,6 +12,21 @@
 			'id'         => $this->consultant->getId(),
 		), null, true) ?>">Edit this information</a>
 	<?php if ($this->user->isAdmin()): ?> | 
+	<?php if ($this->consultant->isHidden()): ?>
+	<a href="<?php print $this->url(array(
+			'controller' => 'consultants',
+			'action'     => 'hide',
+			'id'         => $this->consultant->getId(),
+			'hide'      => false,
+		), null, true) ?>">Unhide</a>
+	<?php else: ?>
+	<a href="<?php print $this->url(array(
+			'controller' => 'consultants',
+			'action'     => 'hide',
+			'id'         => $this->consultant->getId(),
+			'hide'      => true,
+		), null, true) ?>">Hide</a>
+	<?php endif; ?> |
 	<a href="<?php print $this->url(array(
 			'controller' => 'consultants',
 			'action'     => 'delete',

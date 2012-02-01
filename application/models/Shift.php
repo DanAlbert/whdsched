@@ -116,6 +116,19 @@ class Application_Model_Shift
 		return mktime($h, $mi, $s, $mo, $d, $y);
 	}
 	
+	public function getDuration()
+	{
+		list($sh, $m, $s) = explode(':', $this->getStartTime());
+		list($eh, $m, $s) = explode(':', $this->getEndTime());
+
+		if ($eh < $sh)
+		{
+			$eh += 24;
+		}
+
+		return $eh - $sh;
+	}
+	
 	public function getTimeString()
 	{
 		return substr($this->getStartTime(), 0, 5) . ' - ' .
@@ -162,6 +175,14 @@ class Application_Model_Shift
 		assert($consultant !== null);
 		return ($this->isOwned() and
 				($this->getConsultant()->getId() == $consultant->getId()));
+	}
+	
+	public function isMultiDay()
+	{
+		list($sh, $m, $s) = explode(':', $this->getStartTime());
+		list($eh, $m, $s) = explode(':', $this->getEndTime());
+
+		return ($eh < $sh);
 	}
 }
 
