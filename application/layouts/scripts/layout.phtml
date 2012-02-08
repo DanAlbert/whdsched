@@ -71,6 +71,10 @@ if ((Zend_Auth::getInstance()->hasIdentity()) and
 					'title' => 'Admin Tools',
 					'links' => array(
 						'<a href="' . $this->url(array(
+							'controller' => 'log',
+							'action'     => 'index',
+						), null, true) . '">Logs</a>',
+						'<a href="' . $this->url(array(
 							'controller' => 'consultants',
 							'action'     => 'masquerade',
 						), null, true) . '">Masquerade</a>',

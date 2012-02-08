@@ -59,6 +59,9 @@ class TempController extends Zend_Controller_Action
 
 	public function createAction()
 	{
+		$log = Zend_Registry::get('log');
+		$log->setEventItem('type', 'temp.create');
+		
 		$user = Zend_Auth::getInstance()->getIdentity();
 		$shiftMapper = new Application_Model_ShiftMapper();
 		$consultantMapper = new Application_Model_ConsultantMapper();
@@ -68,7 +71,7 @@ class TempController extends Zend_Controller_Action
 		$id = $request->getParam('id');
 		$showForm = $request->getParam('form');
 		$isTemp = $request->getParam('temp');
-		
+
 		// The shift passed is a temp shift
 		// Make the temp consultant the owner of the shift and delete the old temp
 		if ($isTemp == true)
@@ -105,6 +108,8 @@ class TempController extends Zend_Controller_Action
 					
 					if (isset($values['hours']))
 					{
+						$log->info("{$user->getName()} temped a partial shift {$shift}");
+						
 						$hours = $values['hours'];
 						
 						// Find the ranges of hours the consultant wants to keep
@@ -220,6 +225,8 @@ class TempController extends Zend_Controller_Action
 					}
 					else
 					{
+						$log->info("{$user->getName()} temped a shift {$shift}");
+						
 						// Temp the new shift
 						$temp = new Application_Model_TempShift();
 						$temp->setShift($shift);
@@ -261,6 +268,8 @@ class TempController extends Zend_Controller_Action
 				}
 				else
 				{
+					$log->info("{$user->getName()} temped a shift {$shift}");
+					
 					// Form not requested, just temp the whole shift
 					$temp = new Application_Model_TempShift();
 					$temp->setShift($shift);
@@ -280,6 +289,9 @@ class TempController extends Zend_Controller_Action
 
 	public function cancelAction()
 	{
+		$log = Zend_Registry::get('log');
+		$log->setEventItem('type', 'temp.cancel');
+		
 		$user = Zend_Auth::getInstance()->getIdentity();
 		$tempMapper = new Application_Model_TempShiftMapper();
 		
@@ -293,6 +305,7 @@ class TempController extends Zend_Controller_Action
 			if (($temp->getShift()->getConsultant()) and
 				($user->getId() == $temp->getShift()->getConsultant()->getId()))
 			{
+				$log->info("{$user->getName()} cancelled a temp {$temp}");
 				$tempMapper->delete($temp);
 			}
 			// Allow the user that claimed the shift to change their mind
@@ -308,6 +321,8 @@ class TempController extends Zend_Controller_Action
 				
 				if (time() < $allowed)
 				{
+					$log->info("{$user->getName()} is no longer covering {$temp}");
+				
 					// Give up the temp shift
 					$temp->setTempConsultant(null);
 					$temp->setResponseTime(null);
@@ -337,6 +352,9 @@ class TempController extends Zend_Controller_Action
 
 	public function takeAction()
 	{
+		$log = Zend_Registry::get('log');
+		$log->setEventItem('type', 'temp.take');
+		
 		$user = Zend_Auth::getInstance()->getIdentity();
 		$tempMapper = new Application_Model_TempShiftMapper();
 		
@@ -374,6 +392,8 @@ class TempController extends Zend_Controller_Action
 					}
 					else
 					{
+						$log->info("{$user->getName()} is covering {$temp}");
+						
 						// Claim
 						$temp->setTempConsultant($user);
 						$temp->setResponseTime(date('Y-m-d H:i:s'));

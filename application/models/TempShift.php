@@ -24,10 +24,7 @@ class Application_Model_TempShift
 	
 	public function __toString()
 	{
-		$time = $this->getShift()->getTimeString();
-		$date = $this->getShift()->getDate();
-		$location = $this->getShift()->getLocation();
-		return "{$date} {$time} {$location}";
+		return "{$this->getShift()}";
 	}
 	
 	public function setData(array $data)

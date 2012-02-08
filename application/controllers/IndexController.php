@@ -86,6 +86,7 @@ class IndexController extends Zend_Controller_Action
 		if (isset($session->masquerade))
 		{
 			unset($session->masquerade);
+			unset($session->actual);
 		}
 		// Otherwise log out
 		else

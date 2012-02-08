@@ -203,3 +203,28 @@ table.available-shifts tr td a:hover
 {
 	text-decoration: none;
 }
+
+table.logs
+{
+	width: 100%;
+}
+
+table.logs thead tr td
+{
+	font-weight: bold;
+}
+
+table.logs tr td.time
+{
+	width: 200px;
+}
+
+table.logs tr td.type
+{
+	width: 200px;
+}
+
+table.logs tr td.message
+{
+	width: 200px;
+}

@@ -1,0 +1,51 @@
+<div id="view-content">
+	<?php if (isset($this->logs)): ?>
+	<table class="logs">
+		<thead>
+			<tr>
+				<td>Time Stamp</td>
+				<td>Type</td>
+				<td>Message</td>
+			</tr>
+		</thead>
+	<?php foreach ($this->logs as $log): ?>
+		<?php
+		
+		if (!isset($row))
+		{
+			$row = 0;
+		}
+
+		if ($row % 2)
+		{
+			$class = 'odd';
+		}
+		else
+		{
+			$class = 'even';
+		}
+		
+		?>
+		<tr class="<?php print $class ?>">
+			<td><a href="<?php
+			
+			list($y, $m, $d) = explode('-', $log->getDate());
+			print $this->url(array(
+				'controller' => 'schedule',
+				'action'     => 'index',
+				'year'       => $y,
+				'month'      => $m,
+				'day'        => $d,
+			), null, true);
+			
+			?>"><?php print $log->getTimeFormatted() ?></a>
+			
+			</td>
+			<td><?php print $log->getType() ?></td>
+			<td><?php print $log->getMessage() ?></td>
+		</tr>
+		<?php $row++ ?>
+	<?php endforeach; ?>
+	</table>
+	<?php endif; ?>
+</div>

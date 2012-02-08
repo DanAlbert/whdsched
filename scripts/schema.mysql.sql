@@ -55,3 +55,12 @@ CREATE TABLE terms
 	PRIMARY KEY (id),
 	UNIQUE (term, year)
 ) ENGINE=InnoDB;
+
+CREATE TABLE logs
+(
+	id INT NOT NULL AUTO_INCREMENT,
+	log_time TIMESTAMP NOT NULL DEFAULT NOW(),
+	type ENUM('temp.create', 'temp.cancel', 'temp.take', 'debug.db', 'debug.auth') NOT NULL,
+	message TEXT NOT NULL,
+	PRIMARY KEY (id)
+) ENGINE=InnoDB;

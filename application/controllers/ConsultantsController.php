@@ -226,11 +226,14 @@ class ConsultantsController extends Zend_Controller_Action
 					$values = $form->getValues();
 					$consultant = $consultantMapper->find($values['consultant']);
 					
+					$actual = Zend_Auth::getInstance()->getIdentity();
+					
 					Zend_Auth::getInstance()->clearIdentity();
 					Zend_Auth::getInstance()->getStorage()->write($consultant);
 					
 					$session = new Zend_Session_Namespace('whdsched');
 					$session->masquerade = $consultant->getId();
+					$session->actual = $actual->getId();
 				}
 				else
 				{

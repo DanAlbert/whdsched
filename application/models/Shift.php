@@ -32,7 +32,10 @@ class Application_Model_Shift
 	
 	public function __toString()
 	{
-		return $this->getTimeString() . ' ' . $this->getLocation();
+		$date = $this->getDate();
+		$time = $this->getTimeString();
+		$location = $this->getLocation();
+		return "{$date} {$time} {$location}";
 	}
 	
 	public function getGeneralDescription()

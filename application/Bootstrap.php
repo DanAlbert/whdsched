@@ -223,7 +223,21 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 	{
 		if (!Zend_Registry::isRegistered('log'))
 		{
-			$log = new Zend_Log(new Zend_Log_Writer_Stream('php://output'));
+			$this->bootstrap('db');
+			$db = $this->getResource('db');
+			
+			$columnMap = array(
+				'log_time'   => 'timestamp',
+				'type'       => 'type',
+				'message'    => 'message',
+			);
+			
+			$log = new Zend_Log(
+					new Zend_Log_Writer_Db($db, 'logs', $columnMap));
+			
+			$log->setEventItem('type', null);
+			
+			
 			Zend_Registry::set('log', $log);
 		}
 	}
