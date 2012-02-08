@@ -145,6 +145,7 @@ class Application_Model_ShiftMapper
 	public function fetchAllUnassignedThisTerm()
 	{
 		$termMapper = new Application_Model_TermMapper();
+		$tempMapper = new Application_Model_TempShiftMapper();
 		
 		try
 		{
@@ -175,7 +176,9 @@ class Application_Model_ShiftMapper
 			$similar = $this->fetchAllSimilar($shift);
 			foreach ($similar as $s)
 			{
-				if ($s->getConsultant() !== null)
+				$temp = $tempMapper->findByShift($shift);
+				if (($s->getConsultant() !== null) or
+					($temp !== null))
 				{
 					$assigned = true;
 					break;

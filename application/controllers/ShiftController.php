@@ -308,6 +308,36 @@ class ShiftController extends Zend_Controller_Action
         $shiftMapper = new Application_Model_ShiftMapper();
 		$this->view->available = $shiftMapper->fetchAllUnassignedThisTerm();
     }
+	
+	public function tempAction()
+	{
+		$user = Zend_Auth::getInstance()->getIdentity();
+		
+		if ($user->isAdmin())
+		{
+			$shiftMapper = new Application_Model_ShiftMapper();
+			$tempMapper = new Application_Model_TempShiftMapper();
+			$unassignedShifts = $shiftMapper->fetchAllUnassignedThisTerm();
+			
+			foreach ($unassignedShifts as $unassigned)
+			{
+				$shifts = $shiftMapper->fetchAllSimilar($unassigned);
+				foreach ($shifts as $shift)
+				{
+					$temp = new Application_Model_TempShift();
+					$temp->setShift($shift);
+					$tempMapper->save($temp);
+				}
+			}
+			
+			$this->_messenger->addMessage("This term's unassigned shifts have been temped");
+			return $this->_helper->redirector('index', 'index');
+		}
+		else
+		{
+			$this->_messenger->addMessage('You are forbidden from performing this action');
+		}
+	}
 
     public function takeAction()
     {
