@@ -73,6 +73,7 @@
         <formFile formName="Temp"/>
         <formFile formName="EditConsultant"/>
         <formFile formName="Masquerade"/>
+        <formFile formName="ShiftBulk"/>
       </formsDirectory>
       <layoutsDirectory>
         <layoutScriptsDirectory>

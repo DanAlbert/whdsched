@@ -15,12 +15,81 @@ class ShiftController extends Zend_Controller_Action
     {
 		// action body
     }
-
-    public function createAction()
-    {
+	
+	public function createAction()
+	{
 		$user = Zend_Auth::getInstance()->getIdentity();
 		
 		$form = new Application_Form_Shift();
+		$request = $this->getRequest();
+		
+		if ($user->isAdmin())
+		{
+			// Submitted and valid data?
+			if (($request->isPost()) and ($form->isValid($request->getPost())))
+			{
+                $shiftMapper = new Application_Model_ShiftMapper();
+
+                $shift = new Application_Model_Shift();
+
+                $values = $form->getValues();
+
+				$startTime = strval($values['startTime']) . '00';
+				$endTime = strval($values['endTime']) . '00';
+                $shift->setStartTime($startTime);
+                $shift->setEndTime($endTime);
+				
+				$location = $values['location'];
+				$date = $values['date'];
+
+                // Make UNIX timestamp out of the input
+				list($m, $d, $y) = explode('/', $date);
+                $date = mktime(0, 0, 0, $m, $d, $y);
+				
+				$shift->setDate(date("Y-m-d", $date)); // Format for SQL
+
+				// Create a shift for selected location
+				$shift->setId(null); // Insert, not update
+				$shift->setLocation($location);
+				$shift->setDate(date('Y-m-d', $date));
+
+				// For testing
+				/*$this->view->error .= 'Creating shift from ' .
+				$shift->getStartTime() . ' - ' .
+				$shift->getEndTime() . ' @ ' .
+				$shift->getLocation() . ' on ' .
+				$d['weekday'] . ' ' .
+				$shift->getDate() . '<br />';*/
+
+				if ($shiftMapper->save($shift) <= 0)
+				{
+					$this->_messenger->addMessage("Could not insert shift");
+				}
+				else
+				{
+					$this->_helper->getHelper('Redirector')->gotoSimple(
+						'index', 'schedule', null, array(
+							'month' => $m,
+							'year' => $y,
+							'day' => $d));
+				}
+			}
+			else
+			{
+				$this->view->form = $form;
+			}
+		}
+		else
+		{
+			$this->_messenger->addMessage('You are forbidden from creating shifts.');
+		}
+	}
+
+    public function createBulkAction()
+    {
+		$user = Zend_Auth::getInstance()->getIdentity();
+		
+		$form = new Application_Form_ShiftBulk();
 		$request = $this->getRequest();
 		
 		if ($user->isAdmin())
@@ -34,6 +103,8 @@ class ShiftController extends Zend_Controller_Action
                 $shift = new Application_Model_Shift();
 
                 $values = $form->getValues();
+				
+				$weeks = $values['weeks'];
 
                 $shift->setStartTime(strval($values['startTime']) . '00');
                 $shift->setEndTime(strval($values['endTime']) . '00');
@@ -45,13 +116,22 @@ class ShiftController extends Zend_Controller_Action
                 list($year, $month, $day) = explode('-', $term->getStartDate());
                 $date = mktime(0, 0, 0, $month, $day, $year);
 
-                list($year, $month, $day) = explode('-', $term->getEndDate());
-                $endDate = mktime(0, 0, 0, $month, $day + 1, $year);
-
+				if ($weeks == -1)
+				{
+					list($year, $month, $day) = explode('-', $term->getEndDate());
+					$endDate = mktime(0, 0, 0, $month, $day, $year);
+				}
+				else
+				{
+					$nDays = $weeks * 7;
+					$endDate = mktime(0, 0, 0, $month, $day + $nDays, $year);
+					$endDate = strtotime('last Saturday', $endDate);
+				}
+				
 				$error = false;
 				
                 // Within the range...
-                while ($date < $endDate)
+                while ($date <= $endDate)
                 {
                     $d = getdate($date);
                     $wday = $d['wday']; // Day of week
@@ -67,13 +147,13 @@ class ShiftController extends Zend_Controller_Action
                             $shift->setId(null); // Insert each time, not update
                             $shift->setLocation($location);
 
-                            // For testing
-                            /*$this->view->error .= 'Creating shift from ' .
+                            // For debug
+                            /*$this->_messenger->addMessage('Creating shift from ' .
                                     $shift->getStartTime() . ' - ' .
                                     $shift->getEndTime() . ' @ ' .
                                     $shift->getLocation() . ' on ' .
-                                    $d['weekday'] . ' ' .
-                                    $shift->getDate() . '<br />';*/
+                                    $wday . ' ' .
+                                    $shift->getDate());*/
 
                             if ($shiftMapper->save($shift) <= 0)
                             {
@@ -105,6 +185,75 @@ class ShiftController extends Zend_Controller_Action
 			$this->_messenger->addMessage('You are forbidden from creating shifts.');
 		}
     }
+	
+	public function removeAction()
+	{
+		$user = Zend_Auth::getInstance()->getIdentity();
+		
+		$request = $this->getRequest();
+		$id = $request->getParam('id');
+		
+		if ($user->isAdmin())
+		{
+			$shiftMapper = new Application_Model_ShiftMapper();
+			$shift = $shiftMapper->find($id);
+			if ($shift !== null)
+			{
+				$this->view->shift = $shift;
+			}
+			else
+			{
+				$this->_messenger->addMessage('Shift not found.');
+				
+				$this->_helper->getHelper('Redirector')->gotoSimple(
+					'index', 'schedule');
+			}
+		}
+		else
+		{
+			$this->_messenger->addMessage('You are forbidden from removing shifts.');
+		}
+	}
+	
+	public function deleteAction()
+	{
+		$user = Zend_Auth::getInstance()->getIdentity();
+		
+		$request = $this->getRequest();
+		$id = $request->getParam('id');
+		
+		if ($user->isAdmin())
+		{
+			$shiftMapper = new Application_Model_ShiftMapper();
+			$shift = $shiftMapper->find($id);
+			if ($shift !== null)
+			{
+				$date = $shift->getDate();
+				list($year, $month, $day) = explode('-', $date);
+				if (!$shiftMapper->delete($shift))
+				{
+					$this->_messenger->addMessage('An error occurred while deleting the shift.');
+				}
+				
+				$this->_helper->getHelper('Redirector')->gotoSimple(
+					'index', 'schedule', null, array(
+						'month' => $month,
+						'year' => $year,
+						'day' => $day));
+			}
+			else
+			{
+				$this->_messenger->addMessage('Shift not found.');
+			}
+		}
+		else
+		{
+			$this->_messenger->addMessage('You are forbidden from removing shifts.');
+		}
+		
+		$this->_helper->getHelper('Redirector')->gotoSimple(
+			'index', 'schedule');
+	}
 
     public function assignAction()
     {

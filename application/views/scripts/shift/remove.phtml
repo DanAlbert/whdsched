@@ -1,0 +1,29 @@
+<div id="view-content">
+	<?php
+	
+	if (isset($this->shift))
+	{
+		$date = $this->shift->getDate();
+		list($year, $month, $day) = explode('-', $date);
+		
+		print '<p>' . $this->shift . '</p>';
+		print '<p>Are you sure you want to remove this shift?</p>';
+		$options = array();
+		$options[] = '<a href="' . $this->url(array(
+			'controller' => 'shift',
+			'action'     => 'delete',
+			'id'         => $this->shift->getId(),
+		), null, true) . '">Yes</a>';
+		$options[] = '<a href="' . $this->url(array(
+			'controller' => 'schedule',
+			'action'     => 'index',
+			'day'        => $day,
+			'month'      => $month,
+			'year'       => $year,
+		), null, true) . '">No</a>';
+		
+		print implode(' | ', $options);
+	}
+	
+	?>
+</div>

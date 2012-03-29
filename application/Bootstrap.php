@@ -21,6 +21,9 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 		$config = $this->getOptions();
 		Zend_Registry::set('config', $config);
 		
+		// Number of weeks in a normal term
+		define('WEEKS_PER_TERM', 11);
+		
 		// Preferred consultants must accept the 
 		// shift within 48 hours of the shift
 		define('TIMEOUT_DEFAULT', 48);
@@ -225,6 +228,9 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 		{
 			$this->bootstrap('db');
 			$db = $this->getResource('db');
+			$options = $this->getOptions();
+			$dbOptions = $options['resources']['db'];
+			$prefix = $dbOptions['params']['prefix'];
 			
 			$columnMap = array(
 				'log_time'   => 'timestamp',
@@ -233,7 +239,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 			);
 			
 			$log = new Zend_Log(
-					new Zend_Log_Writer_Db($db, 'logs', $columnMap));
+					new Zend_Log_Writer_Db($db, $prefix . 'logs', $columnMap));
 			
 			$log->setEventItem('type', null);
 			

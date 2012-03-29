@@ -21,7 +21,7 @@ CREATE TABLE shifts
 	id INT NOT NULL AUTO_INCREMENT,
 	start_time TIME,
 	end_time TIME,
-	location ENUM('WHD', 'Lab', 'KEC', 'Owen'),
+	location ENUM('WHD', 'Lab', 'KEC', 'Owen', 'WHD-Temp'),
 	day DATE,
 	consultant_id INT,
 	PRIMARY KEY (id),

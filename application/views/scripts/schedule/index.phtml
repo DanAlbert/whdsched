@@ -24,11 +24,12 @@
 		<thead>
 			<tr>
 				<td>Time</td>
-				<td>Wireless Help Desk</td>
-				<td>Lab Cleaning</td>
+				<td>Wireless Help Desk / Kelley 1130</td>
+				<td>Lab Cleaning / Owen 237</td>
 			</tr>
 		</thead>
 		<tbody>
+			<?php $extraShifts = array(); ?>
 			<?php foreach ($this->schedule as $time => $shifts): ?>
 			<?php
 			
@@ -64,6 +65,11 @@
 				$lab = $shifts['Owen'];
 			}
 			
+			if (isset($shifts['WHD-Temp']))
+			{
+				$extraShifts[$time] = $shifts['WHD-Temp'];
+			}
+			
 			?>
 			<tr class="<?php print $class ?>">
 				<td><?php print $time ?></td>
@@ -82,4 +88,36 @@
 			<?php endforeach ?>
 		</tbody>
 	</table>
+	<?php if (count($extraShifts) > 0): ?>
+	<table class="schedule">
+		<thead>
+			<tr>
+				<td>Time</td>
+				<td>Consultant</td>
+			</tr>
+		</thead>
+		<tbody>
+			<?php $row = 0; ?>
+			<?php foreach ($extraShifts as $time => $shift): ?>
+			<?php
+			
+			if ($row % 2)
+			{
+				$class = 'odd';
+			}
+			else
+			{
+				$class = 'even';
+			}
+			
+			?>
+			<tr class="<?php print $class; ?>">
+				<td><?php print $time; ?></td>
+				<td><?php print $this->shiftText($shift, 'sched'); ?></td>
+			</tr>
+			<?php $row++; ?>
+			<?php endforeach; ?>
+		</tbody>
+	</table>
+	<?php endif; ?>
 </div>

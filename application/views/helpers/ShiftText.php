@@ -25,7 +25,18 @@ class Zend_View_Helper_ShiftText
 	 */
 	public function shiftText($shift, $goto)
 	{
-		$text = '';
+		if ($this->view->user->isAdmin())
+		{
+			$text = '<a href="' . $this->view->url(array(
+				'controller' => 'shift',
+				'action'     => 'remove',
+				'id'         => $shift->getId(),
+			), null, true) . '">[X]</a> ';
+		}
+		else
+		{
+			$text = '';
+		}
 		
 		if ($shift instanceof Application_Model_TempShift)
 		{

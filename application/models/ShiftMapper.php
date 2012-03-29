@@ -54,10 +54,10 @@ class Application_Model_ShiftMapper
 		}
 		
 		$data = array(
-			'start_time'	=> $shift->getStartTime(),
-			'end_time'	  => $shift->getEndTime(),
-			'location'	  => $shift->getLocation(),
-			'day'		   => $shift->getDate(),
+			'start_time'    => $shift->getStartTime(),
+			'end_time'      => $shift->getEndTime(),
+			'location'      => $shift->getLocation(),
+			'day'           => $shift->getDate(),
 			'consultant_id' => $consultantId,
 		);
 		
@@ -77,7 +77,7 @@ class Application_Model_ShiftMapper
 	
 	public function delete(Application_Model_Shift $shift)
 	{
-		$this->getDbTable()->delete(array('id = ?' => $shift->getId()));
+		return ($this->getDbTable()->delete(array('id = ?' => $shift->getId())) == 1);
 	}
 	
 	public function find($id)

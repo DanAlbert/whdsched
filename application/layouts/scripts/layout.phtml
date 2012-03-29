@@ -81,7 +81,11 @@ if ((Zend_Auth::getInstance()->hasIdentity()) and
 						'<a href="' . $this->url(array(
 							'controller' => 'shift',
 							'action'     => 'create',
-						), null, true) . '">Create Shifts</a>',
+						), null, true) . '">Create Shift</a>',
+						'<a href="' . $this->url(array(
+							'controller' => 'shift',
+							'action'     => 'create-bulk',
+						), null, true) . '">Create Shifts (Bulk)</a>',
 						'<a href="' . $this->url(array(
 							'controller' => 'shift',
 							'action'     => 'assign',

@@ -1,0 +1,11 @@
+<div id="view-content">
+	<?php
+	
+	if (isset($this->form))
+	{
+		$this->form->setAction($this->url());
+		print $this->form;
+	}
+	
+	?>
+</div>
