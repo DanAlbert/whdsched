@@ -25,8 +25,15 @@ class Zend_View_Helper_ShiftText
 	 */
 	public function shiftText($shift, $goto)
 	{
+		if ($shift instanceof Application_Model_TempShift)
+		{
+			$temp = $shift;
+			$shift = $temp->getShift();
+		}
+		
 		if ($this->view->user->isAdmin())
 		{
+			
 			$text = '<a href="' . $this->view->url(array(
 				'controller' => 'shift',
 				'action'     => 'remove',
@@ -36,12 +43,6 @@ class Zend_View_Helper_ShiftText
 		else
 		{
 			$text = '';
-		}
-		
-		if ($shift instanceof Application_Model_TempShift)
-		{
-			$temp = $shift;
-			$shift = $temp->getShift();
 		}
 		
 		// Is there a temp shift?

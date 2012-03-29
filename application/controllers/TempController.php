@@ -108,6 +108,28 @@ class TempController extends Zend_Controller_Action
 					
 					if (isset($values['hours']))
 					{
+						$hours = $values['hours'];
+						
+						// Find the ranges of hours the consultant wants to keep
+						list($start, $m, $s) = explode(':', $shift->getStartTime());
+						list($end, $m, $s) = explode(':', $shift->getEndTime());
+						
+						if ($end < $start)
+						{
+							$adjEnd = $end + 24;
+							if (($adjEnd - $start) == count($hours))
+							{
+								$wholeShift = true;
+							}
+							else
+							{
+								$wholeShift = false;
+							}
+						}
+					}
+					
+					if ($wholeShift === false)
+					{
 						$log->info("{$user->getName()} temped a partial shift {$shift}");
 						
 						$hours = $values['hours'];
