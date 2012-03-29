@@ -276,14 +276,20 @@ class ShiftController extends Zend_Controller_Action
 				$start = $term->getStartDate();
 				list($y, $m, $d) = explode('-', $start);
 				$date = mktime(0, 0, 0, $m, $d, $y);
-				while (date('w', $date) != 0)
+				
+				// Was used to make sure we picked the first full week.
+				// I don't think it's necessary, the logic should just grab the
+				// first Sunday of the next week instead. It's working in tests,
+				// and this won't pick up shifts that only exist for the first
+				// week if we use this loop. - dja
+				/*while (date('w', $date) != 0)
 				{
 					$date += 60 * 60 * 24;
-				}
+				}*/
 
 				$start = date('Y-m-d', $date);
 				$end = date('Y-m-d', $date + (60 * 60 * 24 * 6));
-
+				
 				$shifts = $shiftMapper->fetchAllInRange($start, $end);
 
 				$sched = array();
@@ -311,7 +317,7 @@ class ShiftController extends Zend_Controller_Action
 						$this->_messenger->addMessage(
 								'Multiple shifts detected for single location and time');
 					}
-
+					
 					$sched[$time][$wday][$loc] = $shift;
 				}
 
