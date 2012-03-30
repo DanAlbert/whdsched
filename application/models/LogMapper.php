@@ -99,5 +99,26 @@ class Application_Model_LogMapper
 		
 		return $logs;
 	}
+	
+	public function fetchAllDesc()
+	{
+		$select = $this->getDbTable()->select();
+		$select->order('log_time DESC');
+		$resultSet = $this->getDbTable()->fetchAll($select);
+		$logs = array();
+		
+		foreach ($resultSet as $row)
+		{
+			$log = new Application_Model_Log();
+			$log->setId($row->id);
+			$log->setTime($row->log_time);
+			$log->setType($row->type);
+			$log->setMessage($row->message);
+			
+			$logs[] = $log;
+		}
+		
+		return $logs;
+	}
 }
 

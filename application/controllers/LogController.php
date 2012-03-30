@@ -15,7 +15,7 @@ class LogController extends Zend_Controller_Action
 		if ($user->isAdmin())
 		{
 			$logMapper = new Application_Model_LogMapper();
-			$this->view->logs = $logMapper->fetchAll();
+			$this->view->logs = $logMapper->fetchAllDesc();
 		}
 		else
 		{
