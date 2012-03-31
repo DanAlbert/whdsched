@@ -464,6 +464,18 @@ class ShiftController extends Zend_Controller_Action
 		$this->view->available = $shiftMapper->fetchAllUnassignedThisTerm();
     }
 	
+	public function tempConfirmAction()
+	{
+		$user = Zend_Auth::getInstance()->getIdentity();
+		
+		$request = $this->getRequest();
+		
+		if (!$user->isAdmin())
+		{
+			$this->_messenger->addMessage('You are forbidden from removing shifts.');
+		}
+	}
+	
 	public function tempAction()
 	{
 		$user = Zend_Auth::getInstance()->getIdentity();

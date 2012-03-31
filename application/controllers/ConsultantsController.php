@@ -120,6 +120,24 @@ class ConsultantsController extends Zend_Controller_Action
 			}
 		}
     }
+	
+	public function deleteConfirmAction()
+	{
+		$user = Zend_Auth::getInstance()->getIdentity();
+		
+		$request = $this->getRequest();
+		$id = $request->getParam('id');
+		
+		if ($user->isAdmin())
+		{
+			$consultantMapper = new Application_Model_ConsultantMapper();
+			$this->view->consultant = $consultantMapper->find($id);
+		}
+		else
+		{
+			$this->_messenger->addMessage('You are forbidden from removing consultants.');
+		}
+	}
 
     public function deleteAction()
     {

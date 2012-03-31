@@ -1,0 +1,25 @@
+<div id="view-content">
+	<?php
+	
+	if (isset($this->consultant))
+	{
+		$name = $this->consultant->getName();
+		print '<p>Are you sure you want to remove ' . $name . '?</p>';
+		
+		$options = array();
+		$options[] = '<a href="' . $this->url(array(
+			'controller' => 'consultants',
+			'action'     => 'delete',
+			'id'         => $this->consultant->getId(),
+		), null, true) . '">Yes</a>';
+		$options[] = '<a href="' . $this->url(array(
+			'controller' => 'consultants',
+			'action'     => 'view',
+			'id'         => $this->consultant->getId(),
+		), null, true) . '">No</a>';
+		
+		print implode(' | ', $options);
+	}
+	
+	?>
+</div>

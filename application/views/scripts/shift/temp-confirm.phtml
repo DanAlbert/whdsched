@@ -1,0 +1,18 @@
+<div id="view-content">
+	<?php
+	
+	print '<p>Are you sure you want to temp all unclaimed shifts?</p>';
+	$options = array();
+	$options[] = '<a href="' . $this->url(array(
+		'controller' => 'shift',
+		'action'     => 'temp',
+	), null, true) . '">Yes</a>';
+	$options[] = '<a href="' . $this->url(array(
+		'controller' => 'shift',
+		'action'     => 'available',
+	), null, true) . '">No</a>';
+
+	print implode(' | ', $options);
+	
+	?>
+</div>
