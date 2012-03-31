@@ -332,7 +332,8 @@ class TempController extends Zend_Controller_Action
 	}
 	
 	public function confirmTempAction()
-	{$log = Zend_Registry::get('log');
+	{
+		$log = Zend_Registry::get('log');
 		$log->setEventItem('type', 'temp.create');
 		
 		$shiftMapper = new Application_Model_ShiftMapper();
@@ -357,6 +358,32 @@ class TempController extends Zend_Controller_Action
 		}
 		
 		if ($this->view->shift->isInFuture())
+		{
+			$this->view->inFuture = true;
+		}
+		else
+		{
+			$this->view->inFuture = false;
+		}
+	}
+	
+	public function confirmTakeAction()
+	{
+		$log = Zend_Registry::get('log');
+		$log->setEventItem('type', 'temp.create');
+		
+		$tempMapper = new Application_Model_TempShiftMapper();
+		
+		$request = $this->getRequest();
+		$id = $request->getParam('id');
+		$this->view->goto = $request->getParam('goto');
+
+		$temp = $tempMapper->find($id);
+		$shift = $temp->getShift();
+		$this->view->temp = $temp;
+		$this->view->shift = $shift;
+		
+		if ($temp->getShift()->isInFuture())
 		{
 			$this->view->inFuture = true;
 		}
@@ -440,6 +467,7 @@ class TempController extends Zend_Controller_Action
 		$request = $this->getRequest();
 		$id = $request->getParam('id');
 		$temp = $tempMapper->find($id);
+		$confirm = $request->getParam('confirm');
 		
 		if ($temp !== null)
 		{
@@ -471,6 +499,14 @@ class TempController extends Zend_Controller_Action
 					}
 					else
 					{
+						if (!$temp->getShift()->isInFuture() and $confirm != true)
+						{
+							$this->_redirector->gotoSimple('confirm-take', 'temp', null, array(
+								'id'   => $id,
+								'goto' => $request->getParam('goto'),
+							));
+						}
+						
 						$log->info("{$user->getName()} is covering {$temp}");
 						
 						// Claim
