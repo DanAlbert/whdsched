@@ -60,7 +60,7 @@ CREATE TABLE logs
 (
 	id INT NOT NULL AUTO_INCREMENT,
 	log_time TIMESTAMP NOT NULL DEFAULT NOW(),
-	type ENUM('temp.create', 'temp.cancel', 'temp.take', 'debug.db', 'debug.auth') NOT NULL,
+	type ENUM('temp.create', 'temp.retemp', 'temp.late-retemp', 'temp.cancel', 'temp.take', 'debug.db', 'debug.auth') NOT NULL,
 	message TEXT NOT NULL,
 	PRIMARY KEY (id)
 ) ENGINE=InnoDB;

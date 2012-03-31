@@ -32,6 +32,10 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 		// accept the shift within 1 week of the shift
 		define('TIMEOUT_SPECIAL', 168);
 		
+		// Number of hours before a shift at which
+		// temping a shift is considered late notice
+		define('LATE_THRESHOLD', 24);
+		
 		if (isset($config['debug']))
 		{
 			if (isset($config['debug']['auth']))

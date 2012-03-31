@@ -80,6 +80,8 @@ class TempController extends Zend_Controller_Action
 			$temp = $tempMapper->find($id);
 			$shift = $temp->getShift();
 			
+			$log->setEventItem('type', 'temp.retemp');
+			
 			if (!$shift->isInFuture() and $confirm != true)
 			{
 				$this->_redirector->gotoSimple('confirm-temp', 'temp', null, array(
@@ -111,6 +113,20 @@ class TempController extends Zend_Controller_Action
 		}
 		
 		$form = new Application_Form_Temp($shift);
+		
+		$timeUntilShift = $shift->getStartTimestamp() - time();
+		$lateThresholdSecs = LATE_THRESHOLD * 60 * 60;
+		if (($timeUntilShift < $lateThresholdSecs) and $shift->isInFuture())
+		{
+			if ($isTemp)
+			{
+				$log->setEventItem('type', 'temp.late-retemp');
+			}
+			else
+			{
+				$log->setEventItem('type', 'temp.late');
+			}
+		}
 		
 		// Authorized?
 		if ($user->getId() == $shift->getConsultant()->getId())
