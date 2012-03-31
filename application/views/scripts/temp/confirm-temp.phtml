@@ -1,0 +1,55 @@
+<div id="view-content">
+	<?php
+	
+	$date = $this->shift->getDate();
+	list($year, $month, $day) = explode('-', $date);
+	
+	print '<p>' . $this->shift . '</p>';
+	
+	if (!$this->inFuture)
+	{
+		print '<p>This shift is not in the future.</p>';
+	}
+	
+	print '<p>Are you sure you want to temp this shift?</p>';
+	
+	$options = array();
+	$options[] = '<a href="' . $this->url(array(
+		'controller' => 'temp',
+		'action'     => 'create',
+		'id'         => $this->shift->getId(),
+		'temp'       => $this->isTemp,
+		'form'       => $this->showForm,
+		'confirm'    => true,
+		'goto'       => $this->goto,
+	), null, true) . '">Yes</a>';
+	
+	if ($this->goto == 'sched')
+	{
+		$options[] = '<a href="' . $this->url(array(
+			'controller' => 'schedule',
+			'action'     => 'index',
+			'day'        => $day,
+			'month'      => $month,
+			'year'       => $year,
+		), null, true) . '">No</a>';
+	}
+	else if ($this->goto == 'temps')
+	{
+		$options[] = '<a href="' . $this->url(array(
+			'controller' => 'temp',
+			'action'     => 'index',
+		), null, true) . '">No</a>';
+	}
+	else
+	{
+		$options[] = '<a href="' . $this->url(array(
+			'controller' => 'schedule',
+			'action'     => 'personal',
+		), null, true) . '">No</a>';
+	}
+	
+	print implode(' | ', $options);
+	
+	?>
+</div>

@@ -71,6 +71,7 @@ class TempController extends Zend_Controller_Action
 		$id = $request->getParam('id');
 		$showForm = $request->getParam('form');
 		$isTemp = $request->getParam('temp');
+		$confirm = $request->getParam('confirm');
 
 		// The shift passed is a temp shift
 		// Make the temp consultant the owner of the shift and delete the old temp
@@ -78,6 +79,17 @@ class TempController extends Zend_Controller_Action
 		{
 			$temp = $tempMapper->find($id);
 			$shift = $temp->getShift();
+			
+			if (!$shift->isInFuture() and $confirm != true)
+			{
+				$this->_redirector->gotoSimple('confirm-temp', 'temp', null, array(
+					'id'   => $id,
+					'temp' => $isTemp,
+					'form' => $showForm,
+					'goto' => $request->getParam('goto'),
+				));
+			}
+			
 			$shift->setConsultant($user);
 			
 			$tempMapper->delete($temp);
@@ -86,6 +98,16 @@ class TempController extends Zend_Controller_Action
 		else
 		{
 			$shift = $shiftMapper->find($id);
+			
+			if (!$shift->isInFuture() and $confirm != true)
+			{
+				$this->_redirector->gotoSimple('confirm-temp', 'temp', null, array(
+					'id'   => $id,
+					'temp' => $isTemp,
+					'form' => $showForm,
+					'goto' => $request->getParam('goto'),
+				));
+			}
 		}
 		
 		$form = new Application_Form_Temp($shift);
@@ -306,6 +328,41 @@ class TempController extends Zend_Controller_Action
 		{
 			$this->_messenger->addMessage('You are forbidden from temping this shift');
 			$this->handleRedirect($request, $shift()->getDate());
+		}
+	}
+	
+	public function confirmTempAction()
+	{$log = Zend_Registry::get('log');
+		$log->setEventItem('type', 'temp.create');
+		
+		$shiftMapper = new Application_Model_ShiftMapper();
+		$tempMapper = new Application_Model_TempShiftMapper();
+		
+		$request = $this->getRequest();
+		$id = $request->getParam('id');
+		$this->view->showForm = $request->getParam('form');
+		$this->view->isTemp = $request->getParam('temp');
+		$this->view->goto = $request->getParam('goto');
+
+		// The shift passed is a temp shift
+		// Make the temp consultant the owner of the shift and delete the old temp
+		if ($this->view->isTemp == true)
+		{
+			$this->view->temp = $tempMapper->find($id);
+			$this->view->shift = $temp->getShift();
+		}
+		else
+		{
+			$this->view->shift = $shiftMapper->find($id);
+		}
+		
+		if ($this->view->shift->isInFuture())
+		{
+			$this->view->inFuture = true;
+		}
+		else
+		{
+			$this->view->inFuture = false;
 		}
 	}
 

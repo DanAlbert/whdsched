@@ -187,5 +187,10 @@ class Application_Model_Shift
 
 		return ($eh < $sh);
 	}
+	
+	public function isInFuture()
+	{
+		return ($this->getStartTimestamp() > time());
+	}
 }
 
