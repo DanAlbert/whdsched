@@ -1,0 +1,15 @@
+<div id="view-content">
+	<a href="<?php print $this->url(array(
+			'controller' => 'meetings',
+			'action'     => 'index',
+		), null, true) ?>">Return to list</a>
+	<?php
+	
+	if (isset($this->form))
+	{
+		$this->form->setAction($this->url());
+		print $this->form;
+	}
+	
+	?>
+</div>

@@ -1,0 +1,72 @@
+<div id="view-content">
+	<?php if ($this->user->isAdmin()): ?>
+	<a href="<?php print $this->url(array(
+			'controller' => 'meetings',
+			'action'     => 'create',
+		), null, true); ?>">Create a new meeting</a><br />
+	<br />
+	<?php endif; ?>
+	<?php if (count($this->meetings)): ?>
+	<table>
+		<thead>
+			<tr>
+				<th>&nbsp</th>
+				<th>Term</th>
+				<th>Day</th>
+				<th>Time</th>
+				<th>Location</th>
+				<th>Action</th>
+				<th>Attendees</th>
+			</tr>
+		</thead>
+		<?php foreach ($this->meetings as $i => $meeting): ?>
+		<tr class="<?php print ($i % 2) ? 'odd' : 'even' ?>">
+			<td>
+				<?php if ($this->user->isAllowed('meeting', 'delete')): ?>
+				<a href="<?php print $this->url(array(
+						'controller' => 'meetings',
+						'action'     => 'delete-confirm',
+						'id'         => $meeting->getId(),
+					), null, true); ?>">X</a>
+				<?php else: ?>
+				&nbsp;
+				<?php endif; ?>
+			</td>
+			<td><?php print $meeting->getTerm()->getName() ?></td>
+			<td><?php print $meeting->getDay() ?></td>
+			<td><?php print $meeting->getTimeString() ?></td>
+			<td><?php print $meeting->getLocation() ?></td>
+			<td><?php
+			
+			if (!$this->user->isAttending($meeting))
+			{
+				print '<a href="' . $this->url(array(
+					'controller' => 'meeting-attendees',
+					'action'     => 'add',
+					'meeting'    => $meeting->getId(),
+					'consultant' => $this->user->getId(),
+				), null, true) . '">Join</a>';
+			}
+			else
+			{
+				print '<a href="' . $this->url(array(
+					'controller' => 'meeting-attendees',
+					'action'     => 'remove',
+					'meeting'    => $meeting->getId(),
+					'consultant' => $this->user->getId(),
+				), null, true) . '">Leave</a>';
+			}
+			
+			?></td>
+			<td><a href="<?php print $this->url(array(
+						'controller' => 'meetings',
+						'action'     => 'view',
+						'id'         => $meeting->getId(),
+					), null, true); ?>">View attendees</a></td>
+		</tr>
+		<?php endforeach; ?>
+	</table>
+	<?php else: ?>
+	<h2>No meetings</h2>
+	<?php endif; ?>
+</div>

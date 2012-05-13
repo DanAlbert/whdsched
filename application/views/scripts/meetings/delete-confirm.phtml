@@ -1,0 +1,28 @@
+<div id="view-content">
+	<?php
+	
+	if (isset($this->meeting))
+	{
+		$time = date("H:i", strtotime($this->meeting->getStartTime()));
+		$day = $this->meeting->getDay();
+		$term = $this->meeting->getTerm()->getName();
+		
+		print	"<p>Are you sure you want to remove the {$time} meeting on " .
+				"{$day}s for {$term}?</p>";
+		
+		$options = array();
+		$options[] = '<a href="' . $this->url(array(
+			'controller' => 'meetings',
+			'action'     => 'delete',
+			'id'         => $this->meeting->getId(),
+		), null, true) . '">Yes</a>';
+		$options[] = '<a href="' . $this->url(array(
+			'controller' => 'meetings',
+			'action'     => 'index',
+		), null, true) . '">No</a>';
+		
+		print implode(' | ', $options);
+	}
+	
+	?>
+</div>

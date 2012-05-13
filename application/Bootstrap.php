@@ -226,6 +226,20 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 		return $adapter;
 	}
 	
+	protected function _initAcl()
+	{
+		$acl = new Zend_Acl();
+		
+		$acl->addRole(new Zend_Acl_Role('consultant'));
+		$acl->addRole(new Zend_Acl_Role('admin'));
+		
+		$acl->addResource('meeting');
+		
+		$acl->allow('admin');
+		
+		Zend_Registry::set('acl', $acl);
+	}
+	
 	protected function _initLog()
 	{
 		if (!Zend_Registry::isRegistered('log'))

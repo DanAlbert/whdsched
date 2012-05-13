@@ -64,3 +64,36 @@ CREATE TABLE logs
 	message TEXT NOT NULL,
 	PRIMARY KEY (id)
 ) ENGINE=InnoDB;
+
+CREATE TABLE meetings
+(
+	id INT NOT NULL AUTO_INCREMENT,
+	day ENUM('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday') NOT NULL,
+	start_time TIME NOT NULL,
+	end_time TIME NOT NULL,
+	location VARCHAR (255),
+	term_id INT NOT NULL,
+	PRIMARY KEY (id),
+	UNIQUE (term_id, day, start_time),
+	FOREIGN KEY (term_id) REFERENCES terms (id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+CREATE TABLE cancelled_meetings
+(
+	id INT NOT NULL AUTO_INCREMENT,
+	meeting_id INT NOT NULL,
+	day DATE NOT NULL,
+	PRIMARY KEY (id),
+	UNIQUE (meeting_id, day),
+	FOREIGN KEY (meeting_id) REFERENCES meetings (id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+CREATE TABLE meeting_attendees
+(
+	id INT NOT NULL AUTO_INCREMENT,
+	consultant_id INT NOT NULL,
+	meeting_id INT NOT NULL,
+	PRIMARY KEY (id),
+	FOREIGN KEY (consultant_id) REFERENCES consultants (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY (meeting_id) REFERENCES meetings (id) ON DELETE CASCADE ON UPDATE CASCADE
+) Engine=InnoDB;

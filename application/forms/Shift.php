@@ -33,7 +33,7 @@ class Application_Form_Shift extends Zend_Form
 		));
 		
 		$this->addElement('text', 'date', array(
-			'label'	  => 'Date (MM/DD/YYYY',
+			'label'	  => 'Date (MM/DD/YYYY)',
 			'required'   => true,
 			'validators' => array(
 				array(

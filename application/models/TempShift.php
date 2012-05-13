@@ -29,6 +29,9 @@ class Application_Model_TempShift
 	
 	public function setData(array $data)
 	{
+		$consultantMapper = new Application_Model_ConsultantMapper();
+		$shiftMapper = new Application_Model_ShiftMapper();
+		
 		foreach ($data as $key => $value)
 		{
 			switch ($key)
@@ -37,10 +40,10 @@ class Application_Model_TempShift
 				$this->setId($value);
 				break;
 			case 'shift':
-				$this->setShiftId($value);
+				$this->setShiftId($shiftMapper->find($value));
 				break;
 			case 'temp_consultant':
-				$this->setTempConsultantId($value);
+				$this->setTempConsultantId($consultantMapper->find($value));
 				break;
 			case 'post_time':
 				$this->setPostTime($value);
@@ -49,7 +52,7 @@ class Application_Model_TempShift
 				$this->setResponseTime($value);
 				break;
 			case 'assigned_to':
-				$this->setAssignedConsultant($value);
+				$this->setAssignedConsultant($consultantMapper->find($value));
 				break;
 			case 'timout':
 				$this->setTimeout($value);
@@ -76,7 +79,7 @@ class Application_Model_TempShift
 		return $this->_shift;
 	}
 	
-	public function setShift($shift)
+	public function setShift(Application_Model_Shift $shift)
 	{
 		$this->_shift = $shift;
 	}

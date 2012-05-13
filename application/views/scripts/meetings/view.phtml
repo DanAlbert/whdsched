@@ -1,0 +1,75 @@
+<div id="view-content">
+	<a href="<?php print $this->url(array(
+			'controller' => 'meetings',
+			'action'     => 'term',
+		), null, true) ?>">Return to list</a><br />
+	<br />
+	<?php
+	$actions = array();
+	
+	if ($this->user->isAllowed('meeting', 'edit'))
+	{
+		$actions[] = '<a href="' . $this->url(array(
+			'controller' => 'meetings',
+			'action'     => 'edit',
+			'id'         => $this->meeting->getId(),
+		), null, true) . '">Edit</a>';
+	}
+	
+	if ($this->user->isAllowed('meeting', 'delete'))
+	{
+		$actions[] = '<a href="' . $this->url(array(
+			'controller' => 'meetings',
+			'action'     => 'delete-confirm',
+			'id'         => $this->meeting->getId(),
+		), null, true) . '">Delete</a>';
+	}
+	
+	print implode(' | ', $actions);
+	?>
+	<br />
+	<?php print "{$this->meeting->getTerm()->getName()}" ?><br />
+	<?php print "{$this->meeting->getDay()} " .
+			"{$this->meeting->getTimeString()}" ?>
+	<?php print "{$this->meeting->getLocation()}" ?><br />
+	<table class="roster">
+		<thead>
+			<tr>
+				<td>Name</td>
+				<td>Email</td>
+				<td>Phone</td>
+			</tr>
+		</thead>
+		<tbody>
+			<?php $i = 0 ?>
+			<?php foreach ($this->attendees as $consultant): ?>
+			<?php
+			
+			if ($i++ % 2)
+			{
+				$class = "odd";
+			}
+			else
+			{
+				$class = "even";
+			}
+			
+			?>
+			<tr class="<?php print $class ?>">
+				<td><a href="<?php print $this->url(array(
+					'controller' => 'consultants',
+					'action'     => 'view',
+					'id'         => $consultant->getId()
+					), null, true) ?>"><?php print $consultant->getName() ?></a>
+					<?php if ($consultant->isHidden()): ?>
+					(inactive)
+					<?php endif; ?>
+				</td>
+				<td><a href="mailto:<?php print $consultant->getEmail() ?>">
+						<?php print $consultant->getEmail() ?></a></td>
+				<td><?php print $consultant->getPhoneFormatted() ?></td>
+			</tr>
+			<?php endforeach ?>
+		</tbody>
+	</table>
+</div>

@@ -236,5 +236,17 @@ class Application_Model_Consultant
 	{
 		$this->_hidden = $hidden;
 	}
+	
+	public function isAllowed($resource, $priviledge)
+	{
+		$acl = Zend_Registry::get('acl');
+		$role = $this->isAdmin() ? 'admin' : 'consultant';
+		return $acl->isAllowed($role, $resource, $priviledge);
+	}
+	
+	public function isAttending(Application_Model_Meeting $meeting)
+	{
+		return in_array($this, $meeting->getAttendees());
+	}
 }
 

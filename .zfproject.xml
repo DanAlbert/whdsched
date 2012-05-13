@@ -64,6 +64,15 @@
         <controllerFile controllerName="Log">
           <actionMethod actionName="index"/>
         </controllerFile>
+        <controllerFile controllerName="Meetings">
+          <actionMethod actionName="index"/>
+        </controllerFile>
+        <controllerFile controllerName="MeetingAttendees">
+          <actionMethod actionName="index"/>
+        </controllerFile>
+        <controllerFile controllerName="CancelledMeetings">
+          <actionMethod actionName="index"/>
+        </controllerFile>
       </controllersDirectory>
       <formsDirectory enabled="false">
         <formFile formName="Consultant"/>
@@ -74,6 +83,7 @@
         <formFile formName="EditConsultant"/>
         <formFile formName="Masquerade"/>
         <formFile formName="ShiftBulk"/>
+        <formFile formName="Meeting"/>
       </formsDirectory>
       <layoutsDirectory>
         <layoutScriptsDirectory>
@@ -87,6 +97,9 @@
           <dbTableFile dbTableName="TempShifts"/>
           <dbTableFile dbTableName="Terms"/>
           <dbTableFile dbTableName="Logs"/>
+          <dbTableFile dbTableName="Meetings"/>
+          <dbTableFile dbTableName="CancelledMeetings"/>
+          <dbTableFile dbTableName="MeetingAttendees"/>
         </dbTableDirectory>
         <modelFile modelName="ConsultantMapper"/>
         <modelFile modelName="Consultant"/>
@@ -96,6 +109,12 @@
         <modelFile modelName="TempShift"/>
         <modelFile modelName="TermMapper"/>
         <modelFile modelName="Term"/>
+        <modelFile modelName="MeetingMapper"/>
+        <modelFile modelName="CancelledMeetingMapper"/>
+        <modelFile modelName="MeetingAttendeesMapper"/>
+        <modelFile modelName="CancelledMeeting"/>
+        <modelFile modelName="MeetingAttendee"/>
+        <modelFile modelName="Meeting"/>
       </modelsDirectory>
       <modulesDirectory enabled="false"/>
       <viewsDirectory>
@@ -175,6 +194,15 @@
           <viewControllerScriptsDirectory forControllerName="Log">
             <viewScriptFile forActionName="index"/>
           </viewControllerScriptsDirectory>
+          <viewControllerScriptsDirectory forControllerName="Meetings">
+            <viewScriptFile forActionName="index"/>
+          </viewControllerScriptsDirectory>
+          <viewControllerScriptsDirectory forControllerName="MeetingAttendees">
+            <viewScriptFile forActionName="index"/>
+          </viewControllerScriptsDirectory>
+          <viewControllerScriptsDirectory forControllerName="CancelledMeetings">
+            <viewScriptFile forActionName="index"/>
+          </viewControllerScriptsDirectory>
         </viewScriptsDirectory>
         <viewHelpersDirectory/>
         <viewFiltersDirectory enabled="false"/>
@@ -239,6 +267,15 @@
             <testApplicationActionMethod forActionName="take"/>
           </testApplicationControllerFile>
           <testApplicationControllerFile forControllerName="Log">
+            <testApplicationActionMethod forActionName="index"/>
+          </testApplicationControllerFile>
+          <testApplicationControllerFile forControllerName="Meeting">
+            <testApplicationActionMethod forActionName="index"/>
+          </testApplicationControllerFile>
+          <testApplicationControllerFile forControllerName="MeetingAttendee">
+            <testApplicationActionMethod forActionName="index"/>
+          </testApplicationControllerFile>
+          <testApplicationControllerFile forControllerName="CancelledMeeting">
             <testApplicationActionMethod forActionName="index"/>
           </testApplicationControllerFile>
         </testApplicationControllerDirectory>
