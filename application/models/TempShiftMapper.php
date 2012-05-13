@@ -171,6 +171,11 @@ class Application_Model_TempShiftMapper
 			if ($row->temp_consultant_id === null)
 			{
 				$shift = $this->shiftMapper->find($row->shift_id);
+				if ($shift === null)
+				{
+					throw new Exception("Temp shift matches no shift: {$row->id}");
+				}
+				
 				list($y, $mo, $d) = explode('-', $shift->getDate());
 				list($h, $mi, $s) = explode(':', $shift->getStartTime());
 				if (mktime($h, $mi, $s, $mo, $d, $y) > time())

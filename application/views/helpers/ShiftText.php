@@ -114,13 +114,27 @@ class Zend_View_Helper_ShiftText
 				}
 				else
 				{
-					// Allow someone to claim the shift
-					$text .= '<a href="' . $this->view->url(array(
-							'controller' => 'temp',
-							'action'     => 'take',
-							'id'         => $temp->getId(),
-							'goto'       => $goto,
-					), null, true) . '">Take this shift</a>';
+					if ($shift->getConsultant() === null)
+					{
+						// Allow someone to claim the shift
+						$text .= '<a href="' . $this->view->url(array(
+								'controller' => 'temp',
+								'action'     => 'take',
+								'id'         => $temp->getId(),
+								'goto'       => $goto,
+						), null, true) . '">Take this shift</a>';
+					}
+					else
+					{
+						// Allow someone to claim the shift
+						$name = $shift->getConsultant()->getName();
+						$text .= '<a href="' . $this->view->url(array(
+								'controller' => 'temp',
+								'action'     => 'take',
+								'id'         => $temp->getId(),
+								'goto'       => $goto,
+						), null, true) . '">Take ' . $name . "'s shift</a>";
+					}
 				}
 			}
 		}

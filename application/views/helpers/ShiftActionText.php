@@ -83,7 +83,8 @@ class Zend_View_Helper_ShiftActionText
 			}
 			else
 			{
-				if ($shift->getConsultant()->getId() == $this->view->user->getId())
+				if (($shift->getConsultant() !== null) and
+					($shift->getConsultant()->getId() == $this->view->user->getId()))
 				{
 					$text .= '<a href="' . $this->view->url(array(
 							'controller' => 'temp',
@@ -94,13 +95,27 @@ class Zend_View_Helper_ShiftActionText
 				}
 				else
 				{
-					// Allow someone to claim the shift
-					$text .= '<a href="' . $this->view->url(array(
-							'controller' => 'temp',
-							'action'     => 'take',
-							'id'         => $temp->getId(),
-							'goto'       => $goto,
-					), null, true) . '">Take</a>';
+					if ($shift->getConsultant() === null)
+					{
+						// Allow someone to claim the shift
+						$text .= '<a href="' . $this->view->url(array(
+								'controller' => 'temp',
+								'action'     => 'take',
+								'id'         => $temp->getId(),
+								'goto'       => $goto,
+						), null, true) . '">Take</a>';
+					}
+					else
+					{
+						// Allow someone to claim the shift
+						$name = $shift->getConsultant()->getName();
+						$text .= '<a href="' . $this->view->url(array(
+								'controller' => 'temp',
+								'action'     => 'take',
+								'id'         => $temp->getId(),
+								'goto'       => $goto,
+						), null, true) . '">Take ' . $name . "'s shift</a>";
+					}
 				}
 			}
 		}
