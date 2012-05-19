@@ -102,5 +102,15 @@ class Application_Model_Term
 	{
 		$this->_endDate = $endDate;
 	}
+	
+	public function getStartTimestamp()
+	{
+		return strtotime($this->getStartDate());
+	}
+	
+	public function getEndTimestamp()
+	{
+		return strtotime($this->getEndDate());
+	}
 }
 

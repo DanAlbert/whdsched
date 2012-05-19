@@ -224,6 +224,13 @@ table.available-shifts tr td.action a
 	font-weight: bold;
 }
 
+table.available-shifts tr td.action em
+{
+	color: #837584;
+	font-weight: bold;
+	font-style: italic;
+}	
+
 table.available-shifts tr td a:hover
 {
 	text-decoration: none;

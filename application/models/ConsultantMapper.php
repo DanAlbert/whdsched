@@ -239,6 +239,7 @@ class Application_Model_ConsultantMapper
 	{
 		$shiftMapper = new Application_Model_ShiftMapper();
 		$tempMapper = new Application_Model_TempShiftMapper();
+		$meetingMapper = new Application_Model_MeetingMapper();
 		
 		$shifts = $shiftMapper->fetchAllForConsultantInRange($consultant, $start, $end);
 		

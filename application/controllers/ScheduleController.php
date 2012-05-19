@@ -46,8 +46,11 @@ class ScheduleController extends Zend_Controller_Action
 	public function personalAction()
 	{
 		$user = Zend_Auth::getInstance()->getIdentity();
+		
 		$shiftMapper = new Application_Model_ShiftMapper();
 		$tempShiftMapper = new Application_Model_TempShiftMapper();
+		
+		$meetingMapper = new Application_Model_MeetingMapper();
 		
 		$days = array();
 		
@@ -69,6 +72,21 @@ class ScheduleController extends Zend_Controller_Action
 			else
 			{
 				$days[$date][] = $shift;
+			}
+		}
+		
+		$meetings = $meetingMapper->fetchAllThisTerm();
+		foreach ($meetings as $meeting)
+		{
+			if ($user->isAttending($meeting))
+			{
+				$date = $meeting->getNextOccurence('Y-m-d');
+				if (!array_key_exists($date, $days))
+				{
+					$days[$date] = array();
+				}
+				
+				$days[$date][] = $meeting;
 			}
 		}
 		

@@ -151,6 +151,10 @@ class Application_Model_Meeting
 		$this->location = $location;
 	}
 	
+	/**
+	 *
+	 * @return Application_Model_Term
+	 */
 	public function getTerm()
 	{
 		return $this->term;
@@ -206,6 +210,46 @@ class Application_Model_Meeting
 		{
 			throw new Whdsched_Exception(
 					'Consultant not found in attendee list');
+		}
+	}
+	
+	public function getNextOccurence($format = 'Y-m-d')
+	{
+		$timestamp = $this->getNextTimestamp();
+		if ($timestamp === null)
+		{
+			return $timestamp;
+		}
+		
+		return date($format, $timestamp);
+	}
+	
+	public function getNextTimestamp()
+	{
+		if (date('j') == $this->getDay())
+		{
+			$day = strtotime('00:00:00 today');
+		}
+		else
+		{
+			$day = strtotime("00:00:00 {$this->getDay()}");
+		}
+		
+		$timestamp = strtotime($this->startTime, $day);
+		
+		$start = $this->getTerm()->getStartTimestamp();
+		$end = $this->getTerm()->getEndTimestamp();
+		
+		if (($timestamp < $end) and ($timestamp > $start))
+		{
+			return $timestamp;
+		}
+		else
+		{
+			// TODO: Will return null before the term too
+			// Can be misleading, as next timestamp will return null
+			// if the term has not started yet
+			return null;
 		}
 	}
 }

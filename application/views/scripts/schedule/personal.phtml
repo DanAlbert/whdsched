@@ -1,7 +1,6 @@
 <div id="view-content">
 	<?php
 	$date = date('Y-m-d');
-	$time = time();
 	?>
 	<?php if (count($this->days) > 0): ?>
 	<table class="available-shifts">
@@ -19,18 +18,12 @@
 			
 			$classes = array();
 			
-			if ($shift instanceof Application_Model_TempShift)
-			{
-				$temp = $shift;
-				$shift = $temp->getShift();
-			}
-			
 			if (!isset($row))
 			{
 				$row = 0;
 			}
 			
-			if ($row % 2)
+			if ($row++ % 2)
 			{
 				$classes[] = 'odd';
 			}
@@ -39,17 +32,34 @@
 				$classes[] = 'even';
 			}
 			
+			if ($shift instanceof Application_Model_Meeting)
+			{
+				?>
+				<tr class="<?php print $class ?>">
+				<td class="spacer">&nbsp;</td>
+				<td class="time"><?php print $shift->getTimeString() ?></td>
+				<td class="location"><?php print $shift->getLocation() ?></td>
+				<td class="message"><?php $this->timeUntil($shift) ?></td>
+				<td class="action"><em>Meeting</em></td>
+				</tr>
+				<?php
+				
+				continue;
+			}
+			
+			$event = $shift;
+			if ($shift instanceof Application_Model_TempShift)
+			{
+				$temp = $shift;
+				$shift = $temp->getShift();
+			}
+			
 			// If the user is not responsible for the shift
 			if ((isset($temp)) and // There is a temp
 				($temp->getTempConsultant() !== null) and // The shift has been taken
 				($temp->getTempConsultant()->getId() != $this->user->getId())) // Not by you
 			{
-				$working = false;
 				$classes[] = 'faded';
-			}
-			else
-			{
-				$working = true;
 			}
 			
 			$class = implode(' ', $classes);
@@ -59,48 +69,14 @@
 			<td class="spacer">&nbsp;</td>
 			<td class="time"><?php print $shift->getTimeString() ?></td>
 			<td class="location"><?php print $shift->getLocation() ?></td>
-			<td class="message"><?php
-			
-			$timeUntil = $shift->getStartTimestamp() - $time;
-			
-			// If the user is not responsible for the shift
-			if ($working === false)
-			{
-				print $temp->getTempConsultant()->getName() . ' is covering this shift';
-			}
-			else
-			{
-				if ($timeUntil <= 0)
-				{
-					print '<strong>Right now</strong>';
-				}
-				else
-				{
-					// Less than 90 minutes until this shift
-					if ($timeUntil < 60 * 90)
-					{
-						print '<em>In ' . floor($timeUntil / 60) . ' minutes</em>';
-					}
-					// Less than 24 hours until this shift?
-					else if ($timeUntil < (60 * 60 * 24))
-					{
-						print '<em>In ' . floor($timeUntil / 60 / 60) . ' hours</em>';
-					}
-					else
-					{
-						print '&nbsp;';
-					}
-				}
-			}
-			
-			?></td>
+			<td class="message"><?php print $this->timeUntil($event) ?></td>
 			<?php if (isset($temp)): ?>
 			<td class="action"><?php print $this->shiftActionText($temp, 'personal') ?></td>
 			<?php else: ?>			
 			<td class="action"><?php print $this->shiftActionText($shift, 'personal') ?></td>
 			<?php endif; ?>
 			</tr>
-			<?php unset($temp); $row++; endforeach; ?>
+			<?php unset($temp); endforeach; ?>
 			<?php endforeach; ?>
 		</tbody>
 	</table>

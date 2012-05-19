@@ -155,6 +155,13 @@ class Application_Model_MeetingMapper
 		return $meetings;
 	}
 	
+	public function fetchAllThisTerm()
+	{
+		$termMapper = new Application_Model_TermMapper();
+		
+		return $this->fetchAllByTerm($termMapper->getCurrentTerm());
+	}
+	
 	public function fetchAllByTerm(Application_Model_Term $term)
 	{
 		$termMapper = new Application_Model_TermMapper();
@@ -175,7 +182,7 @@ class Application_Model_MeetingMapper
 			$meeting->setStartTime($row->start_time);
 			$meeting->setEndTime($row->end_time);
 			$meeting->setLocation($row->location);
-			$meeting->setTerm($termMapper->find($row->term_id));
+			$meeting->setTerm($term);
 			
 			$meetings[] = $meeting;
 		}
