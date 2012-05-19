@@ -31,17 +31,14 @@ class MeetingAttendeesController extends Zend_Controller_Action
 		
 		if ($this->user->getId() == $consultantId)
 		{
-			$attendeeMapper = new Application_Model_MeetingAttendeesMapper();
-			
 			try
 			{
 				$consultant = $consultantMapper->find($consultantId);
 				$meeting = $meetingMapper->find($meetingId);
 				
-				$attendee = new Application_Model_MeetingAttendee();
-				$attendee->setConsultant($consultant);
-				$attendee->setMeeting($meeting);
-				$attendeeMapper->save($attendee);
+				$meeting->addAttendee($consultant);
+				
+				$meetingMapper->save($meeting);
 			}
 			catch (Exception $e)
 			{
@@ -69,15 +66,14 @@ class MeetingAttendeesController extends Zend_Controller_Action
 		
 		if ($this->user->getId() == $consultantId)
 		{
-			$attendeeMapper = new Application_Model_MeetingAttendeesMapper();
-			
 			try
 			{
 				$consultant = $consultantMapper->find($consultantId);
 				$meeting = $meetingMapper->find($meetingId);
 				
-				$attendee = $attendeeMapper->findWhere($meeting, $consultant);
-				$attendeeMapper->delete($attendee);
+				$meeting->removeAttendee($consultant);
+				
+				$meetingMapper->save($meeting);
 			}
 			catch (Exception $e)
 			{

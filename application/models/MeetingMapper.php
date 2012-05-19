@@ -2,7 +2,8 @@
 
 class Application_Model_MeetingMapper
 {
-	protected $_dbTable;
+	protected $db;
+	protected $dbTable;
 	
 	public function setDbTable($dbTable)
 	{
@@ -19,42 +20,87 @@ class Application_Model_MeetingMapper
 			throw new Exception('Invalid table data gateway provided');
 		}
 		
-		$this->_dbTable = $dbTable;
+		$this->dbTable = $dbTable;
+		$this->db = $this->dbTable->getDefaultAdapter();
 		
 		return $this;
 	}
 	
 	public function getDbTable()
 	{
-		if ($this->_dbTable === null)
+		if ($this->dbTable === null)
 		{
 			$this->setDbTable('Application_Model_DbTable_Meetings');
 		}
 		
-		return $this->_dbTable;
+		return $this->dbTable;
 	}
 	
 	public function save(Application_Model_Meeting $meeting)
 	{
-		$data = array(
-			'id'         => $meeting->getId(),
-			'day'        => $meeting->getDay(),
-			'start_time' => $meeting->getStartTime(),
-			'end_time'   => $meeting->getEndTime(),
-			'location'   => $meeting->getLocation(),
-			'term_id'    => $meeting->getTerm()->getId(),
-		);
+		$attendeesMapper = new Application_Model_MeetingAttendeesMapper();
 		
-		$id = $meeting->getId();
-		if ($id == null)
+		try
 		{
-			unset($data['id']);
-			$meeting->setId($this->getDbTable()->insert($data));
-			return $meeting->getId();
+			$this->db->beginTransaction();
+			
+			foreach ($meeting->getRemovedAttendees() as $removed)
+			{
+				$attendeesMapper->deleteWhere($meeting, $removed);
+			}
+			
+			// Save all attendees
+			foreach ($meeting->getAttendees() as $consultant)
+			{
+				$attendee = new Application_Model_MeetingAttendee();
+				
+				$attendee->setConsultant($consultant);
+				$attendee->setMeeting($meeting);
+				
+				try
+				{
+					$attendeesMapper->save($attendee);
+				}
+				catch (Zend_Db_Statement_Exception $e)
+				{
+					if ($e->getCode() == 23000)
+					{
+						// Duplicate, ignore error
+					}
+					else
+					{
+						throw $e;
+					}
+				}
+			}
+			
+			$data = array(
+				'id'         => $meeting->getId(),
+				'day'        => $meeting->getDay(),
+				'start_time' => $meeting->getStartTime(),
+				'end_time'   => $meeting->getEndTime(),
+				'location'   => $meeting->getLocation(),
+				'term_id'    => $meeting->getTerm()->getId(),
+			);
+
+			$id = $meeting->getId();
+			if ($id == null)
+			{
+				unset($data['id']);
+				$meeting->setId($this->getDbTable()->insert($data));
+				$id = $meeting->getId();
+			}
+			else
+			{
+				$this->getDbTable()->update($data, array('id = ?' => $id));
+			}
+			
+			$this->db->commit();
 		}
-		else
+		catch (Exception $e)
 		{
-			return $this->getDbTable()->update($data, array('id = ?' => $id));
+			$this->db->rollback();
+			throw $e;
 		}
 	}
 	

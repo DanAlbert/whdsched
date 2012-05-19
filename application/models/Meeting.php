@@ -23,10 +23,14 @@ class Application_Model_Meeting
 	private $attendees;
 	private $attendeesFetched;
 	
+	private $removed;
+	
 	public function __construct(array $data = null)
 	{
 		$this->attendees = array();
 		$this->attendeesFetched = false;
+		
+		$this->removed = array();
 		
 		if (is_array($data))
 		{
@@ -163,8 +167,45 @@ class Application_Model_Meeting
 		if (!$this->attendeesFetched)
 		{
 			$this->attendees = $attendeeMapper->fetchConsultantsByMeeting($this);
+			$this->attendeesFetched = true;
 		}
 		
 		return $this->attendees;
+	}
+	
+	public function getRemovedAttendees()
+	{
+		return $this->removed;
+	}
+	
+	public function addAttendee(Application_Model_Consultant $consultant)
+	{
+		if (!in_array($conulstant, $this->getAttendees()))
+		{
+			$this->attendees[] = $consultant;
+		}
+		
+		// If the attendee was previously removed, ensure that they are
+		// no longer in the list of attendees to remove.
+		$i = array_search($consultant, $this->removed, true);
+		if ($i !== false)
+		{
+			unset($this->removed[$i]);
+		}
+	}
+	
+	public function removeAttendee(Application_Model_Consultant $consultant)
+	{
+		$i = array_search($consultant, $this->getAttendees());
+		if ($i !== false)
+		{
+			$this->removed[] = $this->attendees[$i];
+			unset($this->attendees[$i]);
+		}
+		else
+		{
+			throw new Whdsched_Exception(
+					'Consultant not found in attendee list');
+		}
 	}
 }

@@ -94,6 +94,7 @@ CREATE TABLE meeting_attendees
 	consultant_id INT NOT NULL,
 	meeting_id INT NOT NULL,
 	PRIMARY KEY (id),
+	UNIQUE (consultant_id, meeting_id),
 	FOREIGN KEY (consultant_id) REFERENCES consultants (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	FOREIGN KEY (meeting_id) REFERENCES meetings (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) Engine=InnoDB;

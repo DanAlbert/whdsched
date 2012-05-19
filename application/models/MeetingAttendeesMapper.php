@@ -62,6 +62,15 @@ class Application_Model_MeetingAttendeesMapper
 		$this->getDbTable()->delete(array('id = ?' => $attendee->getId()));
 	}
 	
+	public function deleteWhere(Application_Model_Meeting $meeting,
+			Application_Model_Consultant $consultant)
+	{
+		$this->getDbTable()->delete(array(
+			'consultant_id = ?' => $consultant->getId(),
+			'meeting_id = ?'    => $meeting->getId()
+		));
+	}
+	
 	public function find($id)
 	{
 		$consultantMapper = new Application_Model_ConsultantMapper();
