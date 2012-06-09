@@ -47,8 +47,8 @@ CREATE TABLE temp_shifts
 
 CREATE TABLE terms
 (
-	id INT NOT NULL,
-	term ENUM('Summer', 'Fall', 'Winter', 'Spring') NOT NULL,
+	id INT NOT NULL AUTO_INCREMENT,
+	term ENUM('Summer', 'Fall', 'Winter Break', 'Winter', 'Spring Break', 'Spring') NOT NULL,
 	year INT NOT NULL,
 	start_date DATE NOT NULL,
 	end_date DATE NOT NULL,

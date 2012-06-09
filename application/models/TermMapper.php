@@ -46,7 +46,7 @@ class Application_Model_TermMapper
 		$id = $term->getId();
 		if ($id == null)
 		{
-			$data['id'] = $this->makeTermId($term);
+			unset($data['id']);
 			$term->setId($this->getDbTable()->insert($data));
 			return $term->getId();
 		}
@@ -225,31 +225,6 @@ class Application_Model_TermMapper
 		{
 			return $next;
 		}
-	}
-	
-	public function makeTermId(Application_Model_Term $term)
-	{
-		switch ($term->getTerm())
-		{
-		case 'Summer':
-			$t = '00';
-			$y = '' . ($term->getYear() + 1);
-			break;
-		case 'Fall':
-			$t = '01';
-			$y = '' . ($term->getYear() + 1);
-			break;
-		case 'Winter':
-			$t = '00';
-			$y = '' . $term->getYear();
-			break;
-		case 'Spring':
-			$t = '00';
-			$y = '' . $term->getYear();
-			break;
-		}
-		
-		return $t . $y;
 	}
 }
 
