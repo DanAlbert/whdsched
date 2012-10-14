@@ -83,10 +83,7 @@ class Application_Model_LogMapper
 	
 	public function fetchAll()
 	{
-		$select = $this->getDbTable()->select()
-				       ->order(array('log_time DESC'));
-		$resultSet = $this->getDbTable()->fetchAll($select);
-
+		$resultSet = $this->getDbTable()->fetchAll();
 		$logs = array();
 		
 		foreach ($resultSet as $row)
