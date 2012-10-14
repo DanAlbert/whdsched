@@ -124,6 +124,11 @@ table.calendar tbody td a:hover
 	background-color: #c0c0ff;
 }
 
+td.page-nav
+{
+	text-align: center;
+}
+
 table.roster
 {
 	width: 100%;

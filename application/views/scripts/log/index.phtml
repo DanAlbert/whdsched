@@ -3,49 +3,119 @@
 	<table class="logs">
 		<thead>
 			<tr>
+				<td class="page-nav" colspan="3" >
+				<?php
+				
+				$page = $this->page;
+				$totalPages = $this->totalPages;
+
+				$nav = array();
+
+				if ($page != 1)
+				{
+					$nav[] = '<a href="' . $this->url(array(
+						'controller' => 'log',
+						'action'     => 'index',
+						'page'       => 1,
+					)) . '">&lt;&lt;</a>';
+				}
+				else
+				{
+					$nav[] = '&lt;&lt;';
+				}
+
+				if ($page - 1 >= 1)
+				{
+					$nav[] = '<a href="' . $this->url(array(
+						'controller' => 'log',
+						'action'     => 'index',
+						'page'       => $page - 1,
+					)) . '">&lt;</a>';
+				}
+				else
+				{
+					$nav[] = '&lt;';
+				}
+
+				$nav[] = "Page {$page}";
+
+				if ($page + 1 <= $totalPages)
+				{
+					$nav[] = '<a href="' . $this->url(array(
+						'controller' => 'log',
+						'action'     => 'index',
+						'page'       => $page + 1,
+					)) . '">&gt;</a>';
+				}
+				else
+				{
+					$nav[] = '&gt;';
+				}
+
+				if ($page != $totalPages)
+				{
+					$nav[] = '<a href="' . $this->url(array(
+						'controller' => 'log',
+						'action'     => 'index',
+						'page'       => $totalPages,
+					)) . '">&gt;&gt;</a>';
+				}
+				else
+				{
+					$nav[] = '&gt;&gt;';
+				}
+
+				print implode(' ', $nav);
+				
+				?>
+				</td>
+			</tr>
+			<tr>
 				<td>Time Stamp</td>
 				<td>Type</td>
 				<td>Message</td>
 			</tr>
 		</thead>
-	<?php foreach ($this->logs as $log): ?>
-		<?php
-		
-		if (!isset($row))
-		{
-			$row = 0;
-		}
+		<tbody>
+		<?php foreach ($this->logs as $log): ?>
+			<?php
 
-		if ($row % 2)
-		{
-			$class = 'odd';
-		}
-		else
-		{
-			$class = 'even';
-		}
-		
-		?>
-		<tr class="<?php print $class ?>">
-			<td><a href="<?php
-			
-			list($y, $m, $d) = explode('-', $log->getDate());
-			print $this->url(array(
-				'controller' => 'schedule',
-				'action'     => 'index',
-				'year'       => $y,
-				'month'      => $m,
-				'day'        => $d,
-			), null, true);
-			
-			?>"><?php print $log->getTimeFormatted() ?></a>
-			
-			</td>
-			<td><?php print $log->getType() ?></td>
-			<td><?php print $log->getMessage() ?></td>
-		</tr>
-		<?php $row++ ?>
-	<?php endforeach; ?>
+			if (!isset($row))
+			{
+				$row = 0;
+			}
+
+			if ($row % 2)
+			{
+				$class = 'odd';
+			}
+			else
+			{
+				$class = 'even';
+			}
+
+			?>
+			<tr class="<?php print $class ?>">
+				<td><a href="<?php
+
+				list($y, $m, $d) = explode('-', $log->getDate());
+				print $this->url(array(
+					'controller' => 'schedule',
+					'action'     => 'index',
+					'year'       => $y,
+					'month'      => $m,
+					'day'        => $d,
+				), null, true);
+
+				?>"><?php print $log->getTimeFormatted() ?></a>
+
+				</td>
+				<td><?php print $log->getType() ?></td>
+				<td><?php print $log->getMessage() ?></td>
+			</tr>
+			<?php $row++ ?>
+		<?php endforeach; ?>
+		</tbody>
 	</table>
 	<?php endif; ?>
 </div>

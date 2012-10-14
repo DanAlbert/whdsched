@@ -14,8 +14,26 @@ class LogController extends Zend_Controller_Action
 		
 		if ($user->isAdmin())
 		{
+			$logsPerPage = 20;
+			
+			$page = $this->getRequest()->getParam('page');
+			if ($page == null)
+			{
+				$page = 0;
+			}
+			else
+			{
+				$page--;
+			}
+			
 			$logMapper = new Application_Model_LogMapper();
-			$this->view->logs = $logMapper->fetchAllDesc();
+			
+			$start = $logsPerPage * $page;
+			$npages = ceil(count($logMapper->fetchAll()) / $logsPerPage);
+			
+			$this->view->logs = $logMapper->fetchDesc($logsPerPage, $start);
+			$this->view->page = $page + 1;
+			$this->view->totalPages = $npages;
 		}
 		else
 		{
