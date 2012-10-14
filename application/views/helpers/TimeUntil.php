@@ -63,7 +63,7 @@ class Zend_View_Helper_TimeUntil
 		}
 	}
 	
-	public function TimeUntilShift(Application_Model_Shift $shift)
+	public function TimeUntilShift($shift)
 	{	
 		if ($shift instanceof Application_Model_TempShift)
 		{
