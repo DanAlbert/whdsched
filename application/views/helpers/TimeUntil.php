@@ -65,6 +65,7 @@ class Zend_View_Helper_TimeUntil
 	
 	public function TimeUntilShift($shift)
 	{	
+		$user = Zend_Auth::getInstance()->getIdentity();
 		if ($shift instanceof Application_Model_TempShift)
 		{
 			$temp = $shift;
@@ -74,7 +75,7 @@ class Zend_View_Helper_TimeUntil
 		// If the user is not responsible for the shift
 		if ((isset($temp)) and // There is a temp
 			($temp->getTempConsultant() !== null) and // The shift has been taken
-			($temp->getTempConsultant()->getId() != $this->user->getId())) // Not by you
+			($temp->getTempConsultant()->getId() != $user->getId())) // Not by you
 		{
 			$working = false;
 		}
