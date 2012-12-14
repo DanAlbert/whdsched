@@ -8,6 +8,9 @@ require_once 'ServerAuthAdapter.php';
 
 class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 {
+	const NO_DATABASE = -1;
+	const NO_TABLE = -2;
+	
 	protected function _initAutoloader()
 	{
 		$loader = Zend_Loader_Autoloader::getInstance();
@@ -224,6 +227,39 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 		}
 		
 		return $adapter;
+	}
+	
+	protected function _initDb()
+	{
+		$resource = $this->getPluginResource('db');
+    	$db = $resource->getDbAdapter();
+    	Zend_Db_Table::setDefaultAdapter($db);
+		
+		try
+		{
+			//$this->verifyDb();
+		}
+		catch (Exception $e)
+		{
+			$code = $e->getCode();
+			switch ($code)
+			{
+			case 42: // missing table
+				throw new Exception('Missing table');
+			case 1044: // Access denied
+				throw new Exception('Access denied');
+			case 2002: // Server not responding
+				throw new Exception('The server is not responding');
+			default:
+				throw new Exception("{$e->getCode()}: {$e->getMessage()}");
+			}
+		}
+	}
+	
+	protected function verifyDb()
+	{
+		// this will throw if our database is invalid
+		$result = Zend_Db_Table::getDefaultAdapter()->describeTable('consultants');
 	}
 	
 	protected function _initAcl()
