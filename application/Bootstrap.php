@@ -11,6 +11,30 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 	const NO_DATABASE = -1;
 	const NO_TABLE = -2;
 	
+	public function getDbOptions()
+	{
+		try
+		{
+			return new Zend_Config_Ini(APPLICATION_PATH . '/configs/db.ini');
+		}
+		catch (Zend_Config_Exception $e)
+		{
+			throw new Exception('Could not read database configuration file');
+		}
+	}
+	
+	public function getSmtpOptions()
+	{
+		try
+		{
+			return new Zend_Config_Ini(APPLICATION_PATH . '/configs/smtp.ini');
+		}
+		catch (Zend_Config_Exception $e)
+		{
+			throw new Exception('Could not read SMTP configuration file');
+		}
+	}
+	
 	protected function _initAutoloader()
 	{
 		$loader = Zend_Loader_Autoloader::getInstance();
@@ -22,7 +46,9 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 	protected function _initConfig()
 	{
 		$config = $this->getOptions();
+		$dbConfig = $this->getDbOptions();
 		Zend_Registry::set('config', $config);
+		Zend_Registry::set('dbConfig', $dbConfig);
 		
 		// Number of weeks in a normal term
 		define('WEEKS_PER_TERM', 11);
@@ -90,13 +116,15 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 		
 		if ($options['transport'] == 'smtp')
 		{
+			$smtpOptions = $this->getSmtpOptions();
+			$smtpOptions = $smtpOptions->mail->smtp;
 			$transport = new Zend_Mail_Transport_Smtp(
-					$options['smtp']['server'], array(
-						'port'     => $options['smtp']['port'],
-						'ssl'      => $options['smtp']['ssl'],
-						'auth'     => $options['smtp']['auth'],
-						'username' => $options['smtp']['username'],
-						'password' => $options['smtp']['password'],
+					$smtpOptions->server, array(
+						'port'     => $smtpOptions->port,
+						'ssl'      => $smtpOptions->ssl,
+						'auth'     => $smtpOptions->auth,
+						'username' => $smtpOptions->username,
+						'password' => $smtpOptions->password,
 			));
 		}
 		else
@@ -231,8 +259,10 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 	
 	protected function _initDb()
 	{
-		$resource = $this->getPluginResource('db');
-    	$db = $resource->getDbAdapter();
+		$options = $this->getDbOptions();
+		$db = Zend_Db::factory($options->db->adapter,
+		                       $options->db->params);
+
     	Zend_Db_Table::setDefaultAdapter($db);
 		
 		try
@@ -282,9 +312,8 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 		{
 			$this->bootstrap('db');
 			$db = $this->getResource('db');
-			$options = $this->getOptions();
-			$dbOptions = $options['resources']['db'];
-			$prefix = $dbOptions['params']['prefix'];
+			$dbOptions = $this->getDbOptions();
+			$prefix = $dbOptions->db->params->prefix;
 			
 			$columnMap = array(
 				'log_time'   => 'timestamp',
