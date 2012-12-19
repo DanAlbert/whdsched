@@ -6,3 +6,4 @@ zf.sh
 .buildpath
 .project
 .settings
+*.un~

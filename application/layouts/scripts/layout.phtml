@@ -180,14 +180,20 @@ print   '<script type="text/javascript">var dropdown=' .
 print '<div id="content">';
 
 $shiftMapper = new Application_Model_ShiftMapper();
-$available = $shiftMapper->fetchAllUnassignedThisTerm();
-if (count($available) > 0)
+try
 {
-	print 'There are shifts still available this term. <a href="' .
-			$this->url(array(
-				'controller' => 'shift',
-				'action'     => 'available',
-			), null, true) . '">View</a><br />';
+	$available = $shiftMapper->fetchAllUnassignedThisTerm();
+	if (count($available) > 0)
+	{
+		print 'There are shifts still available this term. <a href="' .
+				$this->url(array(
+					'controller' => 'shift',
+					'action'     => 'available',
+				), null, true) . '">View</a><br />';
+	}
+}
+catch (Exception $e)
+{
 }
 
 print '<ul>';
