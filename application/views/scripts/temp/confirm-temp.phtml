@@ -14,10 +14,16 @@
 	print '<p>Are you sure you want to temp this shift?</p>';
 	
 	$options = array();
+	$id = $this->shift->getId();
+	if ($this->isTemp)
+	{
+		$id = $this->temp->getId();
+	}
+
 	$options[] = '<a href="' . $this->url(array(
 		'controller' => 'temp',
 		'action'     => 'create',
-		'id'         => $this->shift->getId(),
+		'id'         => $id,
 		'temp'       => $this->isTemp,
 		'form'       => $this->showForm,
 		'confirm'    => true,

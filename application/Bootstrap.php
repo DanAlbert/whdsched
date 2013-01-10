@@ -311,7 +311,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 		if (!Zend_Registry::isRegistered('log'))
 		{
 			$this->bootstrap('db');
-			$db = $this->getResource('db');
+			$db = Zend_Db_Table::getDefaultAdapter();
 			$dbOptions = $this->getDbOptions();
 			$prefix = $dbOptions->db->params->prefix;
 			

@@ -343,7 +343,7 @@ class TempController extends Zend_Controller_Action
 		else
 		{
 			$this->_messenger->addMessage('You are forbidden from temping this shift');
-			$this->handleRedirect($request, $shift()->getDate());
+			$this->handleRedirect($request, $shift->getDate());
 		}
 	}
 	
@@ -365,7 +365,8 @@ class TempController extends Zend_Controller_Action
 		// Make the temp consultant the owner of the shift and delete the old temp
 		if ($this->view->isTemp == true)
 		{
-			$this->view->temp = $tempMapper->find($id);
+			$temp = $tempMapper->find($id);
+			$this->view->temp = $temp;
 			$this->view->shift = $temp->getShift();
 		}
 		else
