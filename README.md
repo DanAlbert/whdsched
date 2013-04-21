@@ -37,13 +37,9 @@ directory). The format for that file is as follows.
 
 Adjust these values as necessary for your database environment. Once that is
 complete, for a first time set up you will need to create the database tables.
-This can be done with the load.mysql.php script found in scripts/. Run the
-script as follows:
 
-	$ php scripts/load.mysql.php -e production
-
-An alternative method is to simply run scripts/schema.mysql.sql in your database
-client such as the command line mysql or phpMyAdmin.
+Currently, the way to do this is to run scripts/schema.mysql.sql in your
+database client such as the command line mysql or phpMyAdmin.
 
 For existing installations, you'll have to examine the changes in the database
 schema and alter your tables manually. A schema migration solution is on the to
@@ -85,3 +81,11 @@ The required keys are as follows.
 	mail.smtp.username = "user@yourdomain.com"
 	mail.smtp.password = "password"
 
+Session Setup
+-------------
+
+You'll need to configure a session namespace to protect against collisions in
+the session. To do this, set the following key in
+application/configs/applicaiton.ini:
+
+    session.namespace = "mynamespace"
