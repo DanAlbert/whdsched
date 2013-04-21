@@ -80,7 +80,8 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 			{
 				if (isset($config['debug']['db']['consultant']))
 				{
-					define('DEBUG_DB_CONSULTANT', $config['debug']['db']['consultant']);
+					define('DEBUG_DB_CONSULTANT',
+					       $config['debug']['db']['consultant']);
 				}
 				else
 				{
@@ -145,8 +146,12 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 	
 	protected function _initSession()
 	{
+		$config = $this->getOptions();
 		Zend_Session::setOptions(array('strict' => true));
 		Zend_Session::start();
+		$sessionNamespace = $config['session']['namespace'];
+		$session = new Zend_Session_Namespace($sessionNamespace);
+		Zend_Registry::set('session', $session);
 	}
 	
 	protected function _initView()
@@ -219,34 +224,40 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 	
 	protected function _initAuth()
 	{
+		$config = $this->getOptions();
 		$this->bootstrap('log');
 		$this->bootstrap('session');
 		
 		$this->bootstrap('request');
 		$request = $this->getResource('request');
+
+		$sessionNamespace = $config['session']['namespace'];
 		
-		Zend_Auth::getInstance()->setStorage(new Zend_Auth_Storage_Session('whdsched'));
+		Zend_Auth::getInstance()->setStorage(
+			new Zend_Auth_Storage_Session($sessionNamespace));
 		
 		$authOptions = $this->getOption('auth');
 		switch ($authOptions['type'])
 		{
 		case 'server':
-			$adapter = new ServerAuthAdapter($request->getServer('REMOTE_USER'));
+			$user = $request->getServer('REMOTE_USER');
+			$adapter = new ServerAuthAdapter($user);
 			break;
 		case 'dev':
 			$adapter = new DevAuthAdapter($authOptions['username']);
 			break;
 		case 'digest':
+			$file = $authOptions['file'];
 			$adapter = new Zend_Auth_Adapter_Http($authOptions['options']);
-			$resolver = new Zend_Auth_Adapter_Http_Resolver_File($authOptions['file']);
+			$resolver = new Zend_Auth_Adapter_Http_Resolver_File($file);
 			$adapter->setDigestResolver($resolver);
 			break;
 		default:
 			break; 
 		}
 		
-		// This condition will be removed in a future release, as we will either have
-		// an adapter, or throw an error
+		// This condition will be removed in a future release, as we will either
+		// have an adapter, or throw an error
 		if ($adapter !== null)
 		{
 			// All pages require valid log in
@@ -289,7 +300,8 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 	protected function verifyDb()
 	{
 		// this will throw if our database is invalid
-		$result = Zend_Db_Table::getDefaultAdapter()->describeTable('consultants');
+		$adapter = Zend_Db_Table::getDefaultAdapter();
+		$result = $adapter->describeTable('consultants');
 	}
 	
 	protected function _initAcl()

@@ -142,8 +142,13 @@ class Application_Model_TempShift
 	public function isAssignedTo(Application_Model_Consultant $consultant)
 	{
 		assert($consultant !== null);
-		return ($this->isAssigned() and
-				($this->getAssignedConsultant()->getId() == $consultant->getId()));
+		return $this->isAssigned() and
+				$this->getAssignedConsultant()->getId() == $consultant->getId();
+	}
+	
+	public function isTaken()
+	{
+		return $this->getTempConsultant() === null;
 	}
 }
 

@@ -249,7 +249,7 @@ class ConsultantsController extends Zend_Controller_Action
 					Zend_Auth::getInstance()->clearIdentity();
 					Zend_Auth::getInstance()->getStorage()->write($consultant);
 					
-					$session = new Zend_Session_Namespace('whdsched');
+					$session = Zend_Registry::get('session');
 					$session->masquerade = $consultant->getId();
 					$session->actual = $actual->getId();
 				}

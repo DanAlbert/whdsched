@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * The index/calendar controller.
+ *
+ * This is the default controller for the application. It is named as the index 
+ * controller, but it would be better named as the calendar controller (or 
+ * perhaps the calendar action under the schedule controller). Some day it will 
+ * actually be properly named, but for now Zend is a pain, so it's what we have.
+ */
 class IndexController extends Zend_Controller_Action
 {
 	protected $_messenger;
@@ -11,6 +19,18 @@ class IndexController extends Zend_Controller_Action
 		$this->_redirector = $this->_helper->getHelper('Redirector');
 	}
 
+	/**
+	 * The default action of this controller is to display a calendar.
+	 * 
+	 * HTTP GET Parameters:
+	 * month:	a four digit representation of the year to be displayed
+	 * year:	a one or two digit representation of the month to be displayed
+	 *
+	 * TODO: Bugs
+	 *  -	HTTP GET parameters to this function are not validated. This
+	 *      shouldn't cause any real problems, it just won't display any useful
+	 *      information. 
+	 */
 	public function indexAction()
 	{
 		$shiftMapper = new Application_Model_ShiftMapper();
@@ -32,7 +52,10 @@ class IndexController extends Zend_Controller_Action
 		$shifts = $shiftMapper->fetchAllByMonth(
 				$this->view->month,
 				$this->view->year);
-		
+
+		// This array is keyed by a SQL formatted date. Each element is a 
+		// boolean, true indicates that the current user works on that day, 
+		// false indicates that they do not.
 		$days = array();
 		foreach ($shifts as $shift)
 		{
@@ -42,20 +65,32 @@ class IndexController extends Zend_Controller_Action
 				$days[$date] = false;
 			}
 			
-			if (($shift->getConsultant() !== null) and ($shift->getConsultant()->getId() == $user->getId()))
+			// TODO: this whole block should be extracted into a 
+			//       consultantWorksOnDay() or similarly named method
+
+			// is the current user the regularly assigned consultant?
+			if (($shift->getConsultant() !== null) and
+				($shift->getConsultant()->getId() == $user->getId()))
 			{
 				$temp = $tempMapper->findByShift($shift);
-				
-				// No one has taken the shift yet
-				if (($temp === null) or
-					(($temp !== null) and ($temp->getTempConsultant() === null)))
+				// is there a temp for this shift?
+				if ($temp === null)
 				{
 					$days[$date] = true;
+				}
+				else
+				{
+					// No one has taken the shift yet
+					if (!$temp->isTaken())
+					{
+						$days[$date] = true;
+					}
 				}
 			}
 			else
 			{
-				// Only query database again if we haven't found any shifts yet
+				// Don't need to run another query if we already know the user
+				// works this day
 				if ($days[$date] === false)
 				{
 					$temp = $tempMapper->findByShift($shift);
@@ -80,7 +115,7 @@ class IndexController extends Zend_Controller_Action
 	{
 		Zend_Auth::getInstance()->clearIdentity();
 		
-		$session = new Zend_Session_Namespace('whdsched');
+		$session = Zend_Registry::get('session');
 		
 		// If we're masquerading as another user, just cancel the masquerade
 		if (isset($session->masquerade))

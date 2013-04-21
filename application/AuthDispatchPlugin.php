@@ -14,7 +14,8 @@ class AuthDispatchPlugin extends Zend_Controller_Plugin_Abstract
 		$this->adapter = $adapter;
 	}
 
-	public function dispatchLoopStartup(Zend_Controller_Request_Abstract $request)
+	public function dispatchLoopStartup(
+		Zend_Controller_Request_Abstract $request)
 	{
 		$auth = Zend_Auth::getInstance();
 		
@@ -62,7 +63,7 @@ class AuthDispatchPlugin extends Zend_Controller_Plugin_Abstract
 					Zend_Registry::get('log')->debug('Valid user');
 				}
 				
-				$session = new Zend_Session_Namespace('whdsched');
+				$session = Zend_Registry::get('session');
 				
 				if (isset($session->masquerade) and $consultant->isAdmin())
 				{
@@ -70,7 +71,8 @@ class AuthDispatchPlugin extends Zend_Controller_Plugin_Abstract
 				}
 				
 				Zend_Auth::getInstance()->getStorage()->write($consultant);
-				assert(Zend_Auth::getInstance()->getIdentity() instanceof Application_Model_Consultant);
+				assert(Zend_Auth::getInstance()->getIdentity()
+					   instanceof Application_Model_Consultant);
 			}
 			else
 			{
